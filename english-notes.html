@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Grammar Notes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f5f0;
+    --accent: #e63946;
+    --green: #2d6a4f;
+    --yellow: #f4c430;
+    --blue: #457b9d;
+    --muted: #6b6b6b;
+    --card: #ffffff;
+    --border: #e0ddd6;
+    --highlight: #fff8e1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: white;
+    padding: 32px 24px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  header h1 span {
+    color: var(--yellow);
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #aaa;
+  }
+
+  .progress-bar {
+    width: 140px;
+    height: 6px;
+    background: #333;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--yellow);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    background: #f0ece3;
+    border-bottom: 2px solid var(--border);
+    scrollbar-width: none;
+    padding: 0 8px;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  nav button {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--muted);
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  nav button:hover { color: var(--ink); }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 24px 16px;
+    max-width: 720px;
+    margin: 0 auto;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 10px 0;
+    letter-spacing: 0.3px;
+  }
+
+  /* EXAMPLE ROW */
+  .example {
+    background: var(--highlight);
+    border-left: 3px solid var(--yellow);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+  }
+
+  .example .label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  /* TABLE */
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 10px 0;
+  }
+
+  .tbl th {
+    background: var(--ink);
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tbl td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:nth-child(even) td { background: #f9f7f3; }
+
+  /* TRAP PILL */
+  .trap-wrap { display: flex; flex-direction: column; gap: 10px; }
+
+  .trap-item {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .trap-item.danger { border-color: #ffcdd2; }
+  .trap-item.safe { border-color: #c8e6c9; }
+
+  .trap-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .trap-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .trap-text { font-family: 'JetBrains Mono', monospace; }
+  .trap-text small { font-family: 'Inter', sans-serif; color: var(--muted); font-size: 11px; display: block; margin-top: 2px; }
+
+  .trap-row.ok { background: #f1f8f2; }
+  .trap-row.bad { background: #fef2f2; }
+
+  /* QUIZ */
+  .quiz-card {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-q {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+
+  .quiz-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quiz-opt {
+    background: #f7f5f0;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .quiz-opt:hover:not(:disabled) { background: #ede9df; border-color: #ccc; }
+  .quiz-opt.correct { background: #e8f5e9; border-color: #66bb6a; color: #1b5e20; }
+  .quiz-opt.wrong { background: #fce4e4; border-color: #ef9a9a; color: #b71c1c; }
+  .quiz-opt:disabled { cursor: default; }
+
+  .quiz-feedback {
+    margin-top: 12px;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #e8f5e9; color: #2e7d32; }
+  .quiz-feedback.bad { background: #fce4e4; color: #c62828; }
+
+  .quiz-next {
+    margin-top: 14px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .quiz-next.show { display: inline-block; }
+  .quiz-next:hover { background: #333; }
+
+  .quiz-score {
+    text-align: center;
+    padding: 30px;
+    display: none;
+  }
+
+  .quiz-score.show { display: block; }
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .score-msg { font-size: 16px; margin-top: 8px; color: var(--muted); }
+
+  .retry-btn {
+    margin-top: 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* PILL TAG */
+  .pill {
+    display: inline-block;
+    background: #eef2ff;
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 99px;
+    margin: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .pill.green { background: #e8f5e9; color: var(--green); }
+  .pill.red { background: #fce4e4; color: #c62828; }
+
+  /* GRID */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* VERB LIST */
+  .verb-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+
+  /* ACCORDION */
+  .acc-btn {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ink);
+  }
+
+  .acc-btn::after { content: '＋'; font-size: 18px; color: var(--accent); }
+  .acc-btn.open::after { content: '−'; }
+
+  .acc-body {
+    display: none;
+    padding: 0 16px 16px;
+  }
+
+  .acc-body.open { display: block; }
+
+  .acc-wrap {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: white;
+  }
+
+  /* PASSIVE TABLE */
+  .passive-grid { display: flex; flex-direction: column; gap: 10px; }
+  .passive-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: start; }
+  .tense-tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: white;
+    text-align: center;
+    line-height: 1.3;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>English Grammar <span>Notes</span></h1>
+  <div class="progress-wrap">
+    <span id="prog-label">0 / 10</span>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</header>
+
+<nav id="main-nav">
+  <button class="active" onclick="show(0)">Passive</button>
+  <button onclick="show(1)">Reported</button>
+  <button onclick="show(2)">Superlatives</button>
+  <button onclick="show(3)">3rd Cond.</button>
+  <button onclick="show(4)">Gerund</button>
+  <button onclick="show(5)">Verb Constr.</button>
+  <button onclick="show(6)">Quantifiers</button>
+  <button onclick="show(7)">Prepositions</button>
+  <button onclick="show(8)">Adj + Prep</button>
+  <button onclick="show(9)">🧠 Quiz</button>
+</nav>
+
+<!-- SECTION 0: PASSIVE VOICE -->
+<div class="section active" id="s0">
+  <p class="section-title">Passive Voice</p>
+  <p class="section-sub">Object + BE (conjugated) + Past Participle</p>
+
+  <div class="formula">Object + BE + past participle (+ by + agent)</div>
+
+  <div class="passive-grid">
+    <div class="acc-wrap">
+      <button class="acc-btn" onclick="acc(this)">Present Simple</button>
+      <div class="acc-body">
+        <div class="formula">is / am / are + past participle</div>
+        <div class="example"><div class="label">Active</div>They build houses.</div>
+        <div class="example"><div class="label">Passive</div>Houses <strong>are built</strong>.</div>
+        <div class="example"><div class="label">Example</div>The road <strong>is repaired</strong> every year.</div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <button class="acc-btn" onclick="acc(this)">Past Simple</button>
+      <div class="acc-body">
+        <div class="formula">was / were + past participle</div>
+        <div class="example"><div class="label">Active</div>They built the bridge.</div>
+        <div class="example"><div class="label">Passive</div>The bridge <strong>was built</strong>.</div>
+        <div class="example"><div class="label">Teacher example</div>He <strong>was recruited</strong> two weeks ago.</div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <button class="acc-btn" onclick="acc(this)">Present Perfect</button>
+      <div class="acc-body">
+        <div class="formula">has / have + been + past participle</div>
+        <div class="example"><div class="label">Active</div>They have completed the project.</div>
+        <div class="example"><div class="label">Passive</div>The project <strong>has been completed</strong>.</div>
+        <div class="example"><div class="label">Teacher example</div>This document <strong>has not been understood</strong> by the staff.</div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <button class="acc-btn" onclick="acc(this)">Future</button>
+      <div class="acc-body">
+        <div class="formula">will + be + past participle</div>
+        <div class="example"><div class="label">Active</div>They will launch the product.</div>
+        <div class="example"><div class="label">Passive</div>The product <strong>will be launched</strong>.</div>
+        <div class="example"><div class="label">Another</div>The meeting <strong>will be postponed</strong>.</div>
+      </div>
+    </div>
+
+    <div class="acc-wrap">
+      <button class="acc-btn" onclick="acc(this)">Modal Verbs</button>
+      <div class="acc-body">
+        <div class="formula">modal + be + past participle</div>
+        <div class="example"><div class="label">Example</div>The work <strong>must be finished</strong>.</div>
+        <div class="example"><div class="label">Example</div>The problem <strong>can be solved</strong>.</div>
+        <div class="example"><div class="label">Example</div>Rules <strong>must be followed</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-label">⚠️ Hold up = delayed (passive)</div>
+    <div class="example">The train <strong>was delayed</strong>. / The train <strong>has been held up</strong>.</div>
+  </div>
+</div>
+
+<!-- SECTION 1: REPORTED SPEECH -->
+<div class="section" id="s1">
+  <p class="section-title">Reported Speech</p>
+  <p class="section-sub">Tenses shift back one step into the past.</p>
+
+  <div class="card">
+    <div class="card-label">Tense Changes</div>
+    <table class="tbl">
+      <tr><th>Direct</th><th>Reported</th></tr>
+      <tr><td>am / is</td><td>was</td></tr>
+      <tr><td>are</td><td>were</td></tr>
+      <tr><td>do / does</td><td>did</td></tr>
+      <tr><td>have / has</td><td>had</td></tr>
+      <tr><td>will</td><td>would</td></tr>
+      <tr><td>can</td><td>could</td></tr>
+      <tr><td>may</td><td>might</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Time Expression Changes</div>
+    <table class="tbl">
+      <tr><th>Direct</th><th>Reported</th></tr>
+      <tr><td>now</td><td>then</td></tr>
+      <tr><td>today</td><td>that day</td></tr>
+      <tr><td>yesterday</td><td>the day before</td></tr>
+      <tr><td>tomorrow</td><td>the next day</td></tr>
+      <tr><td>next week</td><td>the following week</td></tr>
+      <tr><td>last year</td><td>the previous year</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Examples</div>
+    <div class="example"><div class="label">Direct</div>"I <strong>am</strong> tired."</div>
+    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>She said that she <strong>was</strong> tired.</div>
+    <hr>
+    <div class="example"><div class="label">Direct</div>"I <strong>can</strong> attend tomorrow."</div>
+    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>She said she <strong>could</strong> attend the following day.</div>
+    <hr>
+    <div class="example"><div class="label">Direct (Teacher)</div>Tom said, "I finished the report <strong>yesterday</strong>."</div>
+    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>Tom said he <strong>had finished</strong> the report <strong>the day before</strong>.</div>
+  </div>
+</div>
+
+<!-- SECTION 2: SUPERLATIVES -->
+<div class="section" id="s2">
+  <p class="section-title">Superlatives + Present Perfect</p>
+  <p class="section-sub">Your teacher specifically mentioned this — very likely exam material.</p>
+
+  <div class="formula">This is the + superlative + (noun) + I have ever + past participle</div>
+
+  <div class="card">
+    <div class="card-label">Examples</div>
+    <div class="example">This is the <strong>best</strong> film I have <strong>ever seen</strong>.</div>
+    <div class="example">This is the <strong>most difficult</strong> exam I have <strong>ever taken</strong>.</div>
+    <div class="example">This is the <strong>worst</strong> mistake I have <strong>ever made</strong>.</div>
+    <div class="example">This is the <strong>best</strong> book I have <strong>ever read</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Irregular Superlatives — MEMORIZE THESE</div>
+    <table class="tbl">
+      <tr><th>Adjective</th><th>Comparative</th><th>Superlative</th></tr>
+      <tr><td>good</td><td>better</td><td><strong>best</strong></td></tr>
+      <tr><td>bad</td><td>worse</td><td><strong>worst</strong></td></tr>
+      <tr><td>far</td><td>farther / further</td><td><strong>farthest / furthest</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 3: THIRD CONDITIONAL -->
+<div class="section" id="s3">
+  <p class="section-title">Third Conditional</p>
+  <p class="section-sub">For impossible / imaginary past situations. It didn't happen — but what if it had?</p>
+
+  <div class="formula">IF + had + past participle → would have + past participle</div>
+
+  <div class="card">
+    <div class="card-label">Teacher Example</div>
+    <div class="example">None of this <strong>would have happened</strong> if I <strong>hadn't been</strong> fired from Apple.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">More Examples</div>
+    <div class="example">If I <strong>had studied</strong> harder, I <strong>would have passed</strong>.</div>
+    <div class="example">If we <strong>had left</strong> earlier, we <strong>would have caught</strong> the train.</div>
+    <div class="example">If she <strong>had called</strong> me, I <strong>would have come</strong>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Inverted Form (Advanced)</div>
+    <p style="font-size:14px; color: var(--muted); margin-bottom:10px;">Drop "if" and invert the subject/verb.</p>
+    <div class="two-col">
+      <div class="example"><div class="label">Normal</div>If I had known…</div>
+      <div class="example" style="border-color: var(--green);"><div class="label">Inverted</div><strong>Had I known</strong>…</div>
+    </div>
+    <div class="example" style="margin-top:8px;">Had I known, I would have helped.</div>
+  </div>
+
+  <div class="card" style="border-color:#ffcdd2; background:#fff5f5;">
+    <div class="card-label" style="color:#c62828;">⚠️ had better</div>
+    <div class="two-col">
+      <div class="example" style="border-color: var(--green);"><div class="label">✅ Correct</div>Students <strong>had better start</strong> working.</div>
+      <div class="example" style="border-color: var(--accent);"><div class="label">❌ Wrong</div>Students had better <strong>to start</strong> working.</div>
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px;">had better + BASE VERB (no "to")</p>
+  </div>
+</div>
+
+<!-- SECTION 4: GERUND -->
+<div class="section" id="s4">
+  <p class="section-title">Gerund (-ING)</p>
+  <p class="section-sub">A verb used as a noun. Three main contexts.</p>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">After prepositions</button>
+    <div class="acc-body">
+      <p style="font-size:13px; margin-bottom:8px; color:var(--muted);">Any verb after a preposition → -ING</p>
+      <div class="example">interested in <strong>learning</strong></div>
+      <div class="example">good at <strong>solving</strong></div>
+      <div class="example">without <strong>saying</strong></div>
+      <div class="example">capable of <strong>solving</strong></div>
+      <div class="example">used to <strong>working</strong> → ✅</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">As a subject</button>
+    <div class="acc-body">
+      <div class="example"><strong>Swimming</strong> is fun.</div>
+      <div class="example"><strong>Reading</strong> improves vocabulary.</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">After certain verbs</button>
+    <div class="acc-body">
+      <div class="verb-list">
+        <span class="pill">avoid</span><span class="pill">enjoy</span><span class="pill">suggest</span>
+        <span class="pill">admit</span><span class="pill">deny</span><span class="pill">consider</span>
+        <span class="pill">finish</span><span class="pill">keep</span><span class="pill">practise</span>
+        <span class="pill">recommend</span><span class="pill">mind</span>
+      </div>
+      <div class="example">avoid <strong>answering</strong></div>
+      <div class="example">deny <strong>cheating</strong></div>
+      <div class="example">suggest <strong>leaving</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: VERB CONSTRUCTIONS -->
+<div class="section" id="s5">
+  <p class="section-title">Verb Constructions</p>
+  <p class="section-sub">One of the most tested topics. Know which verbs take which form.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label">Verb + ING</div>
+      <div class="verb-list">
+        <span class="pill green">avoid</span><span class="pill green">enjoy</span><span class="pill green">finish</span>
+        <span class="pill green">keep</span><span class="pill green">mind</span><span class="pill green">suggest</span>
+        <span class="pill green">recommend</span><span class="pill green">consider</span><span class="pill green">deny</span>
+        <span class="pill green">admit</span><span class="pill green">practise</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Verb + TO + Infinitive</div>
+      <div class="verb-list">
+        <span class="pill">decide</span><span class="pill">hope</span><span class="pill">plan</span>
+        <span class="pill">want</span><span class="pill">need</span><span class="pill">learn</span>
+        <span class="pill">promise</span><span class="pill">agree</span><span class="pill">refuse</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-label">⭐ Verb + Preposition + ING — Very common in exams</div>
+    <table class="tbl">
+      <tr><th>Expression</th><th>Example</th></tr>
+      <tr><td>insist on</td><td>insist on <strong>paying</strong></td></tr>
+      <tr><td>succeed in</td><td>succeed in <strong>finding</strong></td></tr>
+      <tr><td>think about</td><td>think about <strong>moving</strong></td></tr>
+      <tr><td>apologize for</td><td>apologize for <strong>being late</strong></td></tr>
+      <tr><td>look forward to</td><td>look forward to <strong>hearing</strong></td></tr>
+      <tr><td>dream of</td><td>dream of <strong>becoming</strong></td></tr>
+      <tr><td>believe in</td><td>believe in <strong>working hard</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 6: QUANTIFIERS -->
+<div class="section" id="s6">
+  <p class="section-title">Quantifiers</p>
+  <p class="section-sub">Key distinction: countable vs uncountable nouns.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label">Countable only</div>
+      <div class="example"><strong>many</strong> students</div>
+      <div class="example"><strong>few</strong> people</div>
+      <div class="example"><strong>a few</strong> students</div>
+      <div class="example"><strong>several</strong> times</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Uncountable only</div>
+      <div class="example"><strong>much</strong> information</div>
+      <div class="example"><strong>little</strong> money</div>
+      <div class="example"><strong>a little</strong> water</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Both countable & uncountable</div>
+    <div class="verb-list">
+      <span class="pill">some</span><span class="pill">any</span><span class="pill">a lot of</span>
+      <span class="pill">lots of</span><span class="pill">plenty of</span>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: #f4c430; background: #fffdf0;">
+    <div class="card-label" style="color: #a07000;">⚠️ Critical difference</div>
+    <table class="tbl">
+      <tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><strong>few</strong></td><td>almost none ❌</td><td>I have few friends.</td></tr>
+      <tr><td><strong>a few</strong></td><td>some ✅</td><td>I have a few friends.</td></tr>
+      <tr><td><strong>little</strong></td><td>almost none ❌</td><td>little hope</td></tr>
+      <tr><td><strong>a little</strong></td><td>some ✅</td><td>a little money</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 7: PREPOSITIONS -->
+<div class="section" id="s7">
+  <p class="section-title">Prepositions</p>
+  <p class="section-sub">Time, place, and phrasal verbs from your teacher's sheet.</p>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">ON — days, dates, surfaces</button>
+    <div class="acc-body">
+      <div class="verb-list">
+        <span class="pill">on Monday</span><span class="pill">on 5 June</span>
+        <span class="pill">on the table</span><span class="pill">on TV</span>
+        <span class="pill">on the phone</span><span class="pill">on the internet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">IN — months, years, countries</button>
+    <div class="acc-body">
+      <div class="verb-list">
+        <span class="pill">in June</span><span class="pill">in 2025</span>
+        <span class="pill">in summer</span><span class="pill">in France</span>
+        <span class="pill">in Paris</span><span class="pill">in two hours</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">AT — times, places</button>
+    <div class="acc-body">
+      <div class="verb-list">
+        <span class="pill">at 8 o'clock</span><span class="pill">at school</span>
+        <span class="pill">at home</span><span class="pill">at work</span>
+        <span class="pill">at university</span><span class="pill">at the station</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Teacher's Key Phrasal Verbs</button>
+    <div class="acc-body">
+      <table class="tbl">
+        <tr><th>Expression</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td>account for</td><td>explain</td><td>How can this be accounted for?</td></tr>
+        <tr><td>put through to</td><td>connect a call</td><td>Put you through to his colleague.</td></tr>
+        <tr><td>come across</td><td>find unexpectedly</td><td>I came across it.</td></tr>
+        <tr><td>break down</td><td>stop working</td><td>My car keeps breaking down.</td></tr>
+        <tr><td>hold up</td><td>delay</td><td>The train has been held up.</td></tr>
+        <tr><td>cut down on</td><td>reduce</td><td>Cut down on expenses.</td></tr>
+        <tr><td>keep out of</td><td>don't get involved</td><td>Keep out of it.</td></tr>
+        <tr><td>short of</td><td>except</td><td>Short of murder.</td></tr>
+        <tr><td>faced with</td><td>confronted by</td><td>Faced with a problem.</td></tr>
+        <tr><td>remind of</td><td>make remember</td><td>Remind me of his name.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8: ADJ + PREP -->
+<div class="section" id="s8">
+  <p class="section-title">Adjective + Preposition</p>
+  <p class="section-sub">Memorize all of these — they appear in almost every exam.</p>
+
+  <div class="two-col">
+    <div class="card"><div class="card-label">OF</div>
+      <div class="example">afraid <strong>of</strong> spiders</div>
+      <div class="example">proud <strong>of</strong> her work</div>
+      <div class="example">tired <strong>of</strong></div>
+      <div class="example">capable <strong>of</strong> solving</div>
+      <div class="example">full <strong>of</strong> water</div>
+    </div>
+    <div class="card"><div class="card-label">IN</div>
+      <div class="example">interested <strong>in</strong> AI</div>
+      <div class="example">involved <strong>in</strong></div>
+    </div>
+    <div class="card"><div class="card-label">FOR</div>
+      <div class="example">famous <strong>for</strong> cheese</div>
+      <div class="example">responsible <strong>for</strong> security</div>
+    </div>
+    <div class="card"><div class="card-label">AT</div>
+      <div class="example">good <strong>at</strong> maths</div>
+    </div>
+    <div class="card"><div class="card-label">TO</div>
+      <div class="example">married <strong>to</strong> John</div>
+      <div class="example">similar <strong>to</strong></div>
+    </div>
+    <div class="card"><div class="card-label">ON</div>
+      <div class="example">keen <strong>on</strong> football</div>
+      <div class="example">dependent <strong>on</strong></div>
+    </div>
+    <div class="card"><div class="card-label">FROM</div>
+      <div class="example">different <strong>from</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 9: QUIZ -->
+<div class="section" id="s9">
+  <p class="section-title">Quick Quiz</p>
+  <p class="section-sub">Test yourself on the top exam traps.</p>
+
+  <div id="quiz-container"></div>
+  <div class="quiz-score" id="quiz-score">
+    <div class="score-num" id="score-display">0/10</div>
+    <div class="score-msg" id="score-msg"></div>
+    <button class="retry-btn" onclick="initQuiz()">Try Again</button>
+  </div>
+</div>
+
+<script>
+// NAV
+const sections = document.querySelectorAll('.section');
+const navBtns = document.querySelectorAll('nav button');
+const visited = new Set([0]);
+
+function show(i) {
+  sections.forEach(s => s.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  sections[i].classList.add('active');
+  navBtns[i].classList.add('active');
+  visited.add(i);
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 10;
+  const count = visited.size;
+  document.getElementById('prog-label').textContent = count + ' / ' + total;
+  document.getElementById('prog-fill').style.width = (count / total * 100) + '%';
+}
+
+// ACCORDION
+function acc(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+// QUIZ DATA
+const questions = [
+  {
+    q: "I am looking forward to ___ from you.",
+    hint: "Verb + preposition + ?",
+    opts: ["hear", "hearing", "have heard", "to hear"],
+    ans: 1,
+    explain: "look forward to + ING. 'To' here is a preposition, not part of the infinitive."
+  },
+  {
+    q: "She suggested ___ the meeting.",
+    hint: "suggest + ?",
+    opts: ["to postpone", "postpone", "postponing", "postponed"],
+    ans: 2,
+    explain: "suggest + ING. Never 'suggest to'."
+  },
+  {
+    q: "If I ___ harder, I would have passed.",
+    hint: "Third conditional — IF clause",
+    opts: ["studied", "had studied", "would study", "study"],
+    ans: 1,
+    explain: "Third conditional: IF + had + past participle."
+  },
+  {
+    q: "This is the ___ film I have ever seen.",
+    hint: "Superlative + present perfect",
+    opts: ["better", "more good", "best", "most good"],
+    ans: 2,
+    explain: "good → better → best. Irregular superlative."
+  },
+  {
+    q: "The project ___ by Friday.",
+    hint: "Future passive",
+    opts: ["will complete", "will be complete", "will be completed", "is completed"],
+    ans: 2,
+    explain: "Future passive: will + be + past participle."
+  },
+  {
+    q: "She said she ___ attend the next day.",
+    hint: "Reported speech — tense shift",
+    opts: ["can", "could", "will", "may"],
+    ans: 1,
+    explain: "can → could in reported speech."
+  },
+  {
+    q: "He succeeded in ___ the problem.",
+    hint: "succeed in + ?",
+    opts: ["solve", "to solve", "solved", "solving"],
+    ans: 3,
+    explain: "succeed in + ING. Never 'succeed to'."
+  },
+  {
+    q: "I have ___ friends here — almost none.",
+    hint: "few vs a few",
+    opts: ["a few", "few", "little", "much"],
+    ans: 1,
+    explain: "'few' = almost none. 'a few' = some. The sentence says 'almost none', so: few."
+  },
+  {
+    q: "Students had better ___ working now.",
+    hint: "had better + ?",
+    opts: ["to start", "starting", "start", "started"],
+    ans: 2,
+    explain: "had better + BASE VERB (no 'to', no -ing)."
+  },
+  {
+    q: "The document ___ by the staff.",
+    hint: "Present perfect passive — negative",
+    opts: ["has not understood", "has not been understood", "was not understood", "is not understood"],
+    ans: 1,
+    explain: "Present perfect passive: has/have + been + past participle. Teacher example!"
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function initQuiz() {
+  current = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('quiz-score').classList.remove('show');
+  document.getElementById('quiz-container').style.display = '';
+  renderQ();
+}
+
+function renderQ() {
+  if (current >= questions.length) {
+    endQuiz(); return;
+  }
+  const q = questions[current];
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = `
+    <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Question ${current + 1} of ${questions.length}</div>
+    <div class="quiz-card">
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-hint">${q.hint}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o, i) => `
+          <button class="quiz-opt" onclick="answer(${i})" id="opt${i}">
+            <span style="font-size:11px; font-weight:700; color:var(--muted); min-width:18px;">${String.fromCharCode(65+i)}.</span>
+            ${o}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="feedback"></div>
+      <button class="quiz-next" id="next-btn" onclick="nextQ()">${current + 1 < questions.length ? 'Next →' : 'See Results'}</button>
+    </div>
+  `;
+  answered = false;
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const opts = document.querySelectorAll('.quiz-opt');
+  const fb = document.getElementById('feedback');
+  const nb = document.getElementById('next-btn');
+
+  opts.forEach(o => o.disabled = true);
+  opts[q.ans].classList.add('correct');
+
+  if (i === q.ans) {
+    score++;
+    fb.textContent = '✅ Correct! ' + q.explain;
+    fb.className = 'quiz-feedback show good';
+  } else {
+    opts[i].classList.add('wrong');
+    fb.textContent = '❌ ' + q.explain;
+    fb.className = 'quiz-feedback show bad';
+  }
+
+  nb.classList.add('show');
+}
+
+function nextQ() {
+  current++;
+  renderQ();
+}
+
+function endQuiz() {
+  document.getElementById('quiz-container').style.display = 'none';
+  const s = document.getElementById('quiz-score');
+  s.classList.add('show');
+  document.getElementById('score-display').textContent = score + '/' + questions.length;
+  const msgs = [
+    [0, 4, "Keep studying — you've got this! 💪"],
+    [5, 7, "Good effort! Review the traps section. 📚"],
+    [8, 9, "Almost perfect! Nearly exam-ready. 🌟"],
+    [10, 10, "Perfect score! You're ready. 🎉"],
+  ];
+  const msg = msgs.find(([lo, hi]) => score >= lo && score <= hi);
+  document.getElementById('score-msg').textContent = msg[2];
+}
+
+initQuiz();
+updateProgress();
+</script>
+</body>
+</html>
