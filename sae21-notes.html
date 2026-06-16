@@ -1,1160 +1,821 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAÉ21 – Network Study Guide</title>
+<title>SAÉ21 – Guide de Révision</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
-  :root {
-    --bg: #0a0e1a;
-    --bg2: #0f1525;
-    --bg3: #151c30;
-    --bg4: #1a2238;
-    --cyan: #00d4ff;
-    --cyan2: #00a8cc;
-    --green: #00ff88;
-    --orange: #ff8c42;
-    --red: #ff4757;
-    --purple: #7c5cbf;
-    --text: #e0e6f0;
-    --text2: #8899bb;
-    --text3: #5566889;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Inter', sans-serif;
-    --border: rgba(0, 212, 255, 0.15);
-    --border2: rgba(0, 212, 255, 0.08);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(10, 14, 26, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem; height: 56px;
-  }
-  .nav-logo {
-    font-family: var(--mono); font-size: 0.9rem; color: var(--cyan);
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .nav-logo span { color: var(--text2); }
-  .nav-links { display: flex; gap: 0.25rem; }
-  .nav-link {
-    font-family: var(--mono); font-size: 0.75rem; color: var(--text2);
-    padding: 0.4rem 0.75rem; border-radius: 4px; cursor: pointer;
-    transition: all 0.2s; border: none; background: none;
-    letter-spacing: 0.05em;
-  }
-  .nav-link:hover, .nav-link.active {
-    color: var(--cyan); background: rgba(0, 212, 255, 0.08);
-  }
-
-  /* ── PAGES ── */
-  .page { display: none; padding-top: 56px; min-height: 100vh; }
-  .page.active { display: block; }
-
-  /* ── HERO ── */
-  .hero {
-    min-height: calc(100vh - 56px);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center; padding: 2rem;
-    position: relative; overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 70%);
-  }
-  .hero-network {
-    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
-  }
-  .hero-network svg { width: 100%; height: 100%; opacity: 0.15; }
-  .hero-content { position: relative; z-index: 1; max-width: 700px; }
-  .hero-eyebrow {
-    font-family: var(--mono); font-size: 0.75rem; color: var(--cyan);
-    letter-spacing: 0.15em; text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    display: inline-flex; align-items: center; gap: 0.5rem;
-  }
-  .hero-eyebrow::before, .hero-eyebrow::after {
-    content: ''; display: block; width: 24px; height: 1px; background: var(--cyan);
-  }
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 700; line-height: 1.1;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #fff 0%, var(--cyan) 60%, var(--purple) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-desc {
-    font-size: 1rem; color: var(--text2); line-height: 1.7;
-    margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;
-  }
-  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-  .btn-primary {
-    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.05em;
-    padding: 0.75rem 1.75rem; border-radius: 6px; cursor: pointer;
-    background: var(--cyan); color: var(--bg); border: none; font-weight: 700;
-    transition: all 0.2s;
-  }
-  .btn-primary:hover { background: var(--cyan2); transform: translateY(-2px); }
-  .btn-secondary {
-    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.05em;
-    padding: 0.75rem 1.75rem; border-radius: 6px; cursor: pointer;
-    background: transparent; color: var(--cyan);
-    border: 1px solid var(--border); font-weight: 600;
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover { background: rgba(0,212,255,0.08); transform: translateY(-2px); }
-
-  .hero-cards {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 1rem; margin-top: 4rem; width: 100%; max-width: 800px;
-  }
-  .hero-card {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 1.25rem 1rem; cursor: pointer;
-    transition: all 0.2s; text-align: center;
-  }
-  .hero-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
-  .hero-card-num {
-    font-family: var(--mono); font-size: 1.5rem; color: var(--cyan);
-    font-weight: 700; margin-bottom: 0.5rem;
-  }
-  .hero-card-label { font-size: 0.75rem; color: var(--text2); }
-
-  /* ── CONTENT LAYOUT ── */
-  .content { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
-  .page-header {
-    margin-bottom: 3rem; padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border2);
-  }
-  .page-eyebrow {
-    font-family: var(--mono); font-size: 0.7rem; color: var(--cyan);
-    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem;
-  }
-  .page-title {
-    font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700;
-    line-height: 1.2; margin-bottom: 0.75rem;
-  }
-  .page-desc { font-size: 0.9rem; color: var(--text2); line-height: 1.7; }
-
-  /* ── SECTIONS ── */
-  .section { margin-bottom: 2.5rem; }
-  .section-title {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--cyan);
-    letter-spacing: 0.1em; text-transform: uppercase;
-    margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;
-  }
-  .section-title::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
-
-  /* ── CONCEPT CARDS ── */
-  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .concept-card {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 1.25rem;
-    transition: border-color 0.2s;
-  }
-  .concept-card:hover { border-color: var(--border); }
-  .concept-card-title {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--cyan);
-    margin-bottom: 0.5rem; font-weight: 600;
-  }
-  .concept-card-body { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
-  .concept-card-body strong { color: var(--text); }
-
-  /* ── CODE BLOCKS ── */
-  .code-block {
-    background: #060a14; border: 1px solid var(--border2);
-    border-radius: 8px; overflow: hidden; margin: 1rem 0;
-  }
-  .code-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.6rem 1rem; background: var(--bg4);
-    border-bottom: 1px solid var(--border2);
-  }
-  .code-header-title {
-    font-family: var(--mono); font-size: 0.7rem; color: var(--text2);
-    letter-spacing: 0.05em;
-  }
-  .code-dots { display: flex; gap: 5px; }
-  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .code-dot.r { background: #ff5f57; }
-  .code-dot.y { background: #febc2e; }
-  .code-dot.g { background: #28c840; }
-  .code-body {
-    padding: 1rem 1.25rem; font-family: var(--mono);
-    font-size: 0.8rem; line-height: 1.8; overflow-x: auto;
-  }
-  .code-comment { color: #4a5568; }
-  .code-cmd { color: var(--cyan); }
-  .code-val { color: var(--green); }
-  .code-key { color: var(--orange); }
-
-  /* ── EXPANDABLE ── */
-  .expandable {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 8px; overflow: hidden; margin: 1rem 0;
-  }
-  .expandable-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 1.25rem; cursor: pointer; transition: background 0.2s;
-  }
-  .expandable-header:hover { background: var(--bg4); }
-  .expandable-title {
-    font-family: var(--mono); font-size: 0.85rem; color: var(--text);
-    font-weight: 600; display: flex; align-items: center; gap: 0.75rem;
-  }
-  .expandable-icon {
-    font-size: 0.7rem; color: var(--cyan); transition: transform 0.2s;
-  }
-  .expandable.open .expandable-icon { transform: rotate(90deg); }
-  .expandable-body { display: none; padding: 0 1.25rem 1.25rem; }
-  .expandable.open .expandable-body { display: block; }
-
-  /* ── ALERT BOXES ── */
-  .alert {
-    border-radius: 8px; padding: 1rem 1.25rem;
-    margin: 1rem 0; font-size: 0.85rem; line-height: 1.6;
-    display: flex; gap: 0.75rem; align-items: flex-start;
-  }
-  .alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
-  .alert.info { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); }
-  .alert.warn { background: rgba(255,140,66,0.08); border: 1px solid rgba(255,140,66,0.2); }
-  .alert.success { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); }
-  .alert.danger { background: rgba(255,71,87,0.08); border: 1px solid rgba(255,71,87,0.2); }
-  .alert.info .alert-content { color: #80d4ff; }
-  .alert.warn .alert-content { color: #ffb380; }
-  .alert.success .alert-content { color: #80ffbb; }
-  .alert.danger .alert-content { color: #ff8080; }
-
-  /* ── TABLE ── */
-  .data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
-  .data-table th {
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--cyan);
-    padding: 0.6rem 0.75rem; text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .data-table td {
-    padding: 0.6rem 0.75rem; color: var(--text2);
-    border-bottom: 1px solid var(--border2);
-    font-family: var(--mono);
-  }
-  .data-table tr:hover td { background: var(--bg3); color: var(--text); }
-  .tag {
-    display: inline-block; font-family: var(--mono); font-size: 0.7rem;
-    padding: 0.15rem 0.5rem; border-radius: 3px;
-    background: rgba(0,212,255,0.12); color: var(--cyan);
-  }
-
-  /* ── QUIZ ── */
-  .quiz-filters {
-    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;
-  }
-  .quiz-filter {
-    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.05em;
-    padding: 0.4rem 0.85rem; border-radius: 4px; cursor: pointer;
-    border: 1px solid var(--border); background: transparent; color: var(--text2);
-    transition: all 0.2s;
-  }
-  .quiz-filter:hover, .quiz-filter.active {
-    border-color: var(--cyan); color: var(--cyan);
-    background: rgba(0,212,255,0.08);
-  }
-  .quiz-progress {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 2rem; font-size: 0.85rem; color: var(--text2);
-  }
-  .quiz-bar {
-    flex: 1; height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden;
-  }
-  .quiz-bar-fill {
-    height: 100%; background: var(--cyan); border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-  .quiz-score {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--cyan);
-  }
-  .question-card {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;
-  }
-  .question-meta {
-    display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem;
-  }
-  .question-tag {
-    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
-    text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 3px;
-  }
-  .q-etape1 { background: rgba(124,92,191,0.2); color: #b39ddb; }
-  .q-etape2 { background: rgba(0,212,255,0.12); color: var(--cyan); }
-  .q-etape3 { background: rgba(255,140,66,0.15); color: var(--orange); }
-  .q-etape4 { background: rgba(0,255,136,0.1); color: var(--green); }
-  .q-general { background: rgba(255,71,87,0.1); color: var(--red); }
-  .question-num {
-    font-family: var(--mono); font-size: 0.75rem; color: var(--text2);
-  }
-  .question-text {
-    font-size: 1rem; font-weight: 600; line-height: 1.5;
-    margin-bottom: 1.5rem; color: var(--text);
-  }
-  .options { display: flex; flex-direction: column; gap: 0.75rem; }
-  .option {
-    display: flex; align-items: flex-start; gap: 0.75rem;
-    padding: 0.85rem 1rem; border-radius: 8px; cursor: pointer;
-    border: 1px solid var(--border2); background: var(--bg4);
-    transition: all 0.15s; font-size: 0.875rem;
-    font-family: var(--mono); color: var(--text2);
-  }
-  .option:hover:not(.disabled) { border-color: var(--cyan); color: var(--text); }
-  .option-letter {
-    min-width: 22px; height: 22px; border-radius: 4px;
-    background: var(--bg3); display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem; color: var(--cyan); font-weight: 700; flex-shrink: 0;
-  }
-  .option.correct { border-color: var(--green); background: rgba(0,255,136,0.06); color: var(--text); }
-  .option.correct .option-letter { background: var(--green); color: var(--bg); }
-  .option.wrong { border-color: var(--red); background: rgba(255,71,87,0.06); color: var(--text2); }
-  .option.wrong .option-letter { background: var(--red); color: #fff; }
-  .option.disabled { cursor: default; }
-  .explanation {
-    margin-top: 1.25rem; padding: 1rem 1.25rem;
-    background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.15);
-    border-radius: 8px; font-size: 0.82rem; color: #80d4ff; line-height: 1.6;
-    display: none;
-  }
-  .explanation.show { display: block; }
-  .explanation strong { color: var(--cyan); }
-  .quiz-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 1.5rem;
-  }
-  .btn-next {
-    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.05em;
-    padding: 0.65rem 1.5rem; border-radius: 6px; cursor: pointer;
-    background: var(--cyan); color: var(--bg); border: none; font-weight: 700;
-    transition: all 0.2s; display: none;
-  }
-  .btn-next:hover { background: var(--cyan2); }
-  .btn-restart {
-    font-family: var(--mono); font-size: 0.8rem;
-    padding: 0.65rem 1.5rem; border-radius: 6px; cursor: pointer;
-    background: transparent; color: var(--cyan);
-    border: 1px solid var(--border); transition: all 0.2s;
-  }
-  .btn-restart:hover { background: rgba(0,212,255,0.08); }
-  .result-card {
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 12px; padding: 3rem; text-align: center;
-  }
-  .result-score {
-    font-family: var(--mono); font-size: 4rem; font-weight: 700;
-    color: var(--cyan); margin-bottom: 0.5rem;
-  }
-  .result-label { color: var(--text2); margin-bottom: 2rem; }
-  .result-grade {
-    font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;
-  }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text2); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 640px) {
-    .hero-cards { grid-template-columns: 1fr 1fr; }
-    .concept-grid { grid-template-columns: 1fr; }
-    .nav-links { gap: 0; }
-    .nav-link { padding: 0.4rem 0.4rem; font-size: 0.65rem; }
-  }
-
-  /* packet animation */
-  @keyframes packetMove {
-    0% { offset-distance: 0%; opacity: 1; }
-    90% { opacity: 1; }
-    100% { offset-distance: 100%; opacity: 0; }
-  }
-  .packet {
-    position: absolute; width: 8px; height: 8px;
-    background: var(--cyan); border-radius: 50%;
-    box-shadow: 0 0 8px var(--cyan);
-    animation: packetMove 3s linear infinite;
-    offset-rotate: 0deg;
-  }
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+:root{--bg:#0a0e1a;--bg2:#0f1525;--bg3:#151c30;--bg4:#1a2238;--cyan:#00d4ff;--cyan2:#00a8cc;--green:#00ff88;--orange:#ff8c42;--red:#ff4757;--purple:#7c5cbf;--yellow:#ffd700;--text:#e0e6f0;--text2:#8899bb;--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;--border:rgba(0,212,255,0.15);--border2:rgba(0,212,255,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,26,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:52px;}
+.nav-logo{font-family:var(--mono);font-size:0.85rem;color:var(--cyan);white-space:nowrap;}
+.nav-links{display:flex;gap:0.1rem;flex-wrap:wrap;}
+.nav-link{font-family:var(--mono);font-size:0.7rem;color:var(--text2);padding:0.35rem 0.6rem;border-radius:4px;cursor:pointer;border:none;background:none;letter-spacing:0.04em;transition:all 0.2s;}
+.nav-link:hover,.nav-link.active{color:var(--cyan);background:rgba(0,212,255,0.08);}
+.page{display:none;padding-top:52px;min-height:100vh;}
+.page.active{display:block;}
+.hero{min-height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,212,255,0.05) 0%,transparent 65%);}
+.hero-content{position:relative;z-index:1;max-width:720px;}
+.hero-eyebrow{font-family:var(--mono);font-size:0.7rem;color:var(--cyan);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:1.5rem;display:inline-flex;align-items:center;gap:0.6rem;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--cyan);}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.1;margin-bottom:1.25rem;background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{font-size:0.95rem;color:var(--text2);line-height:1.7;margin-bottom:2.5rem;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+.btn-primary{font-family:var(--mono);font-size:0.78rem;padding:0.7rem 1.6rem;border-radius:6px;cursor:pointer;background:var(--cyan);color:var(--bg);border:none;font-weight:700;transition:all 0.2s;}
+.btn-primary:hover{background:var(--cyan2);transform:translateY(-2px);}
+.btn-secondary{font-family:var(--mono);font-size:0.78rem;padding:0.7rem 1.6rem;border-radius:6px;cursor:pointer;background:transparent;color:var(--cyan);border:1px solid var(--border);font-weight:600;transition:all 0.2s;}
+.btn-secondary:hover{background:rgba(0,212,255,0.08);transform:translateY(-2px);}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;width:100%;max-width:820px;}
+.hero-card{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:1.1rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.hero-card:hover{border-color:var(--cyan);transform:translateY(-3px);}
+.hero-card-num{font-family:var(--mono);font-size:1.4rem;color:var(--cyan);font-weight:700;margin-bottom:0.3rem;}
+.hero-card-pts{font-family:var(--mono);font-size:0.65rem;color:var(--orange);margin-bottom:0.3rem;}
+.hero-card-label{font-size:0.72rem;color:var(--text2);}
+.content{max-width:920px;margin:0 auto;padding:2.5rem 1.5rem;}
+.page-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border2);}
+.page-eyebrow{font-family:var(--mono);font-size:0.68rem;color:var(--cyan);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;}
+.page-title{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;line-height:1.2;margin-bottom:0.6rem;}
+.page-pts{font-family:var(--mono);font-size:0.75rem;color:var(--orange);margin-bottom:0.6rem;}
+.page-desc{font-size:0.875rem;color:var(--text2);line-height:1.7;}
+.section{margin-bottom:2.5rem;}
+.section-title{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
+.concept-card{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:1.1rem;transition:border-color 0.2s;}
+.concept-card:hover{border-color:var(--border);}
+.concept-card-title{font-family:var(--mono);font-size:0.78rem;color:var(--cyan);margin-bottom:0.45rem;font-weight:600;}
+.concept-card-body{font-size:0.82rem;color:var(--text2);line-height:1.6;}
+.concept-card-body strong{color:var(--text);}
+.concept-card-body code{font-family:var(--mono);font-size:0.75rem;color:var(--orange);background:rgba(255,140,66,0.1);padding:0.1rem 0.3rem;border-radius:3px;}
+.code-block{background:#060a14;border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin:0.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:0.55rem 1rem;background:var(--bg4);border-bottom:1px solid var(--border2);}
+.code-header-title{font-family:var(--mono);font-size:0.68rem;color:var(--text2);letter-spacing:0.05em;}
+.code-dots{display:flex;gap:5px;}
+.code-dot{width:9px;height:9px;border-radius:50%;}
+.code-dot.r{background:#ff5f57;}.code-dot.y{background:#febc2e;}.code-dot.g{background:#28c840;}
+.code-body{padding:0.9rem 1.1rem;font-family:var(--mono);font-size:0.775rem;line-height:1.85;overflow-x:auto;white-space:pre;}
+.cc{color:#3d4f6b;}.cmd{color:var(--cyan);}.val{color:var(--green);}.key{color:var(--orange);}
+.expandable{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin:0.75rem 0;}
+.exp-header{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.1rem;cursor:pointer;transition:background 0.2s;}
+.exp-header:hover{background:var(--bg4);}
+.exp-title{font-family:var(--mono);font-size:0.82rem;color:var(--text);font-weight:600;display:flex;align-items:center;gap:0.6rem;}
+.exp-arrow{font-size:0.65rem;color:var(--cyan);transition:transform 0.2s;}
+.expandable.open .exp-arrow{transform:rotate(90deg);}
+.exp-body{display:none;padding:0 1.1rem 1.1rem;}
+.expandable.open .exp-body{display:block;}
+.alert{border-radius:8px;padding:0.9rem 1.1rem;margin:0.75rem 0;font-size:0.82rem;line-height:1.6;display:flex;gap:0.7rem;align-items:flex-start;}
+.alert-icon{font-size:0.95rem;flex-shrink:0;margin-top:0.1rem;}
+.alert.info{background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);}
+.alert.warn{background:rgba(255,140,66,0.07);border:1px solid rgba(255,140,66,0.18);}
+.alert.success{background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.18);}
+.alert.danger{background:rgba(255,71,87,0.07);border:1px solid rgba(255,71,87,0.18);}
+.alert.info .ac{color:#80d4ff;}.alert.warn .ac{color:#ffb380;}.alert.success .ac{color:#80ffbb;}.alert.danger .ac{color:#ff8080;}
+.ac strong{font-weight:700;}.ac code{font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.06);padding:0.1rem 0.3rem;border-radius:3px;}
+.data-table{width:100%;border-collapse:collapse;margin:0.75rem 0;font-size:0.8rem;}
+.data-table th{font-family:var(--mono);font-size:0.67rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--cyan);padding:0.55rem 0.75rem;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:0.55rem 0.75rem;color:var(--text2);border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.78rem;}
+.data-table tr:hover td{background:var(--bg3);color:var(--text);}
+.tag{display:inline-block;font-family:var(--mono);font-size:0.67rem;padding:0.12rem 0.45rem;border-radius:3px;background:rgba(0,212,255,0.1);color:var(--cyan);}
+.tag.g{background:rgba(0,255,136,0.1);color:var(--green);}
+.tag.o{background:rgba(255,140,66,0.1);color:var(--orange);}
+.tag.r{background:rgba(255,71,87,0.1);color:var(--red);}
+.cmd-ref{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin:0.75rem 0;}
+.cmd-item{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:0.75rem;}
+.cmd-item-code{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);margin-bottom:0.3rem;}
+.cmd-item-desc{font-size:0.78rem;color:var(--text2);line-height:1.5;}
+.quiz-filters{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.qf{font-family:var(--mono);font-size:0.72rem;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);transition:all 0.2s;}
+.qf:hover,.qf.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
+.quiz-progress{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+.quiz-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.quiz-bar-fill{height:100%;background:var(--cyan);border-radius:2px;transition:width 0.4s ease;}
+.qscore{font-family:var(--mono);font-size:0.78rem;color:var(--cyan);}
+.question-card{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:1.75rem;margin-bottom:1.25rem;}
+.question-meta{display:flex;gap:0.6rem;align-items:center;margin-bottom:1.1rem;flex-wrap:wrap;}
+.qtag{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.07em;text-transform:uppercase;padding:0.18rem 0.55rem;border-radius:3px;}
+.q1{background:rgba(124,92,191,0.2);color:#b39ddb;}.q2{background:rgba(0,212,255,0.12);color:var(--cyan);}.q3{background:rgba(255,140,66,0.15);color:var(--orange);}.q4{background:rgba(0,255,136,0.1);color:var(--green);}.qtf{background:rgba(255,215,0,0.12);color:var(--yellow);}.qg{background:rgba(255,71,87,0.1);color:var(--red);}
+.qnum{font-family:var(--mono);font-size:0.72rem;color:var(--text2);}
+.qtype-badge{font-family:var(--mono);font-size:0.6rem;padding:0.12rem 0.4rem;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text2);border:1px solid var(--border2);}
+.question-text{font-size:0.95rem;font-weight:600;line-height:1.55;margin-bottom:1.4rem;color:var(--text);}
+.options{display:flex;flex-direction:column;gap:0.6rem;}
+.option{display:flex;align-items:flex-start;gap:0.7rem;padding:0.8rem 0.95rem;border-radius:8px;cursor:pointer;border:1px solid var(--border2);background:var(--bg4);transition:all 0.15s;font-size:0.85rem;font-family:var(--mono);color:var(--text2);}
+.option:hover:not(.disabled){border-color:var(--cyan);color:var(--text);}
+.opt-letter{min-width:20px;height:20px;border-radius:3px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--cyan);font-weight:700;flex-shrink:0;}
+.option.correct{border-color:var(--green);background:rgba(0,255,136,0.06);color:var(--text);}
+.option.correct .opt-letter{background:var(--green);color:var(--bg);}
+.option.wrong{border-color:var(--red);background:rgba(255,71,87,0.06);color:var(--text2);}
+.option.wrong .opt-letter{background:var(--red);color:#fff;}
+.option.disabled{cursor:default;}
+.explanation{margin-top:1.1rem;padding:0.9rem 1.1rem;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.14);border-radius:8px;font-size:0.8rem;color:#80d4ff;line-height:1.65;display:none;}
+.explanation.show{display:block;}
+.explanation strong{color:var(--cyan);}
+.explanation code{font-family:var(--mono);font-size:0.72rem;background:rgba(0,212,255,0.1);padding:0.1rem 0.3rem;border-radius:3px;}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;}
+.btn-next{font-family:var(--mono);font-size:0.78rem;padding:0.6rem 1.4rem;border-radius:6px;cursor:pointer;background:var(--cyan);color:var(--bg);border:none;font-weight:700;transition:all 0.2s;display:none;}
+.btn-next:hover{background:var(--cyan2);}
+.btn-restart{font-family:var(--mono);font-size:0.75rem;padding:0.6rem 1.2rem;border-radius:6px;cursor:pointer;background:transparent;color:var(--text2);border:1px solid var(--border);transition:all 0.2s;}
+.btn-restart:hover{color:var(--cyan);border-color:var(--cyan);}
+.result-card{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:3rem;text-align:center;}
+.result-score{font-family:var(--mono);font-size:3.5rem;font-weight:700;color:var(--cyan);margin-bottom:0.4rem;}
+.result-pct{color:var(--text2);margin-bottom:0.75rem;font-size:0.9rem;}
+.result-grade{font-size:1rem;font-weight:600;margin-bottom:2rem;}
+.result-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:2rem;}
+.rb-item{background:var(--bg4);border-radius:8px;padding:0.75rem;text-align:center;}
+.rb-num{font-family:var(--mono);font-size:1.2rem;font-weight:700;}
+.rb-label{font-size:0.72rem;color:var(--text2);margin-top:0.2rem;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+@media(max-width:640px){.hero-grid{grid-template-columns:1fr 1fr;}.concept-grid{grid-template-columns:1fr;}.cmd-ref{grid-template-columns:1fr;}.nav-link{padding:0.3rem 0.4rem;font-size:0.62rem;}.result-breakdown{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
-
 <nav>
-  <div class="nav-logo">⬡ <span>SAÉ21</span> // network.study</div>
+  <div class="nav-logo">⬡ SAÉ21</div>
   <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('home')">Home</button>
-    <button class="nav-link" onclick="showPage('etape1')">Étape 1</button>
-    <button class="nav-link" onclick="showPage('etape2')">Étape 2</button>
-    <button class="nav-link" onclick="showPage('etape3')">Étape 3</button>
-    <button class="nav-link" onclick="showPage('etape4')">Étape 4</button>
-    <button class="nav-link" onclick="showPage('quiz')">Quiz</button>
+    <button class="nav-link active" onclick="go('home')">Accueil</button>
+    <button class="nav-link" onclick="go('e1')">Étape 1</button>
+    <button class="nav-link" onclick="go('e2')">Étape 2</button>
+    <button class="nav-link" onclick="go('e3')">Étape 3</button>
+    <button class="nav-link" onclick="go('e4')">Étape 4</button>
+    <button class="nav-link" onclick="go('cmds')">Commandes</button>
+    <button class="nav-link" onclick="go('quiz')">Quiz</button>
   </div>
 </nav>
 
-<!-- HOME -->
+<!-- ACCUEIL -->
 <div id="page-home" class="page active">
   <div class="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-eyebrow">SAÉ 21 – 2026</div>
-      <h1>Build a Network.<br>Learn it Cold.</h1>
-      <p class="hero-desc">Interactive study guide covering all 4 étapes of the SAÉ21 project — VLANs, ASA firewall, DMZ, NAT, and EIGRP routing. Built from everything we configured together.</p>
+      <h1>Guide de Révision<br>Réseau Complet</h1>
+      <p class="hero-desc">Fiches de révision interactives et quiz couvrant l'intégralité du projet SAÉ21 — VLANs, ASA, DMZ, NAT, EIGRP. Chaque commande expliquée, chaque difficulté documentée.</p>
       <div class="hero-btns">
-        <button class="btn-primary" onclick="showPage('etape1')">Start Studying →</button>
-        <button class="btn-secondary" onclick="showPage('quiz')">Take the Quiz</button>
+        <button class="btn-primary" onclick="go('e1')">Commencer →</button>
+        <button class="btn-secondary" onclick="go('quiz')">Faire le Quiz</button>
       </div>
-      <div class="hero-cards">
-        <div class="hero-card" onclick="showPage('etape1')">
-          <div class="hero-card-num">01</div>
-          <div class="hero-card-label">VLANs & MLS</div>
-        </div>
-        <div class="hero-card" onclick="showPage('etape2')">
-          <div class="hero-card-num">02</div>
-          <div class="hero-card-label">ASA + DHCP/DNS</div>
-        </div>
-        <div class="hero-card" onclick="showPage('etape3')">
-          <div class="hero-card-num">03</div>
-          <div class="hero-card-label">DMZ + NAT + FAI</div>
-        </div>
-        <div class="hero-card" onclick="showPage('etape4')">
-          <div class="hero-card-num">04</div>
-          <div class="hero-card-label">EIGRP + External</div>
-        </div>
+      <div class="hero-grid">
+        <div class="hero-card" onclick="go('e1')"><div class="hero-card-num">01</div><div class="hero-card-pts">/5 pts</div><div class="hero-card-label">VLANs &amp; MLS</div></div>
+        <div class="hero-card" onclick="go('e2')"><div class="hero-card-num">02</div><div class="hero-card-pts">/5 pts</div><div class="hero-card-label">ASA + DHCP/DNS</div></div>
+        <div class="hero-card" onclick="go('e3')"><div class="hero-card-num">03</div><div class="hero-card-pts">/10 pts</div><div class="hero-card-label">DMZ + NAT + FAI</div></div>
+        <div class="hero-card" onclick="go('e4')"><div class="hero-card-num">04</div><div class="hero-card-pts">/5 pts</div><div class="hero-card-label">EIGRP + Externe</div></div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ÉTAPE 1 -->
-<div id="page-etape1" class="page">
-  <div class="content">
-    <div class="page-header">
-      <div class="page-eyebrow">Étape 01</div>
-      <div class="page-title">Core Network & Inter-VLAN Routing</div>
-      <p class="page-desc">Build the internal network backbone with a Multi-Layer Switch (MLS), access switches, and spanning tree configuration.</p>
+<div id="page-e1" class="page">
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Étape 01</div>
+    <div class="page-title">Cœur de réseau &amp; Routage inter-VLAN</div>
+    <div class="page-pts">Barème : /5 points</div>
+    <p class="page-desc">Construire le réseau interne avec un Multi-Layer Switch (MLS), des switches d'accès, et configurer le Spanning Tree sans boucle.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Concepts Clés</div>
+    <div class="concept-grid">
+      <div class="concept-card"><div class="concept-card-title">VLAN (Virtual LAN)</div><div class="concept-card-body">Sépare logiquement un réseau physique en domaines de broadcast isolés. <strong>VLAN10</strong> = clients groupe 1, <strong>VLAN20</strong> = clients groupe 2, <strong>VLAN30</strong> = serveurs. Les devices de VLANs différents ne communiquent pas sans routage.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Multi-Layer Switch (MLS)</div><div class="concept-card-body">Switch capable de faire du <strong>routage Layer 3</strong> entre VLANs via des SVI. Nécessite <code>ip routing</code> pour activer le routage. Sert de passerelle par défaut pour chaque VLAN.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Port Trunk vs Access</div><div class="concept-card-body"><strong>Trunk</strong> : transporte plusieurs VLANs (802.1q) — entre switches. <strong>Access</strong> : un seul VLAN — pour les équipements finaux. Les trunks ne doivent laisser passer que les VLANs nécessaires (pénalité si non respecté).</div></div>
+      <div class="concept-card"><div class="concept-card-title">STP (Spanning Tree Protocol)</div><div class="concept-card-body">Prévient les boucles Layer 2 en bloquant les chemins redondants. Le <strong>Root Bridge</strong> est élu par priorité (plus basse = gagne). On force le MLS comme racine pour VLAN10 et VLAN20.</div></div>
+      <div class="concept-card"><div class="concept-card-title">SVI (Switch Virtual Interface)</div><div class="concept-card-body">Interface Layer 3 virtuelle créée avec <code>interface vlan X</code> sur le MLS. Sert de <strong>passerelle par défaut</strong> pour tous les hôtes du VLAN. Permet le routage inter-VLAN sans routeur externe.</div></div>
+      <div class="concept-card"><div class="concept-card-title">no switchport</div><div class="concept-card-body">Convertit un port switch (Layer 2) en port routé (Layer 3). Utilisé sur <strong>Fa0/24 du MLS</strong> pour connecter le MLS à l'ASA avec une adresse IP directe — comme un port de routeur.</div></div>
     </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Plan d'Adressage</div>
+    <table class="data-table">
+      <thead><tr><th>VLAN</th><th>Réseau</th><th>Passerelle MLS</th><th>Plage DHCP</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">VLAN10</span></td><td>172.16.10.0/24</td><td>172.16.10.254</td><td>.100 – .200</td></tr>
+        <tr><td><span class="tag">VLAN20</span></td><td>172.16.20.0/24</td><td>172.16.20.254</td><td>.100 – .200</td></tr>
+        <tr><td><span class="tag">VLAN30</span></td><td>10.0.0.0/24</td><td>10.0.0.254</td><td>IPs statiques</td></tr>
+        <tr><td><span class="tag">MLS-ASA</span></td><td>192.168.10.0/30</td><td>192.168.10.1</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Configuration MLS</div>
+    <div class="expandable open">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ MLS — VLANs, SVIs, Routage, STP</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">MLS (3560-24PS)</div></div>
+          <div class="code-body"><span class="cc">! Créer les VLANs</span>
+<span class="cmd">vlan 10</span>
+<span class="cmd">vlan 20</span>
+<span class="cmd">vlan 30</span>
 
-    <div class="section">
-      <div class="section-title">Key Concepts</div>
-      <div class="concept-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">VLAN (Virtual LAN)</div>
-          <div class="concept-card-body">Logically separates a physical network into isolated broadcast domains. <strong>VLAN10</strong> = Engineering, <strong>VLAN20</strong> = HR, <strong>VLAN30</strong> = Servers. Devices in different VLANs cannot communicate without routing.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Multi-Layer Switch (MLS)</div>
-          <div class="concept-card-body">A switch that can also perform <strong>Layer 3 routing</strong> between VLANs using SVI (Switch Virtual Interfaces). Requires <code>ip routing</code> to be enabled. Acts as the default gateway for each VLAN.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Trunk vs Access Port</div>
-          <div class="concept-card-body"><strong>Trunk</strong>: carries multiple VLANs (dot1q tagging) — used between switches. <strong>Access</strong>: carries only one VLAN — used for end devices. Trunks should only allow <em>necessary</em> VLANs.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Spanning Tree Protocol (STP)</div>
-          <div class="concept-card-body">Prevents layer 2 loops by blocking redundant paths. The <strong>root bridge</strong> is elected based on priority (lower = wins). Force MLS as root with <code>spanning-tree vlan X root primary</code>.</div>
-        </div>
-      </div>
-    </div>
+<span class="cc">! Activer le routage Layer 3</span>
+<span class="key">ip routing</span>
 
-    <div class="section">
-      <div class="section-title">Address Plan</div>
-      <table class="data-table">
-        <thead><tr><th>VLAN</th><th>Network</th><th>Gateway (MLS SVI)</th><th>DHCP Range</th></tr></thead>
-        <tbody>
-          <tr><td><span class="tag">VLAN10</span></td><td>172.16.10.0/24</td><td>172.16.10.254</td><td>.100 – .200</td></tr>
-          <tr><td><span class="tag">VLAN20</span></td><td>172.16.20.0/24</td><td>172.16.20.254</td><td>.100 – .200</td></tr>
-          <tr><td><span class="tag">VLAN30</span></td><td>10.0.0.0/24</td><td>10.0.0.254</td><td>Static only</td></tr>
-          <tr><td><span class="tag">MLS→ASA</span></td><td>192.168.10.0/30</td><td>192.168.10.1</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </div>
+<span class="cc">! SVIs — passerelles + relay DHCP</span>
+<span class="cmd">interface Vlan10</span>
+ <span class="key">ip address</span> <span class="val">172.16.10.254 255.255.255.0</span>
+ <span class="key">ip helper-address</span> <span class="val">10.0.0.20</span>
+ <span class="key">no shutdown</span>
+<span class="cmd">interface Vlan20</span>
+ <span class="key">ip address</span> <span class="val">172.16.20.254 255.255.255.0</span>
+ <span class="key">ip helper-address</span> <span class="val">10.0.0.20</span>
+ <span class="key">no shutdown</span>
+<span class="cmd">interface Vlan30</span>
+ <span class="key">ip address</span> <span class="val">10.0.0.254 255.255.255.0</span>
+ <span class="key">no shutdown</span>
 
-    <div class="section">
-      <div class="section-title">Key Commands</div>
-      <div class="expandable open">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ <span style="color:var(--orange)">MLS</span> — VLAN & SVI Configuration</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">MLS (3560-24PS)</div></div>
-            <div class="code-body">
-<span class="code-comment">! Create VLANs</span>
-<span class="code-cmd">vlan 10</span>
-<span class="code-cmd">vlan 20</span>
-<span class="code-cmd">vlan 30</span>
+<span class="cc">! Port Fa0/24 vers ASA — converti en port routé L3</span>
+<span class="cmd">interface FastEthernet0/24</span>
+ <span class="key">no switchport</span>
+ <span class="key">ip address</span> <span class="val">192.168.10.1 255.255.255.252</span>
+ <span class="key">no shutdown</span>
 
-<span class="code-comment">! Create SVI interfaces (Layer 3 gateways)</span>
-<span class="code-cmd">interface Vlan10</span>
- <span class="code-key">ip address</span> <span class="code-val">172.16.10.254 255.255.255.0</span>
-<span class="code-cmd">interface Vlan20</span>
- <span class="code-key">ip address</span> <span class="code-val">172.16.20.254 255.255.255.0</span>
-<span class="code-cmd">interface Vlan30</span>
- <span class="code-key">ip address</span> <span class="code-val">10.0.0.254 255.255.255.0</span>
+<span class="cc">! MLS = Root Bridge pour VLAN10 et VLAN20</span>
+<span class="key">spanning-tree vlan 10 root primary</span>
+<span class="key">spanning-tree vlan 20 root primary</span>
 
-<span class="code-comment">! Enable Layer 3 routing on MLS</span>
-<span class="code-key">ip routing</span>
-
-<span class="code-comment">! Force MLS as STP root bridge</span>
-<span class="code-key">spanning-tree vlan 10 root primary</span>
-<span class="code-key">spanning-tree vlan 20 root primary</span>
-
-<span class="code-comment">! Port toward ASA — convert to routed (L3) port</span>
-<span class="code-cmd">interface FastEthernet0/24</span>
- <span class="code-key">no switchport</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.10.1 255.255.255.252</span>
-
-<span class="code-comment">! Trunk ports toward access switches</span>
-<span class="code-cmd">interface FastEthernet0/1</span>
- <span class="code-key">switchport trunk encapsulation dot1q</span>
- <span class="code-key">switchport mode trunk</span>
- <span class="code-key">switchport trunk allowed vlan 10,20</span>
-
-<span class="code-comment">! DHCP relay — forward requests to DHCP server</span>
-<span class="code-cmd">interface Vlan10</span>
- <span class="code-key">ip helper-address</span> <span class="code-val">10.0.0.20</span>
-<span class="code-cmd">interface Vlan20</span>
- <span class="code-key">ip helper-address</span> <span class="code-val">10.0.0.20</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="expandable">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ <span style="color:var(--purple)">Access Switches</span> — VLAN Assignment</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Access Switch (VLAN10)</div></div>
-            <div class="code-body">
-<span class="code-comment">! Trunk toward MLS</span>
-<span class="code-cmd">interface FastEthernet0/1</span>
- <span class="code-key">switchport mode trunk</span>
- <span class="code-key">switchport trunk allowed vlan 10</span>
-
-<span class="code-comment">! Access ports for end devices</span>
-<span class="code-cmd">interface FastEthernet0/2</span>
- <span class="code-key">switchport mode access</span>
- <span class="code-key">switchport access vlan 10</span>
- <span class="code-key">spanning-tree portfast</span></div>
-          </div>
+<span class="cc">! Route par défaut vers ASA (ajoutée étape 3)</span>
+<span class="key">ip route 0.0.0.0 0.0.0.0 192.168.10.2</span></div>
         </div>
       </div>
     </div>
+    <div class="expandable">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ Switches d'accès — Trunk et Access</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Switch VLAN10</div></div>
+          <div class="code-body"><span class="cc">! Port trunk vers MLS — seulement VLAN10 !</span>
+<span class="cmd">interface FastEthernet0/1</span>
+ <span class="key">switchport trunk encapsulation dot1q</span>
+ <span class="key">switchport mode trunk</span>
+ <span class="key">switchport trunk allowed vlan 10</span>
 
-    <div class="section">
-      <div class="section-title">Important Notes</div>
-      <div class="alert warn">
-        <div class="alert-icon">⚠</div>
-        <div class="alert-content">Trunks must only allow <strong>necessary VLANs</strong> — leaving all VLANs open on a trunk is a security issue and will be penalized in grading.</div>
-      </div>
-      <div class="alert info">
-        <div class="alert-icon">ℹ</div>
-        <div class="alert-content">The <code>no switchport</code> command converts a switch port from Layer 2 to Layer 3 (routed mode), allowing an IP address to be assigned directly — used on Fa0/24 to connect MLS to ASA.</div>
-      </div>
-      <div class="alert success">
-        <div class="alert-icon">✓</div>
-        <div class="alert-content">Verification: <code>show spanning-tree vlan 10</code> should show MLS as <strong>Root Bridge</strong>. <code>show vlan brief</code> confirms VLAN assignments.</div>
+<span class="cc">! Ports access pour les PCs</span>
+<span class="cmd">interface FastEthernet0/2</span>
+ <span class="key">switchport mode access</span>
+ <span class="key">switchport access vlan 10</span>
+ <span class="key">spanning-tree portfast</span></div>
+        </div>
       </div>
     </div>
   </div>
+  <div class="section">
+    <div class="section-title">Points Importants</div>
+    <div class="alert warn"><div class="alert-icon">⚠</div><div class="ac"><strong>Trunks trop permissifs = pénalité :</strong> laisser tous les VLANs sur un trunk inutilement est sanctionné par le professeur. Chaque trunk ne doit laisser passer que les VLANs dont il a besoin.</div></div>
+    <div class="alert info"><div class="alert-icon">ℹ</div><div class="ac"><strong>Vérifications :</strong> <code>show spanning-tree vlan 10</code> → MLS doit être Root Bridge. <code>show vlan brief</code> → vérifier les affectations VLAN. <code>show ip route</code> → vérifier les SVIs.</div></div>
+    <div class="alert success"><div class="alert-icon">✓</div><div class="ac"><strong>Tests requis :</strong> Ping intra-VLAN (PCA→PCB), Ping inter-VLAN (PCA→PCC), vérification Root Bridge STP, mode simulation Packet Tracer.</div></div>
+  </div>
+</div>
 </div>
 
 <!-- ÉTAPE 2 -->
-<div id="page-etape2" class="page">
-  <div class="content">
-    <div class="page-header">
-      <div class="page-eyebrow">Étape 02</div>
-      <div class="page-title">ASA Integration + DNS/DHCP Services</div>
-      <p class="page-desc">Connect the ASA 5505 firewall between the core network and the FAI router. Deploy centralized DNS and DHCP services.</p>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Key Concepts</div>
-      <div class="concept-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">ASA 5505 Architecture</div>
-          <div class="concept-card-body">The ASA 5505 uses <strong>VLANs internally</strong> — physical ports are assigned to VLANs, and each VLAN gets a logical interface (nameif). No IPs on physical ports directly.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Security Levels</div>
-          <div class="concept-card-body"><strong>inside = 100</strong> (most trusted), <strong>dmz = 50</strong>, <strong>outside = 0</strong> (least trusted). Traffic flows freely from high→low. Low→high requires explicit ACLs.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">DHCP Relay (ip helper-address)</div>
-          <div class="concept-card-body">DHCP requests are <strong>broadcast</strong> — they can't cross routers. The <code>ip helper-address</code> on MLS SVIs converts broadcasts to unicast and forwards them to the DHCP server at 10.0.0.20.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">DNS A Records</div>
-          <div class="concept-card-body">Type <strong>A record</strong> maps a hostname to an IPv4 address. We configured: <code>www.entreprise.com → 192.168.1.10</code> and <code>www.test.com → 8.8.0.10</code>.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">ASA Basic Configuration</div>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — Interface Setup</div></div>
-        <div class="code-body">
-<span class="code-comment">! Assign physical ports to VLANs</span>
-<span class="code-cmd">interface Ethernet0/1</span>
- <span class="code-key">switchport access vlan</span> <span class="code-val">1</span>   <span class="code-comment">! → MLS (inside)</span>
-
-<span class="code-comment">! Configure logical VLAN interfaces</span>
-<span class="code-cmd">interface Vlan1</span>
- <span class="code-key">nameif</span> <span class="code-val">inside</span>
- <span class="code-key">security-level</span> <span class="code-val">100</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.10.2 255.255.255.252</span></div>
-      </div>
-      <div class="alert warn">
-        <div class="alert-icon">⚠</div>
-        <div class="alert-content">ASA 5505 license limit: only <strong>2 interfaces can have nameif without restriction</strong>. The 3rd interface (DMZ) requires <code>no forward interface Vlan1</code> BEFORE adding nameif — otherwise you get a license error.</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">DHCP Pools on Server</div>
-      <table class="data-table">
-        <thead><tr><th>Pool</th><th>Range</th><th>Gateway</th><th>DNS</th></tr></thead>
-        <tbody>
-          <tr><td><span class="tag">VLAN10</span></td><td>172.16.10.100 – .200</td><td>172.16.10.254</td><td>10.0.0.10</td></tr>
-          <tr><td><span class="tag">VLAN20</span></td><td>172.16.20.100 – .200</td><td>172.16.20.254</td><td>10.0.0.10</td></tr>
-        </tbody>
-      </table>
-      <div class="alert info">
-        <div class="alert-icon">ℹ</div>
-        <div class="alert-content">Addresses .1 to .99 are reserved for static assignments (servers, routers, etc.). Pools start at .100, giving 101 dynamic addresses per VLAN.</div>
-      </div>
+<div id="page-e2" class="page">
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Étape 02</div>
+    <div class="page-title">Intégration ASA + Services DNS/DHCP</div>
+    <div class="page-pts">Barème : /5 points (1+2+2)</div>
+    <p class="page-desc">Ajouter le pare-feu ASA 5505 entre le cœur réseau et le routeur FAI, mettre en place les services DNS et DHCP centralisés.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Concepts Clés</div>
+    <div class="concept-grid">
+      <div class="concept-card"><div class="concept-card-title">Architecture ASA 5505</div><div class="concept-card-body">Le 5505 utilise un <strong>switch interne</strong> : les ports physiques sont assignés à des VLANs (<code>switchport access vlan X</code>), et c'est l'interface VLAN logique qui reçoit l'IP et le <code>nameif</code>. On ne configure PAS d'IP sur les ports physiques.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Niveaux de Sécurité ASA</div><div class="concept-card-body"><strong>inside = 100</strong> (réseau de confiance), <strong>dmz = 50</strong> (semi-confiance), <strong>outside = 0</strong> (non fiable). Le trafic circule librement de haut→bas. Bas→haut nécessite une ACL explicite.</div></div>
+      <div class="concept-card"><div class="concept-card-title">ip helper-address (Relay DHCP)</div><div class="concept-card-body">DHCP utilise le broadcast — ne traverse pas les routeurs. <code>ip helper-address 10.0.0.20</code> sur les SVIs du MLS convertit le broadcast en unicast vers le serveur DHCP. Un seul serveur pour tous les VLANs.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Enregistrements DNS de type A</div><div class="concept-card-body">Un <strong>enregistrement A</strong> mappe un nom d'hôte vers une IPv4. Configurés : <code>www.entreprise.com → 192.168.1.10</code> (futur serveur DMZ) et <code>www.test.com → 8.8.0.10</code> (serveur externe).</div></div>
     </div>
   </div>
+  <div class="section">
+    <div class="section-title">Configuration ASA — Interface Inside</div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — Étape 2</div></div>
+      <div class="code-body"><span class="cc">! Assigner le port physique vers MLS au VLAN1 (inside)</span>
+<span class="cmd">interface Ethernet0/1</span>
+ <span class="key">switchport access vlan 1</span>
+
+<span class="cc">! Configurer l'interface logique inside</span>
+<span class="cmd">interface Vlan1</span>
+ <span class="key">nameif</span> <span class="val">inside</span>
+ <span class="key">security-level</span> <span class="val">100</span>
+ <span class="key">ip address</span> <span class="val">192.168.10.2 255.255.255.252</span>
+ <span class="key">no shutdown</span></div>
+    </div>
+    <div class="alert warn"><div class="alert-icon">⚠</div><div class="ac"><strong>Limitation licence ASA 5505 :</strong> seulement 2 interfaces peuvent avoir <code>nameif</code> sans restriction. La 3ème (DMZ) nécessite <code>no forward interface Vlan1</code> AVANT <code>nameif</code> — sinon erreur de licence.</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Serveurs DNS et DHCP</div>
+    <table class="data-table">
+      <thead><tr><th>Serveur</th><th>IP Fixe</th><th>Passerelle</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">DNS</span></td><td>10.0.0.10</td><td>10.0.0.254</td><td>Résolution www.entreprise.com et www.test.com</td></tr>
+        <tr><td><span class="tag">DHCP</span></td><td>10.0.0.20</td><td>10.0.0.254</td><td>Distribution IPs VLAN10 et VLAN20</td></tr>
+      </tbody>
+    </table>
+    <table class="data-table">
+      <thead><tr><th>Pool</th><th>Plage</th><th>Passerelle</th><th>DNS</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">VLAN10</span></td><td>172.16.10.100 – .200</td><td>172.16.10.254</td><td>10.0.0.10</td></tr>
+        <tr><td><span class="tag">VLAN20</span></td><td>172.16.20.100 – .200</td><td>172.16.20.254</td><td>10.0.0.10</td></tr>
+      </tbody>
+    </table>
+    <div class="alert info"><div class="alert-icon">ℹ</div><div class="ac">Les adresses .1 à .99 sont réservées aux équipements statiques. Les pools DHCP commencent à .100 pour éviter les conflits — 101 adresses dynamiques disponibles par VLAN.</div></div>
+  </div>
+</div>
 </div>
 
 <!-- ÉTAPE 3 -->
-<div id="page-etape3" class="page">
-  <div class="content">
-    <div class="page-header">
-      <div class="page-eyebrow">Étape 03</div>
-      <div class="page-title">DMZ + NAT + FAI Router</div>
-      <p class="page-desc">Add the DMZ web server, configure static and dynamic NAT, set firewall ACLs, and connect the FAI router.</p>
+<div id="page-e3" class="page">
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Étape 03</div>
+    <div class="page-title">DMZ + NAT + Routeur FAI</div>
+    <div class="page-pts">Barème : /10 points (4 NAT + 4 pare-feu + 2 DMZ/licence)</div>
+    <p class="page-desc">Connecter l'ASA au routeur FAI, créer la DMZ avec le serveur web, configurer le NAT statique/dynamique et les règles pare-feu.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Concepts Clés</div>
+    <div class="concept-grid">
+      <div class="concept-card"><div class="concept-card-title">DMZ (Zone Démilitarisée)</div><div class="concept-card-body">Zone réseau entre inside et outside. Les serveurs DMZ sont <strong>accessibles depuis Internet</strong> mais <strong>isolés du réseau interne</strong>. <code>no forward interface Vlan1</code> empêche la DMZ d'initier des connexions vers l'inside.</div></div>
+      <div class="concept-card"><div class="concept-card-title">NAT Statique</div><div class="concept-card-body">Mappage permanent 1-pour-1 : <strong>1.1.1.253 ↔ 192.168.1.10</strong>. Bidirectionnel automatiquement. Les clients externes utilisent l'IP publique, l'ASA traduit vers l'IP privée du serveur DMZ.</div></div>
+      <div class="concept-card"><div class="concept-card-title">NAT Dynamique (PAT/Overload)</div><div class="concept-card-body">Plusieurs-vers-un : tous les clients internes partagent une seule IP publique, distingués par les <strong>numéros de port</strong>. Configuré avec <code>nat (inside,outside) dynamic interface</code>.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Inspection Stateful</div><div class="concept-card-body">L'ASA maintient une table de connexions. Trafic initié depuis <strong>l'inside autorisé en retour</strong> automatiquement. Trafic initié depuis l'outside vers l'inside <strong>bloqué par défaut</strong>.</div></div>
+      <div class="concept-card"><div class="concept-card-title">ACL sur ASA 8.3+</div><div class="concept-card-body">Depuis ASA 8.3, l'ASA <strong>dé-NAT le paquet AVANT de vérifier l'ACL</strong>. Les ACLs doivent référencer l'<strong>adresse IP réelle</strong> (192.168.1.10), pas l'adresse NATée (1.1.1.253).</div></div>
+      <div class="concept-card"><div class="concept-card-title">Double NAT — Problème</div><div class="concept-card-body">Si NAT statique est sur ASA ET Router_FAI : Router_FAI traduit 1.1.1.253→192.168.1.10, l'ASA reçoit une IP privée qu'il ne reconnaît pas → paquet abandonné. Solution : NAT statique uniquement sur l'ASA.</div></div>
     </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Configuration Complète ASA</div>
+    <div class="expandable open">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ Interfaces — Inside, Outside, DMZ</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — Interfaces physiques et logiques</div></div>
+          <div class="code-body"><span class="cc">! Ports physiques → VLANs</span>
+<span class="cmd">interface Ethernet0/0</span>
+ <span class="key">switchport access vlan 3</span>   <span class="cc">! ServeurWeb (DMZ)</span>
+<span class="cmd">interface Ethernet0/1</span>
+ <span class="key">switchport access vlan 1</span>   <span class="cc">! MLS (inside)</span>
+<span class="cmd">interface Ethernet0/2</span>
+ <span class="key">switchport access vlan 2</span>   <span class="cc">! Router_FAI (outside)</span>
 
-    <div class="section">
-      <div class="section-title">Key Concepts</div>
-      <div class="concept-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">DMZ (Demilitarized Zone)</div>
-          <div class="concept-card-body">A network segment between inside and outside. Servers here are <strong>accessible from Internet</strong> but <strong>isolated from internal network</strong>. Uses <code>no forward interface Vlan1</code> to prevent DMZ→inside traffic.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Static NAT</div>
-          <div class="concept-card-body">One-to-one permanent mapping: <strong>1.1.1.253 ↔ 192.168.1.10</strong>. External clients use the public IP, ASA translates to the private DMZ IP. Bidirectional — works both ways automatically.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Dynamic NAT (PAT/Overload)</div>
-          <div class="concept-card-body">Many-to-one: all internal clients share one public IP. Uses <strong>port numbers</strong> to distinguish sessions. Configured with <code>nat (inside,outside) dynamic interface</code>.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Stateful Inspection</div>
-          <div class="concept-card-body">ASA tracks connection state. Traffic initiated from <strong>inside is allowed back</strong> automatically. Outside-initiated traffic to inside is <strong>blocked by default</strong> — key firewall behavior.</div>
-        </div>
-      </div>
-    </div>
+<span class="cmd">interface Vlan1</span>
+ <span class="key">nameif</span> <span class="val">inside</span>
+ <span class="key">security-level</span> <span class="val">100</span>
+ <span class="key">ip address</span> <span class="val">192.168.10.2 255.255.255.252</span>
 
-    <div class="section">
-      <div class="section-title">Complete ASA Configuration</div>
-      <div class="expandable open">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ Interfaces + DMZ</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1</div></div>
-            <div class="code-body">
-<span class="code-comment">! Physical port assignments</span>
-<span class="code-cmd">interface Ethernet0/0</span>
- <span class="code-key">switchport access vlan</span> <span class="code-val">3</span>   <span class="code-comment">! ServeurWeb (DMZ)</span>
-<span class="code-cmd">interface Ethernet0/1</span>
- <span class="code-key">switchport access vlan</span> <span class="code-val">1</span>   <span class="code-comment">! MLS (inside)</span>
-<span class="code-cmd">interface Ethernet0/2</span>
- <span class="code-key">switchport access vlan</span> <span class="code-val">2</span>   <span class="code-comment">! Router_FAI (outside)</span>
+<span class="cmd">interface Vlan2</span>
+ <span class="key">nameif</span> <span class="val">outside</span>
+ <span class="key">security-level</span> <span class="val">0</span>
+ <span class="key">ip address</span> <span class="val">192.168.11.253 255.255.255.252</span>
 
-<span class="code-comment">! Logical interfaces</span>
-<span class="code-cmd">interface Vlan1</span>
- <span class="code-key">nameif</span> <span class="code-val">inside</span>
- <span class="code-key">security-level</span> <span class="code-val">100</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.10.2 255.255.255.252</span>
-
-<span class="code-cmd">interface Vlan2</span>
- <span class="code-key">nameif</span> <span class="code-val">outside</span>
- <span class="code-key">security-level</span> <span class="code-val">0</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.11.253 255.255.255.252</span>
-
-<span class="code-comment">! DMZ — no forward MUST come before nameif!</span>
-<span class="code-cmd">interface Vlan3</span>
- <span class="code-key">no forward interface Vlan1</span>
- <span class="code-key">nameif</span> <span class="code-val">dmz</span>
- <span class="code-key">security-level</span> <span class="code-val">50</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.1.1 255.255.255.0</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="expandable">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ NAT Rules</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — NAT</div></div>
-            <div class="code-body">
-<span class="code-comment">! Static NAT — DMZ web server public access</span>
-<span class="code-cmd">object network DMZ-WEBSERVER</span>
- <span class="code-key">host</span> <span class="code-val">192.168.1.10</span>
- <span class="code-key">nat (dmz,outside) static</span> <span class="code-val">1.1.1.253</span>
-
-<span class="code-comment">! PAT — internal clients access Internet</span>
-<span class="code-cmd">object network VLAN10</span>
- <span class="code-key">subnet</span> <span class="code-val">172.16.10.0 255.255.255.0</span>
- <span class="code-key">nat (inside,outside) dynamic interface</span>
-
-<span class="code-cmd">object network VLAN20</span>
- <span class="code-key">subnet</span> <span class="code-val">172.16.20.0 255.255.255.0</span>
- <span class="code-key">nat (inside,outside) dynamic interface</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="expandable">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ ACLs + Inspection Policy</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — ACLs</div></div>
-            <div class="code-body">
-<span class="code-comment">! Allow HTTP/HTTPS from outside to DMZ server</span>
-<span class="code-cmd">access-list OUTSIDE-IN extended permit tcp any host</span> <span class="code-val">192.168.1.10</span> <span class="code-key">eq www</span>
-<span class="code-cmd">access-list OUTSIDE-IN extended permit tcp any host</span> <span class="code-val">192.168.1.10</span> <span class="code-key">eq 443</span>
-<span class="code-key">access-group OUTSIDE-IN in interface outside</span>
-
-<span class="code-comment">! Allow DMZ outbound responses</span>
-<span class="code-cmd">access-list DMZ-OUT extended permit ip any any</span>
-<span class="code-key">access-group DMZ-OUT in interface dmz</span>
-
-<span class="code-comment">! Stateful inspection for ICMP and HTTP</span>
-<span class="code-cmd">class-map inspection_default</span>
- <span class="code-key">match default-inspection-traffic</span>
-<span class="code-cmd">policy-map global_policy</span>
- <span class="code-key">class inspection_default</span>
-  <span class="code-key">inspect icmp</span>
-  <span class="code-key">inspect http</span>
-<span class="code-key">service-policy global_policy global</span>
-
-<span class="code-comment">! Static routes on ASA</span>
-<span class="code-key">route outside</span> <span class="code-val">0.0.0.0 0.0.0.0 192.168.11.254</span>
-<span class="code-key">route inside</span> <span class="code-val">172.16.10.0 255.255.255.0 192.168.10.1</span>
-<span class="code-key">route inside</span> <span class="code-val">172.16.20.0 255.255.255.0 192.168.10.1</span>
-<span class="code-key">route inside</span> <span class="code-val">10.0.0.0 255.255.255.0 192.168.10.1</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="expandable">
-        <div class="expandable-header" onclick="toggleExpand(this)">
-          <div class="expandable-title">▶ Router_FAI Configuration</div>
-          <div class="expandable-icon">▶</div>
-        </div>
-        <div class="expandable-body">
-          <div class="code-block">
-            <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_FAI</div></div>
-            <div class="code-body">
-<span class="code-cmd">interface FastEthernet0/0</span>
- <span class="code-key">ip address</span> <span class="code-val">1.1.2.129 255.255.255.252</span>   <span class="code-comment">! → Router_Externe</span>
- <span class="code-key">ip nat outside</span>
-
-<span class="code-cmd">interface FastEthernet0/1</span>
- <span class="code-key">ip address</span> <span class="code-val">192.168.11.254 255.255.255.252</span>   <span class="code-comment">! → ASA</span>
- <span class="code-key">ip nat inside</span>
-
-<span class="code-comment">! Static NAT for DMZ server</span>
-<span class="code-key">ip nat inside source static</span> <span class="code-val">192.168.1.10 1.1.1.253</span>
-
-<span class="code-comment">! PAT for internal clients</span>
-<span class="code-key">access-list 1 permit</span> <span class="code-val">172.16.0.0 0.0.255.255</span>
-<span class="code-key">ip nat inside source list 1 interface FastEthernet0/0 overload</span>
-
-<span class="code-comment">! Host route — critical to avoid subnet conflict!</span>
-<span class="code-key">ip route</span> <span class="code-val">1.1.1.253 255.255.255.255 192.168.11.253</span>
-<span class="code-key">ip route</span> <span class="code-val">172.16.0.0 255.255.0.0 192.168.11.253</span>
-<span class="code-key">ip route</span> <span class="code-val">192.168.1.0 255.255.255.0 192.168.11.253</span></div>
-          </div>
+<span class="cc">! DMZ — no forward OBLIGATOIRE avant nameif !</span>
+<span class="cmd">interface Vlan3</span>
+ <span class="key">no forward interface Vlan1</span>
+ <span class="key">nameif</span> <span class="val">dmz</span>
+ <span class="key">security-level</span> <span class="val">50</span>
+ <span class="key">ip address</span> <span class="val">192.168.1.1 255.255.255.0</span></div>
         </div>
       </div>
     </div>
+    <div class="expandable">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ NAT — Statique et Dynamique</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — NAT</div></div>
+          <div class="code-body"><span class="cc">! NAT Statique — ServeurWeb accessible publiquement</span>
+<span class="cmd">object network DMZ-WEBSERVER</span>
+ <span class="key">host</span> <span class="val">192.168.1.10</span>
+ <span class="key">nat (dmz,outside) static</span> <span class="val">1.1.1.253</span>
 
-    <div class="section">
-      <div class="section-title">Common Problems & Fixes</div>
-      <div class="alert danger">
-        <div class="alert-icon">✕</div>
-        <div class="alert-content"><strong>Double NAT problem:</strong> If static NAT is configured on BOTH ASA and Router_FAI, packets get translated twice — the destination IP changes to 192.168.1.10 at Router_FAI, then ASA doesn't recognize it. Fix: static NAT only on ASA.</div>
+<span class="cc">! PAT Overload — clients VLAN10 et VLAN20 accèdent à Internet</span>
+<span class="cmd">object network VLAN10</span>
+ <span class="key">subnet</span> <span class="val">172.16.10.0 255.255.255.0</span>
+ <span class="key">nat (inside,outside) dynamic interface</span>
+<span class="cmd">object network VLAN20</span>
+ <span class="key">subnet</span> <span class="val">172.16.20.0 255.255.255.0</span>
+ <span class="key">nat (inside,outside) dynamic interface</span></div>
+        </div>
       </div>
-      <div class="alert danger">
-        <div class="alert-icon">✕</div>
-        <div class="alert-content"><strong>Subnet conflict:</strong> 1.1.1.253 is in the same /24 as Router_FAI's Fa0/0 (1.1.1.0/24), so Router_FAI thinks it's directly connected and doesn't forward. Fix: <code>ip route 1.1.1.253 255.255.255.255 192.168.11.253</code></div>
+    </div>
+    <div class="expandable">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ ACLs + Politique d'Inspection</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">ASA1 — ACLs et inspection</div></div>
+          <div class="code-body"><span class="cc">! Autoriser HTTP/HTTPS depuis outside → ServeurWeb (IP réelle !)</span>
+<span class="cmd">access-list OUTSIDE-IN extended permit tcp any host</span> <span class="val">192.168.1.10</span> <span class="key">eq www</span>
+<span class="cmd">access-list OUTSIDE-IN extended permit tcp any host</span> <span class="val">192.168.1.10</span> <span class="key">eq 443</span>
+<span class="key">access-group OUTSIDE-IN in interface outside</span>
+
+<span class="cc">! Autoriser le trafic sortant de la DMZ (réponses)</span>
+<span class="cmd">access-list DMZ-OUT extended permit ip any any</span>
+<span class="key">access-group DMZ-OUT in interface dmz</span>
+
+<span class="cc">! Inspection stateful ICMP et HTTP</span>
+<span class="cmd">class-map inspection_default</span>
+ <span class="key">match default-inspection-traffic</span>
+<span class="cmd">policy-map global_policy</span>
+ <span class="key">class inspection_default</span>
+  <span class="key">inspect icmp</span>
+  <span class="key">inspect http</span>
+<span class="key">service-policy global_policy global</span>
+
+<span class="cc">! Routes statiques sur l'ASA</span>
+<span class="key">route outside 0.0.0.0 0.0.0.0 192.168.11.254</span>
+<span class="key">route inside 172.16.10.0 255.255.255.0 192.168.10.1</span>
+<span class="key">route inside 172.16.20.0 255.255.255.0 192.168.10.1</span>
+<span class="key">route inside 10.0.0.0 255.255.255.0 192.168.10.1</span>
+<span class="key">route outside 1.1.1.0 255.255.255.0 192.168.11.254</span></div>
+        </div>
       </div>
-      <div class="alert warn">
-        <div class="alert-icon">⚠</div>
-        <div class="alert-content"><strong>Missing return routes:</strong> ASA needs <code>route inside</code> commands to reach 172.16.x.x and 10.0.0.x. Otherwise it can't reply to internal clients.</div>
+    </div>
+    <div class="expandable">
+      <div class="exp-header" onclick="xpd(this)"><div class="exp-title">▶ Router_FAI — Configuration complète</div><div class="exp-arrow">▶</div></div>
+      <div class="exp-body">
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_FAI</div></div>
+          <div class="code-body"><span class="cmd">interface FastEthernet0/0</span>
+ <span class="key">ip address</span> <span class="val">1.1.2.129 255.255.255.252</span>   <span class="cc">! → Router_Externe</span>
+ <span class="key">ip nat outside</span>
+<span class="cmd">interface FastEthernet0/1</span>
+ <span class="key">ip address</span> <span class="val">192.168.11.254 255.255.255.252</span>   <span class="cc">! → ASA</span>
+ <span class="key">ip nat inside</span>
+
+<span class="cc">! NAT Statique (résolu côté ASA aussi — double NAT évité)</span>
+<span class="key">ip nat inside source static</span> <span class="val">192.168.1.10 1.1.1.253</span>
+
+<span class="cc">! PAT — clients internes vers Internet</span>
+<span class="key">access-list 1 permit</span> <span class="val">172.16.0.0 0.0.255.255</span>
+<span class="key">ip nat inside source list 1 interface FastEthernet0/0 overload</span>
+
+<span class="cc">! Route hôte — résout le conflit de sous-réseau 1.1.1.x !</span>
+<span class="key">ip route</span> <span class="val">1.1.1.253 255.255.255.255 192.168.11.253</span>
+<span class="cc">! Routes retour NAT</span>
+<span class="key">ip route</span> <span class="val">172.16.0.0 255.255.0.0 192.168.11.253</span>
+<span class="key">ip route</span> <span class="val">192.168.1.0 255.255.255.0 192.168.11.253</span>
+<span class="key">ip route</span> <span class="val">0.0.0.0 0.0.0.0 1.1.2.130</span></div>
+        </div>
       </div>
     </div>
   </div>
+  <div class="section">
+    <div class="section-title">Problèmes Rencontrés et Solutions</div>
+    <div class="alert danger"><div class="alert-icon">✕</div><div class="ac"><strong>Double NAT :</strong> NAT statique sur ASA ET Router_FAI → double translation → paquet abandonné. <strong>Solution :</strong> NAT statique uniquement sur l'ASA.</div></div>
+    <div class="alert danger"><div class="alert-icon">✕</div><div class="ac"><strong>Conflit de sous-réseau :</strong> 1.1.1.253 dans le même /24 que Fa0/0 du Router_FAI (1.1.1.0/24) → Router_FAI boucle. <strong>Solution :</strong> <code>ip route 1.1.1.253 255.255.255.255 192.168.11.253</code></div></div>
+    <div class="alert danger"><div class="alert-icon">✕</div><div class="ac"><strong>Erreur licence DMZ :</strong> <code>nameif dmz</code> avant <code>no forward</code> → erreur de licence. <strong>Solution :</strong> ordre obligatoire : <code>no forward interface Vlan1</code> puis <code>nameif dmz</code>.</div></div>
+    <div class="alert warn"><div class="alert-icon">⚠</div><div class="ac"><strong>Routes manquantes sur l'ASA :</strong> sans <code>route inside 172.16.x.x</code>, l'ASA ne sait pas retourner les réponses aux clients internes.</div></div>
+    <div class="alert warn"><div class="alert-icon">⚠</div><div class="ac"><strong>Vlan2 up/down :</strong> câble sur le mauvais port ou Router_FAI pas encore configuré → lien ne monte pas. Vérifier <code>show interface ip brief</code> sur l'ASA.</div></div>
+    <div class="alert info"><div class="alert-icon">ℹ</div><div class="ac"><strong>inspect icmp obligatoire :</strong> sans <code>inspect icmp</code> dans la policy-map, les réponses aux pings sont bloquées car l'ASA ne suit pas l'état des sessions ICMP.</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Tests de Validation</div>
+    <table class="data-table">
+      <thead><tr><th>Test</th><th>De</th><th>Vers</th><th>Résultat</th><th>Prouve</th></tr></thead>
+      <tbody>
+        <tr><td>HTTP</td><td>PC_Externe</td><td>http://1.1.1.253</td><td><span class="tag g">✅ Page web</span></td><td>NAT statique + ACL</td></tr>
+        <tr><td>Ping</td><td>PCA</td><td>8.8.0.1</td><td><span class="tag g">✅ OK</span></td><td>NAT dynamique PAT</td></tr>
+        <tr><td>Ping ICMP</td><td>PC_Externe</td><td>1.1.1.253</td><td><span class="tag r">❌ Bloqué</span></td><td>Ports 80/443 seulement</td></tr>
+        <tr><td>Ping</td><td>PC_Externe</td><td>172.16.10.x</td><td><span class="tag r">❌ Bloqué</span></td><td>Adresse privée non routable</td></tr>
+        <tr><td>Ping</td><td>ServeurWeb</td><td>172.16.10.x</td><td><span class="tag r">❌ Bloqué</span></td><td>no forward interface Vlan1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 </div>
 
 <!-- ÉTAPE 4 -->
-<div id="page-etape4" class="page">
-  <div class="content">
-    <div class="page-header">
-      <div class="page-eyebrow">Étape 04</div>
-      <div class="page-title">Public Network + EIGRP Routing</div>
-      <p class="page-desc">Build the 8.8.0.0/16 external network and configure EIGRP dynamic routing between Router_FAI and Router_Externe.</p>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Key Concepts</div>
-      <div class="concept-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">EIGRP</div>
-          <div class="concept-card-body">Enhanced Interior Gateway Routing Protocol — Cisco proprietary. Advertises <strong>directly connected networks</strong> to neighbors. Process number must match (both using 100). Uses <code>no auto-summary</code> for subnet accuracy.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">Loopback Interface</div>
-          <div class="concept-card-body">A virtual interface that is <strong>always up</strong>. Used to make 1.1.1.0/24 "exist" as a connected network on Router_FAI so EIGRP can advertise it to Router_Externe — even though it's not physically wired.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">no auto-summary</div>
-          <div class="concept-card-body">Prevents EIGRP from summarizing routes to classful boundaries (e.g., 1.1.2.128/30 → 1.0.0.0/8). Always use this in modern networks to advertise <strong>exact subnets</strong>.</div>
-        </div>
-        <div class="concept-card">
-          <div class="concept-card-title">External DNS</div>
-          <div class="concept-card-body">DNS server at 8.8.0.2 in the external network. Resolves <code>www.entreprise.com → 1.1.1.253</code> so PC_Externe can access the DMZ web server by domain name.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Network Topology</div>
-      <table class="data-table">
-        <thead><tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Network</th></tr></thead>
-        <tbody>
-          <tr><td>Router_FAI</td><td>Fa0/0</td><td>1.1.2.129/30</td><td>FAI↔Externe link</td></tr>
-          <tr><td>Router_FAI</td><td>Loopback1</td><td>1.1.1.1/24</td><td>Company public block</td></tr>
-          <tr><td>Router_Externe</td><td>Fa0/0</td><td>1.1.2.130/30</td><td>FAI↔Externe link</td></tr>
-          <tr><td>Router_Externe</td><td>Fa0/1</td><td>8.8.255.254/16</td><td>External network</td></tr>
-          <tr><td>PC_Externe</td><td>Fa0</td><td>8.8.0.1/16</td><td>External network</td></tr>
-          <tr><td>DNS_Externe</td><td>Fa0</td><td>8.8.0.2/16</td><td>External network</td></tr>
-          <tr><td>ServeurWeb_Ext</td><td>Fa0</td><td>8.8.0.10/16</td><td>External network</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="section">
-      <div class="section-title">EIGRP Configuration</div>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_FAI — EIGRP</div></div>
-        <div class="code-body">
-<span class="code-comment">! Loopback to make 1.1.1.0/24 advertise-able</span>
-<span class="code-cmd">interface Loopback1</span>
- <span class="code-key">ip address</span> <span class="code-val">1.1.1.1 255.255.255.0</span>
-
-<span class="code-comment">! EIGRP process 100 — must match Router_Externe!</span>
-<span class="code-cmd">router eigrp 100</span>
- <span class="code-key">network</span> <span class="code-val">1.1.2.128 0.0.0.3</span>   <span class="code-comment">! link to Router_Externe</span>
- <span class="code-key">network</span> <span class="code-val">1.1.1.0 0.0.0.255</span>    <span class="code-comment">! company public block (via loopback)</span>
- <span class="code-key">no auto-summary</span></div>
-      </div>
-      <div class="code-block">
-        <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_Externe — EIGRP</div></div>
-        <div class="code-body">
-<span class="code-cmd">router eigrp 100</span>
- <span class="code-key">network</span> <span class="code-val">1.1.2.128 0.0.0.3</span>   <span class="code-comment">! link to Router_FAI</span>
- <span class="code-key">network</span> <span class="code-val">8.8.0.0 0.0.255.255</span>  <span class="code-comment">! external network</span>
- <span class="code-key">no auto-summary</span></div>
-      </div>
-      <div class="alert success">
-        <div class="alert-icon">✓</div>
-        <div class="alert-content">Verify with <code>show ip eigrp neighbors</code> — each router should see the other as a neighbor. Then <code>show ip route</code> — look for <strong>D</strong> (EIGRP) routes: Router_FAI should see 8.8.0.0/16, Router_Externe should see 1.1.1.0/24.</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Final Tests</div>
-      <table class="data-table">
-        <thead><tr><th>Test</th><th>From</th><th>To</th><th>Expected</th></tr></thead>
-        <tbody>
-          <tr><td>Internal → External</td><td>PCA</td><td>8.8.0.1</td><td>✅ Ping works (NAT)</td></tr>
-          <tr><td>External → DMZ</td><td>PC_Externe</td><td>www.entreprise.com</td><td>✅ Web page loads</td></tr>
-          <tr><td>Internal → DMZ</td><td>PCA</td><td>www.entreprise.com</td><td>✅ Web page loads</td></tr>
-          <tr><td>Internal → External web</td><td>PCA</td><td>www.test.com</td><td>✅ Web page loads</td></tr>
-          <tr><td>External → Internal</td><td>PC_Externe</td><td>172.16.10.x</td><td>❌ Blocked (private addr)</td></tr>
-          <tr><td>DMZ → Internal</td><td>ServeurWeb</td><td>172.16.10.x</td><td>❌ Blocked (no forward)</td></tr>
-        </tbody>
-      </table>
+<div id="page-e4" class="page">
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Étape 04</div>
+    <div class="page-title">Réseau Public 8.8.0.0/16 + EIGRP</div>
+    <div class="page-pts">Barème : /5 points</div>
+    <p class="page-desc">Construire le réseau externe 8.8.0.0/16, configurer EIGRP entre Router_FAI et Router_Externe, valider les tests finaux.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Concepts Clés</div>
+    <div class="concept-grid">
+      <div class="concept-card"><div class="concept-card-title">EIGRP</div><div class="concept-card-body">Enhanced Interior Gateway Routing Protocol — propriétaire Cisco. N'annonce que les <strong>réseaux directement connectés</strong>. Le numéro de processus doit correspondre entre voisins (ici : 100). Plus simple qu'OSPF pour les petits réseaux Cisco.</div></div>
+      <div class="concept-card"><div class="concept-card-title">Interface Loopback</div><div class="concept-card-body">Interface virtuelle <strong>toujours active</strong>. Utilisée pour rendre 1.1.1.0/24 "connecté" sur Router_FAI afin qu'EIGRP puisse l'annoncer à Router_Externe. Sans loopback, EIGRP ne peut pas annoncer ce réseau.</div></div>
+      <div class="concept-card"><div class="concept-card-title">no auto-summary</div><div class="concept-card-body">Empêche EIGRP de résumer les routes vers les frontières classful (ex: 1.1.2.128/30 → 1.0.0.0/8). Toujours utiliser pour annoncer les <strong>sous-réseaux exacts</strong>.</div></div>
+      <div class="concept-card"><div class="concept-card-title">DNS Externe</div><div class="concept-card-body">Serveur à 8.8.0.2. Résout <code>www.entreprise.com → 1.1.1.253</code> pour que PC_Externe accède au serveur web de l'entreprise par nom de domaine.</div></div>
     </div>
   </div>
+  <div class="section">
+    <div class="section-title">Plan d'Adressage Étape 4</div>
+    <table class="data-table">
+      <thead><tr><th>Équipement</th><th>Interface</th><th>IP</th><th>Réseau</th></tr></thead>
+      <tbody>
+        <tr><td>Router_FAI</td><td>Fa0/0</td><td>1.1.2.129/30</td><td>Liaison FAI↔Externe</td></tr>
+        <tr><td>Router_FAI</td><td>Loopback1</td><td>1.1.1.1/24</td><td>Bloc public entreprise</td></tr>
+        <tr><td>Router_Externe</td><td>Fa0/0</td><td>1.1.2.130/30</td><td>Liaison FAI↔Externe</td></tr>
+        <tr><td>Router_Externe</td><td>Fa0/1</td><td>8.8.255.254/16</td><td>Réseau externe</td></tr>
+        <tr><td>PC_Externe</td><td>Fa0</td><td>8.8.0.1/16</td><td>Réseau externe</td></tr>
+        <tr><td>DNS_Externe</td><td>Fa0</td><td>8.8.0.2/16</td><td>Réseau externe</td></tr>
+        <tr><td>ServeurWeb_Ext</td><td>Fa0</td><td>8.8.0.10/16</td><td>Réseau externe</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Configuration EIGRP</div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_FAI — EIGRP + Loopback</div></div>
+      <div class="code-body"><span class="cc">! Loopback pour rendre 1.1.1.0/24 "connecté"</span>
+<span class="cmd">interface Loopback1</span>
+ <span class="key">ip address</span> <span class="val">1.1.1.1 255.255.255.0</span>
+
+<span class="cc">! EIGRP processus 100 — doit correspondre avec Router_Externe !</span>
+<span class="cmd">router eigrp 100</span>
+ <span class="key">network</span> <span class="val">1.1.2.128 0.0.0.3</span>    <span class="cc">! lien vers Router_Externe</span>
+ <span class="key">network</span> <span class="val">1.1.1.0 0.0.0.255</span>   <span class="cc">! bloc public entreprise (via loopback)</span>
+ <span class="key">no auto-summary</span></div>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div><div class="code-header-title">Router_Externe — EIGRP</div></div>
+      <div class="code-body"><span class="cmd">router eigrp 100</span>
+ <span class="key">network</span> <span class="val">1.1.2.128 0.0.0.3</span>     <span class="cc">! lien vers Router_FAI</span>
+ <span class="key">network</span> <span class="val">8.8.0.0 0.0.255.255</span>   <span class="cc">! réseau externe</span>
+ <span class="key">no auto-summary</span></div>
+    </div>
+    <div class="alert success"><div class="alert-icon">✓</div><div class="ac"><strong>Vérification :</strong> <code>show ip eigrp neighbors</code> → chaque routeur doit voir l'autre. <code>show ip route</code> → chercher les routes <strong>D</strong> : Router_FAI doit voir 8.8.0.0/16, Router_Externe doit voir 1.1.1.0/24.</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Tests Finaux (Ultimate Tests)</div>
+    <table class="data-table">
+      <thead><tr><th>Test</th><th>De</th><th>Vers</th><th>Résultat attendu</th></tr></thead>
+      <tbody>
+        <tr><td>Client interne → serveur DMZ</td><td>PCA</td><td>www.entreprise.com</td><td><span class="tag g">✅ Page web</span></td></tr>
+        <tr><td>Client interne → serveur externe</td><td>PCA</td><td>www.test.com</td><td><span class="tag g">✅ Page web</span></td></tr>
+        <tr><td>Client externe → serveur DMZ</td><td>PC_Externe</td><td>www.entreprise.com</td><td><span class="tag g">✅ Page web</span></td></tr>
+        <tr><td>Client externe → réseau interne</td><td>PC_Externe</td><td>172.16.10.x</td><td><span class="tag r">❌ Bloqué (adresse privée)</span></td></tr>
+        <tr><td>ServeurWeb → réseau interne</td><td>ServeurWeb</td><td>172.16.10.x</td><td><span class="tag r">❌ Bloqué (no forward)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- COMMANDES -->
+<div id="page-cmds" class="page">
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Référence</div>
+    <div class="page-title">Toutes les Commandes</div>
+    <p class="page-desc">Référence complète de chaque commande utilisée dans le projet SAÉ21.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Commandes MLS et Switches</div>
+    <div class="cmd-ref">
+      <div class="cmd-item"><div class="cmd-item-code">ip routing</div><div class="cmd-item-desc">Active le routage Layer 3 sur le MLS. Sans cette commande, le MLS ne peut pas router entre les VLANs.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">no switchport</div><div class="cmd-item-desc">Convertit un port switch en port routé L3. Utilisé sur Fa0/24 pour connecter le MLS à l'ASA avec une IP.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">ip helper-address X</div><div class="cmd-item-desc">Relay DHCP sur les SVIs. Convertit le broadcast DHCP en unicast vers le serveur 10.0.0.20.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">spanning-tree vlan X root primary</div><div class="cmd-item-desc">Force le MLS comme Root Bridge pour le VLAN X en abaissant automatiquement la priorité STP.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">switchport mode trunk</div><div class="cmd-item-desc">Configure le port en mode trunk — transporte plusieurs VLANs avec le tagging 802.1q.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">switchport trunk allowed vlan X</div><div class="cmd-item-desc">Limite les VLANs autorisés sur le trunk. Essentiel pour la sécurité — ne laisser que le nécessaire.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">switchport mode access</div><div class="cmd-item-desc">Configure le port en mode access — un seul VLAN, pour les équipements finaux (PCs, serveurs).</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">spanning-tree portfast</div><div class="cmd-item-desc">Supprime le délai STP sur les ports connectés directement à des hôtes (jamais à d'autres switches).</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Commandes ASA</div>
+    <div class="cmd-ref">
+      <div class="cmd-item"><div class="cmd-item-code">nameif [inside|outside|dmz]</div><div class="cmd-item-desc">Donne un nom fonctionnel à l'interface VLAN. Obligatoire pour toutes les règles NAT/ACL.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">security-level [0-100]</div><div class="cmd-item-desc">Niveau de confiance de l'interface. 100=inside, 50=dmz, 0=outside. Contrôle les flux par défaut.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">no forward interface VlanX</div><div class="cmd-item-desc">Interdit à cette interface d'initier des connexions vers VlanX. DOIT précéder nameif sur ASA 5505.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">object network NAME / host X</div><div class="cmd-item-desc">Crée un objet réseau représentant un hôte ou sous-réseau. Utilisé dans les règles NAT.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">nat (dmz,outside) static X</div><div class="cmd-item-desc">NAT statique bidirectionnel : IP privée DMZ ↔ IP publique X. Pour le ServeurWeb.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">nat (inside,outside) dynamic interface</div><div class="cmd-item-desc">PAT (overload) : traduit les IPs internes vers l'IP de l'interface outside de l'ASA.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">access-list NAME extended permit tcp any host X eq www</div><div class="cmd-item-desc">Autorise HTTP depuis n'importe quelle source vers l'hôte X. Référence l'IP réelle (pas NATée).</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">access-group NAME in interface X</div><div class="cmd-item-desc">Applique une ACL en entrée sur une interface. Le trafic entrant est filtré selon les règles.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">route outside 0.0.0.0 0.0.0.0 X</div><div class="cmd-item-desc">Route par défaut — tout trafic inconnu est envoyé vers Router_FAI (192.168.11.254).</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">route inside 172.16.x.x X.X.X.X nexthop</div><div class="cmd-item-desc">Route statique vers les réseaux internes via le MLS. Nécessaire pour les réponses NAT.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">class-map inspection_default</div><div class="cmd-item-desc">Définit la classe de trafic à inspecter. Associé à match default-inspection-traffic.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">inspect icmp / inspect http</div><div class="cmd-item-desc">Active l'inspection stateful pour ICMP et HTTP. Permet les réponses aux connexions initiées depuis l'inside.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">service-policy global_policy global</div><div class="cmd-item-desc">Applique la policy-map sur toutes les interfaces globalement.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show interface ip brief</div><div class="cmd-item-desc">Affiche le statut de toutes les interfaces ASA. up/up = OK, up/down = problème physique.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show nat / show access-list</div><div class="cmd-item-desc">Affiche les règles NAT (translate_hits) et ACLs (hitcnt) — vérifier que le trafic passe.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show switch vlan</div><div class="cmd-item-desc">Affiche les VLANs internes de l'ASA 5505 et les ports physiques associés à chaque VLAN.</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Commandes Router IOS (Router_FAI / Router_Externe)</div>
+    <div class="cmd-ref">
+      <div class="cmd-item"><div class="cmd-item-code">ip nat inside / ip nat outside</div><div class="cmd-item-desc">Marque les interfaces comme intérieure/extérieure pour le NAT. Obligatoire pour que NAT fonctionne.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">ip nat inside source static A B</div><div class="cmd-item-desc">NAT statique : mappe l'adresse privée A vers l'adresse publique B. Permanent et bidirectionnel.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">ip nat inside source list X interface Y overload</div><div class="cmd-item-desc">PAT : traduit les adresses de l'ACL X vers l'IP de l'interface Y. Overload = plusieurs IPs partagent une seule IP publique.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">ip route X X.X.X.X nexthop</div><div class="cmd-item-desc">Route statique. X/masque = destination, nexthop = prochain saut.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">router eigrp 100</div><div class="cmd-item-desc">Active le processus EIGRP 100. Le numéro DOIT correspondre entre tous les voisins.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">network X wildcard</div><div class="cmd-item-desc">Annonce le réseau X dans EIGRP. Le masque est en wildcard (inverse du masque de sous-réseau).</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">no auto-summary</div><div class="cmd-item-desc">Désactive le résumé automatique classful. EIGRP annonce les sous-réseaux exacts configurés.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">interface Loopback1 / ip address X</div><div class="cmd-item-desc">Interface virtuelle toujours active. Utilisée pour rendre 1.1.1.0/24 "connecté" sur Router_FAI.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show ip eigrp neighbors</div><div class="cmd-item-desc">Affiche les voisins EIGRP actifs. Chaque routeur doit voir l'autre dans cette liste.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show ip nat translations</div><div class="cmd-item-desc">Affiche la table NAT active — vérifier que les translations fonctionnent correctement.</div></div>
+      <div class="cmd-item"><div class="cmd-item-code">show ip route</div><div class="cmd-item-desc">Table de routage. C=connecté, S=statique, D=EIGRP. Vérifier que toutes les routes attendues sont présentes.</div></div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- QUIZ -->
 <div id="page-quiz" class="page">
-  <div class="content">
-    <div class="page-header">
-      <div class="page-eyebrow">Assessment</div>
-      <div class="page-title">Practice Quiz</div>
-      <p class="page-desc">Test your knowledge across all étapes. Questions cover commands, concepts, and troubleshooting from the real project.</p>
-    </div>
-
-    <div class="quiz-filters">
-      <button class="quiz-filter active" onclick="setFilter('all', this)">All Questions</button>
-      <button class="quiz-filter" onclick="setFilter('etape1', this)">Étape 1</button>
-      <button class="quiz-filter" onclick="setFilter('etape2', this)">Étape 2</button>
-      <button class="quiz-filter" onclick="setFilter('etape3', this)">Étape 3</button>
-      <button class="quiz-filter" onclick="setFilter('etape4', this)">Étape 4</button>
-      <button class="quiz-filter" onclick="setFilter('general', this)">General</button>
-    </div>
-
-    <div class="quiz-progress">
-      <span id="quiz-counter" style="font-family:var(--mono);font-size:0.8rem;color:var(--text2)">Question 1 of 20</span>
-      <div class="quiz-bar"><div class="quiz-bar-fill" id="quiz-bar" style="width:5%"></div></div>
-      <span class="quiz-score" id="quiz-score">0 / 0</span>
-    </div>
-
-    <div id="quiz-container"></div>
-    <div id="quiz-result" style="display:none">
-      <div class="result-card">
-        <div class="result-score" id="result-score">0/0</div>
-        <div class="result-label" id="result-label">Quiz complete!</div>
-        <div class="result-grade" id="result-grade"></div>
-        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-          <button class="btn-primary" onclick="restartQuiz()">Restart Quiz</button>
-          <button class="btn-restart" onclick="showPage('home')">Back to Home</button>
-        </div>
+<div class="content">
+  <div class="page-header">
+    <div class="page-eyebrow">Évaluation</div>
+    <div class="page-title">Quiz de Révision</div>
+    <p class="page-desc">QCM et Vrai/Faux couvrant toutes les étapes du projet SAÉ21. Chaque question inclut une explication détaillée après réponse.</p>
+  </div>
+  <div class="quiz-filters">
+    <button class="qf active" onclick="setF('all',this)">Tout (50+)</button>
+    <button class="qf" onclick="setF('e1',this)">Étape 1</button>
+    <button class="qf" onclick="setF('e2',this)">Étape 2</button>
+    <button class="qf" onclick="setF('e3',this)">Étape 3</button>
+    <button class="qf" onclick="setF('e4',this)">Étape 4</button>
+    <button class="qf" onclick="setF('tf',this)">Vrai/Faux</button>
+    <button class="qf" onclick="setF('gen',this)">Général</button>
+  </div>
+  <div class="quiz-progress">
+    <span id="qcounter" style="font-family:var(--mono);font-size:0.78rem;color:var(--text2)">Question 1</span>
+    <div class="quiz-bar"><div class="quiz-bar-fill" id="qbar" style="width:0%"></div></div>
+    <span class="qscore" id="qscore">0 / 0</span>
+  </div>
+  <div id="qcontainer"></div>
+  <div id="qresult" style="display:none">
+    <div class="result-card">
+      <div class="result-score" id="rscore"></div>
+      <div class="result-pct" id="rpct"></div>
+      <div class="result-grade" id="rgrade"></div>
+      <div class="result-breakdown">
+        <div class="rb-item"><div class="rb-num" id="rb-correct" style="color:var(--green)">0</div><div class="rb-label">Correctes</div></div>
+        <div class="rb-item"><div class="rb-num" id="rb-wrong" style="color:var(--red)">0</div><div class="rb-label">Incorrectes</div></div>
+        <div class="rb-item"><div class="rb-num" id="rb-total" style="color:var(--cyan)">0</div><div class="rb-label">Total</div></div>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="restart()">↺ Recommencer</button>
+        <button class="btn-restart" onclick="go('home')">Accueil</button>
       </div>
     </div>
   </div>
 </div>
+</div>
 
 <script>
-// ── QUESTIONS DATABASE ──
-const allQuestions = [
-  // ÉTAPE 1
-  { etape: 'etape1', q: "What command enables Layer 3 routing on a Multi-Layer Switch in Packet Tracer?", opts: ["enable routing", "ip routing", "no switchport", "router ospf 1"], ans: 1, exp: "<strong>ip routing</strong> must be configured on the MLS to allow inter-VLAN routing. Without it, the MLS only performs Layer 2 switching between VLANs." },
-  { etape: 'etape1', q: "What is the difference between a trunk port and an access port?", opts: ["Trunk ports are faster", "Trunk ports carry multiple VLANs; access ports carry only one VLAN", "Access ports use 802.1q tagging; trunk ports don't", "They are the same thing"], ans: 1, exp: "<strong>Trunk ports</strong> carry multiple VLANs using 802.1q tagging — used between switches. <strong>Access ports</strong> carry a single VLAN — used for end devices like PCs and servers." },
-  { etape: 'etape1', q: "Which command forces the MLS to become the STP root bridge for VLAN 10?", opts: ["spanning-tree vlan 10 priority 0", "spanning-tree vlan 10 root primary", "spanning-tree root-bridge vlan 10", "stp vlan 10 root"], ans: 1, exp: "<strong>spanning-tree vlan 10 root primary</strong> automatically sets the priority low enough to make the MLS the root bridge. This is the standard command for this purpose." },
-  { etape: 'etape1', q: "What command converts a switch port to a routed (Layer 3) port on the MLS?", opts: ["switchport mode routed", "no switchport", "ip routing enable", "interface routed"], ans: 1, exp: "<strong>no switchport</strong> removes the Layer 2 functionality from the port, making it a Layer 3 routed interface — like a router port. This was used on Fa0/24 to connect the MLS to the ASA." },
-  { etape: 'etape1', q: "Why should trunk ports only allow necessary VLANs?", opts: ["To increase speed", "For security — unnecessary VLAN traffic should not be carried", "Packet Tracer requires it", "To enable STP"], ans: 1, exp: "Allowing all VLANs on a trunk is a security risk. If VLAN30 (servers) traffic can traverse a trunk between VLAN10 and VLAN20 switches unnecessarily, it expands the attack surface. Your teacher will penalize you for this!" },
-  { etape: 'etape1', q: "What is a SVI (Switch Virtual Interface)?", opts: ["A physical port on a switch", "A virtual Layer 3 interface on the MLS acting as a VLAN gateway", "A type of trunk port", "A spanning tree instance"], ans: 1, exp: "An <strong>SVI</strong> is a virtual Layer 3 interface created with <code>interface vlan X</code> on the MLS. It acts as the default gateway for all hosts in that VLAN, enabling inter-VLAN routing." },
-  { etape: 'etape1', q: "In the SAÉ21 project, what subnet was used for VLAN10?", opts: ["192.168.10.0/24", "172.16.10.0/24", "10.10.0.0/24", "172.16.0.0/16"], ans: 1, exp: "VLAN10 used <strong>172.16.10.0/24</strong> (from the 172.16.0.0/12 private range), with gateway 172.16.10.254 on the MLS SVI." },
-
-  // ÉTAPE 2
-  { etape: 'etape2', q: "Why do ASA 5505 physical interfaces not get IP addresses directly?", opts: ["They are too slow", "The ASA 5505 uses internal VLANs — physical ports are assigned to VLANs, and the VLAN interface gets the IP", "Packet Tracer limitation only", "They are always in trunk mode"], ans: 1, exp: "The ASA 5505 uses an internal switch architecture. Physical ports use <code>switchport access vlan X</code>, and the logical <code>interface Vlan X</code> gets the IP address and nameif configuration." },
-  { etape: 'etape2', q: "What does ip helper-address do on the MLS?", opts: ["Assigns a static IP to a VLAN", "Forwards DHCP broadcast requests to a unicast DHCP server IP", "Enables routing between VLANs", "Configures a DNS helper"], ans: 1, exp: "<strong>ip helper-address 10.0.0.20</strong> on each SVI converts DHCP broadcast packets to unicast and forwards them to the DHCP server — allowing one centralized server to serve multiple VLANs." },
-  { etape: 'etape2', q: "What DNS record type maps a hostname to an IPv4 address?", opts: ["MX record", "CNAME record", "A record", "NS record"], ans: 2, exp: "A <strong>Type A record</strong> maps a hostname to an IPv4 address. We used A records to map www.entreprise.com → 192.168.1.10 and www.test.com → 8.8.0.10." },
-  { etape: 'etape2', q: "What security level does the 'inside' interface have on the ASA?", opts: ["0", "50", "70", "100"], ans: 3, exp: "The <strong>inside</strong> interface has security level <strong>100</strong> — the maximum. Higher security level means more trusted. Traffic flows freely from higher to lower (inside→outside) but not the reverse." },
-  { etape: 'etape2', q: "In Étape 2, why are DHCP pools starting at .100 instead of .1?", opts: ["Packet Tracer limitation", "Addresses .1–.99 are reserved for static assignments (servers, routers)", "DHCP cannot use low addresses", "The teacher required it"], ans: 1, exp: "Addresses .1 to .99 are reserved for static configurations — servers, routers, printers. DHCP pools start at .100 to avoid conflicts with these statically-assigned devices." },
-  { etape: 'etape2', q: "What ASA license limitation affects the 3rd VLAN interface?", opts: ["Cannot use VLAN 3", "Only 2 VLANs can have nameif without the no forward command", "Maximum 2 physical ports", "Cannot configure NAT on 3rd VLAN"], ans: 1, exp: "The ASA 5505 license only allows 2 VLAN interfaces to communicate without restriction. The 3rd interface (DMZ) requires <code>no forward interface Vlan1</code> BEFORE <code>nameif</code> — otherwise you get a license error." },
-
-  // ÉTAPE 3
-  { etape: 'etape3', q: "What is the purpose of 'no forward interface Vlan1' on the ASA DMZ interface?", opts: ["Speeds up traffic", "Prevents the DMZ from initiating connections toward the inside network", "Required for NAT", "Enables routing to VLAN1"], ans: 1, exp: "<strong>no forward interface Vlan1</strong> blocks the DMZ from initiating connections to the inside network — a key security principle. The DMZ server should only respond to requests, never initiate them toward internal clients." },
-  { etape: 'etape3', q: "What is the difference between Static NAT and Dynamic NAT (PAT)?", opts: ["Static NAT is faster", "Static NAT is 1-to-1 permanent mapping; PAT is many-to-1 using port numbers", "PAT only works for UDP", "They are identical"], ans: 1, exp: "<strong>Static NAT</strong>: one fixed mapping (192.168.1.10 ↔ 1.1.1.253). <strong>PAT/Overload</strong>: many internal IPs share one public IP, distinguished by port numbers — used for VLAN10/20 clients accessing Internet." },
-  { etape: 'etape3', q: "Why must 'no forward interface Vlan1' come BEFORE 'nameif dmz' on ASA 5505?", opts: ["It's just convention", "If nameif is added first, the ASA returns a license error because 3 named interfaces aren't allowed without no forward", "Packet Tracer requires alphabetical order", "no forward only works before nameif"], ans: 1, exp: "The ASA 5505 license restricts 3 named interfaces. Adding <code>nameif dmz</code> first triggers the license error. By adding <code>no forward interface Vlan1</code> first, you satisfy the license restriction before naming the interface." },
-  { etape: 'etape3', q: "In ASA 8.3+, ACLs for NAT use which IP address — the real or translated?", opts: ["Translated (public) IP", "Real (private) IP of the server", "Either works", "The ASA's outside IP"], ans: 1, exp: "In ASA version 8.3 and later, the ASA <strong>un-translates (NAT)</strong> the packet BEFORE checking the ACL. So the ACL must reference the <strong>real private IP</strong> (192.168.1.10), not the public NAT address (1.1.1.253)." },
-  { etape: 'etape3', q: "What problem does 'double NAT' cause in this project?", opts: ["Speeds up routing", "Router_FAI translates 1.1.1.253→192.168.1.10 first, then ASA receives the private IP and can't apply its own NAT rule", "Double NAT is required", "It has no effect"], ans: 1, exp: "<strong>Double NAT</strong>: If both Router_FAI and ASA translate the static NAT, Router_FAI changes destination from 1.1.1.253 to 192.168.1.10 first. ASA receives a private IP it wasn't expecting and drops the packet. Solution: static NAT only on ASA." },
-  { etape: 'etape3', q: "Why was 'ip route 1.1.1.253 255.255.255.255 192.168.11.253' needed on Router_FAI?", opts: ["To enable EIGRP", "Because 1.1.1.253 is in the same /24 as Router_FAI's Fa0/0 — without this host route, Router_FAI thinks it's directly connected and loops", "Packet Tracer bug", "To enable NAT"], ans: 1, exp: "1.1.1.253 and Router_FAI's Fa0/0 (1.1.1.0/24) are in the same subnet. Router_FAI assumes 1.1.1.253 is directly reachable on Fa0/0 and doesn't forward to ASA. The <strong>host route (/32)</strong> overrides this and points specifically to ASA." },
-  { etape: 'etape3', q: "What does 'inspect icmp' in the policy-map do on the ASA?", opts: ["Blocks all ICMP", "Allows stateful tracking of ICMP — return ping replies are allowed back through the firewall", "Only allows ICMP from inside", "Enables ping from outside"], ans: 1, exp: "Without <strong>inspect icmp</strong>, the ASA blocks ICMP reply packets because it doesn't track ping sessions. Adding it to the global policy enables stateful inspection — outgoing pings get matching return replies allowed automatically." },
-  { etape: 'etape3', q: "Why do we need 'route inside 172.16.10.0 255.255.255.0 192.168.10.1' on the ASA?", opts: ["For NAT to work", "The ASA needs to know how to send return traffic back to VLAN10 clients — it's not directly connected", "Required for STP", "To enable DHCP relay"], ans: 1, exp: "The ASA only knows its directly connected networks. Without static routes pointing to the MLS for 172.16.x.x and 10.0.0.x, the ASA drops return packets because it has no route to the source of those packets." },
-
-  // ÉTAPE 4
-  { etape: 'etape4', q: "Why was a Loopback interface created on Router_FAI?", opts: ["For SSH management", "To make 1.1.1.0/24 a connected network so EIGRP can advertise it to Router_Externe", "Required by Packet Tracer", "To create a backup route"], ans: 1, exp: "EIGRP only advertises <strong>directly connected</strong> networks. 1.1.1.0/24 is the company's public block but not physically wired. Creating <code>interface Loopback1</code> with IP 1.1.1.1/24 makes it connected, so EIGRP can include it in advertisements." },
-  { etape: 'etape4', q: "What does 'no auto-summary' do in EIGRP?", opts: ["Disables route summarization — EIGRP advertises exact subnets instead of rounding to classful boundaries", "Prevents EIGRP from summarizing neighbor tables", "Disables automatic neighbor discovery", "Stops all route updates"], ans: 0, exp: "Without <strong>no auto-summary</strong>, EIGRP summarizes 1.1.2.128/30 to 1.0.0.0/8 — completely wrong. <code>no auto-summary</code> forces EIGRP to advertise the exact subnet as configured, which is essential in modern networks." },
-  { etape: 'etape4', q: "In the SAÉ, why was EIGRP chosen instead of OSPF?", opts: ["OSPF doesn't work in Packet Tracer", "The SAÉ document explicitly requires EIGRP, and it's simpler for small Cisco networks", "EIGRP is faster", "OSPF is not supported on routers"], ans: 1, exp: "The <strong>cahier des charges explicitly states EIGRP</strong>. Additionally, EIGRP is simpler (no area design needed), Cisco-native, and appropriate for small networks like a PME — matching the project scenario." },
-  { etape: 'etape4', q: "What EIGRP process number must both Router_FAI and Router_Externe use?", opts: ["Any number, they auto-negotiate", "They must use the same number (100 in this project)", "1 is always used", "Different numbers are required"], ans: 1, exp: "EIGRP neighbors must use the <strong>same process number</strong> (AS number) to form adjacency. Both routers use process 100 in this project. If they don't match, they won't exchange routes." },
-  { etape: 'etape4', q: "What does the external DNS server (8.8.0.2) need to resolve?", opts: ["www.test.com → 8.8.0.10", "www.entreprise.com → 1.1.1.253", "www.test.com → 192.168.1.10", "Both A and B"], ans: 1, exp: "The external DNS needs to resolve <strong>www.entreprise.com → 1.1.1.253</strong> so PC_Externe can access the company's web server by domain name. The public IP 1.1.1.253 is then NATted to 192.168.1.10 (the real server IP)." },
-
-  // GENERAL
-  { etape: 'general', q: "What is the /30 subnet mask used for?", opts: ["Large networks with 254 hosts", "Medium networks", "Point-to-point links with only 2 usable addresses", "Loopback interfaces"], ans: 2, exp: "A <strong>/30 subnet</strong> (255.255.255.252) gives only 2 usable host addresses — perfect for point-to-point links between two devices (e.g., MLS↔ASA, ASA↔Router_FAI) where you only need one IP per end." },
-  { etape: 'general', q: "What is the purpose of a DMZ in network security?", opts: ["To speed up internet access", "To create a zone where public-facing servers can be accessed from internet while remaining isolated from the internal network", "To block all external traffic", "To replace the firewall"], ans: 1, exp: "A <strong>DMZ</strong> places public servers in a semi-trusted zone: accessible from the Internet (for web browsing) but isolated from the internal network (no forward). If a DMZ server is compromised, attackers can't easily reach internal clients." },
-  { etape: 'general', q: "What does NAT stand for and what problem does it solve?", opts: ["Network Access Translation — speeds up routing", "Network Address Translation — allows private IPs to communicate on the Internet by mapping to public IPs", "Node Address Transfer", "Network Application Tunnel"], ans: 1, exp: "<strong>Network Address Translation</strong> solves the problem of private IP addresses (172.16.x.x, 10.x.x.x, 192.168.x.x) not being routable on the Internet. NAT translates them to public IPs at the border router/firewall." },
-  { etape: 'general', q: "Why is stateful inspection better than simple packet filtering?", opts: ["It's faster", "It tracks connection state — only allows return traffic for sessions initiated from trusted side, blocking unsolicited incoming traffic", "It blocks all traffic by default", "It doesn't require ACLs"], ans: 1, exp: "<strong>Stateful inspection</strong> maintains a connection table. When an internal client initiates a connection, return traffic is automatically allowed. But traffic initiated from outside is blocked unless explicitly permitted — much smarter than simple ACL filtering." },
+const Q=[
+{e:'e1',t:'qcm',q:"Quelle commande active le routage Layer 3 sur le MLS ?",o:["enable routing","ip routing","no switchport","router eigrp 1"],a:1,ex:"<strong>ip routing</strong> est indispensable sur le MLS pour activer le routage inter-VLAN. Sans cette commande, le MLS fonctionne uniquement comme un switch L2 et ne peut pas router entre les VLANs."},
+{e:'e1',t:'qcm',q:"Quelle est la différence entre un port trunk et un port access ?",o:["Les trunks sont plus rapides","Trunk = plusieurs VLANs (802.1q) entre switches ; Access = un seul VLAN pour équipements finaux","Les ports access utilisent le tagging 802.1q","Ils sont identiques"],a:1,ex:"Un <strong>port trunk</strong> transporte plusieurs VLANs grâce au tagging 802.1q — utilisé entre switches. Un <strong>port access</strong> transporte un seul VLAN — utilisé pour les PCs, serveurs et autres équipements finaux."},
+{e:'e1',t:'qcm',q:"Quelle commande force le MLS à devenir Root Bridge STP pour VLAN 10 ?",o:["spanning-tree vlan 10 priority 0","spanning-tree vlan 10 root primary","stp root vlan 10","spanning-tree root-bridge vlan 10"],a:1,ex:"<strong>spanning-tree vlan 10 root primary</strong> abaisse automatiquement la priorité STP du MLS pour qu'il devienne Root Bridge. C'est la commande standard et recommandée — plus simple que de configurer manuellement la priorité."},
+{e:'e1',t:'qcm',q:"Que fait la commande 'no switchport' sur un port du MLS ?",o:["Désactive le port","Convertit le port en port routé Layer 3 (comme un port de routeur)","Active le mode trunk","Configure le VLAN natif"],a:1,ex:"<strong>no switchport</strong> supprime la fonctionnalité Layer 2 du port et le convertit en port routé L3, permettant d'assigner une adresse IP directement dessus. Utilisé sur Fa0/24 pour connecter le MLS à l'ASA via un lien point-à-point /30."},
+{e:'e1',t:'qcm',q:"Dans le projet SAÉ21, quel sous-réseau est utilisé pour le VLAN10 ?",o:["192.168.10.0/24","10.10.0.0/24","172.16.10.0/24","172.16.0.0/16"],a:2,ex:"VLAN10 utilise <strong>172.16.10.0/24</strong> (issu de la plage privée 172.16.0.0/12). La passerelle est 172.16.10.254 sur le SVI du MLS. La consigne du SAÉ impose des /24 dans la plage 172.16.0.0/12."},
+{e:'e1',t:'qcm',q:"Pourquoi les trunks ne doivent-ils autoriser que les VLANs nécessaires ?",o:["Pour augmenter la vitesse","Pour la sécurité — propager des VLANs inutiles élargit la surface d'attaque. Le professeur pénalise si non respecté","Packet Tracer l'exige","Pour activer STP"],a:1,ex:"Laisser tous les VLANs sur un trunk est une mauvaise pratique de sécurité. Le trafic VLAN30 (serveurs) ne devrait pas transiter entre switches VLAN10 et VLAN20 inutilement. <strong>Le professeur pénalise explicitement ce point.</strong>"},
+{e:'e1',t:'qcm',q:"Qu'est-ce qu'un SVI (Switch Virtual Interface) ?",o:["Un port physique du switch","Une interface Layer 3 virtuelle sur le MLS servant de passerelle pour un VLAN","Un type de port trunk","Une instance STP"],a:1,ex:"Un <strong>SVI</strong> est créé avec <code>interface vlan X</code> sur le MLS. Il fonctionne comme la passerelle par défaut de tous les hôtes du VLAN X, permettant le routage inter-VLAN sans routeur externe."},
+{e:'e1',t:'qcm',q:"Quel masque correspond au /30 et combien d'IPs utilisables donne-t-il ?",o:["255.255.255.0 — 254 IPs","255.255.255.252 — 2 IPs","255.255.255.248 — 6 IPs","255.255.255.240 — 14 IPs"],a:1,ex:"Le <strong>/30 = 255.255.255.252</strong> donne seulement 2 adresses IP utilisables — parfait pour les liaisons point-à-point entre deux équipements. Utilisé pour MLS↔ASA (192.168.10.0/30) et ASA↔Router_FAI (192.168.11.252/30)."},
+{e:'e1',t:'qcm',q:"Quelle est la passerelle du VLAN20 dans ce projet ?",o:["172.16.20.1","172.16.20.100","172.16.20.254","10.0.0.254"],a:2,ex:"La passerelle du VLAN20 est <strong>172.16.20.254</strong> — la dernière adresse du sous-réseau 172.16.20.0/24. Cette convention (.254 pour les passerelles) est appliquée uniformément dans le projet."},
+{e:'e2',t:'qcm',q:"Pourquoi les ports physiques de l'ASA 5505 n'ont-ils pas d'adresse IP directement ?",o:["Ils sont trop lents","L'ASA 5505 utilise des VLANs internes — les ports sont assignés à des VLANs et c'est l'interface VLAN logique qui reçoit l'IP","Limitation Packet Tracer uniquement","Ils sont en mode trunk"],a:1,ex:"Le 5505 intègre un switch interne. <code>switchport access vlan X</code> assigne le port physique à un VLAN, et <code>interface Vlan X</code> reçoit l'IP, le nameif et le security-level. On ne configure jamais d'IP directement sur Ethernet0/X."},
+{e:'e2',t:'qcm',q:"Que fait 'ip helper-address 10.0.0.20' sur les SVIs du MLS ?",o:["Assigne une IP statique","Redirige les requêtes DHCP broadcast en unicast vers le serveur DHCP 10.0.0.20","Active le routage inter-VLAN","Configure un DNS secondaire"],a:1,ex:"Le DHCP utilise des broadcasts qui ne traversent pas les routeurs. <strong>ip helper-address</strong> sur les SVIs VLAN10 et VLAN20 convertit ces broadcasts en unicast et les envoie directement au serveur DHCP, permettant un seul serveur pour tous les VLANs."},
+{e:'e2',t:'qcm',q:"Quel type d'enregistrement DNS mappe un nom d'hôte vers une IPv4 ?",o:["Enregistrement MX","Enregistrement CNAME","Enregistrement A","Enregistrement NS"],a:2,ex:"Un <strong>enregistrement de type A</strong> mappe un nom d'hôte vers une adresse IPv4. Dans le projet : www.entreprise.com → 192.168.1.10 et www.test.com → 8.8.0.10."},
+{e:'e2',t:'qcm',q:"Quel niveau de sécurité a l'interface 'inside' de l'ASA ?",o:["0","50","70","100"],a:3,ex:"L'interface <strong>inside a le niveau 100</strong> — le maximum. Plus le niveau est élevé, plus l'interface est de confiance. Le trafic circule librement de haut→bas (inside→outside) mais le sens inverse nécessite une ACL."},
+{e:'e2',t:'qcm',q:"Pourquoi les pools DHCP commencent-ils à .100 et non à .1 ?",o:["Limitation Packet Tracer","Les adresses .1 à .99 sont réservées aux équipements statiques (serveurs, routeurs)","Le DHCP ne peut pas attribuer de basses adresses","Exigence du cahier des charges"],a:1,ex:"Les adresses .1 à .99 sont réservées aux équipements en IP statique (serveurs DNS, DHCP, routeurs). En commençant à .100, on évite les conflits. Cela donne 101 adresses dynamiques disponibles par VLAN."},
+{e:'e2',t:'qcm',q:"Quelle est la limitation de licence de l'ASA 5505 concernant les interfaces VLAN ?",o:["Maximum 2 VLANs au total","Seulement 2 interfaces peuvent avoir nameif sans restriction — la 3ème nécessite no forward","Maximum 2 ports physiques actifs","Impossible de configurer une DMZ"],a:1,ex:"La licence ASA 5505 dans Packet Tracer limite à <strong>2 interfaces VLAN avec nameif sans restriction</strong>. La 3ème (DMZ = Vlan3) nécessite <code>no forward interface Vlan1</code> placé AVANT <code>nameif dmz</code>, sinon l'ASA retourne une erreur de licence."},
+{e:'e2',t:'qcm',q:"Quelle est l'adresse IP du serveur DHCP dans ce projet ?",o:["10.0.0.10","10.0.0.20","172.16.10.254","192.168.1.10"],a:1,ex:"Le serveur DHCP a l'IP statique <strong>10.0.0.20</strong> dans le VLAN30 (réseau serveurs 10.0.0.0/24). Le serveur DNS est à 10.0.0.10. Les deux sont dans le VLAN30."},
+{e:'e3',t:'qcm',q:"Quel est le rôle de 'no forward interface Vlan1' sur l'interface DMZ ?",o:["Accélère le trafic","Empêche la DMZ d'initier des connexions vers le réseau interne (inside)","Requis pour NAT","Active le routage vers Vlan1"],a:1,ex:"<strong>no forward interface Vlan1</strong> bloque la DMZ→inside — principe de sécurité fondamental. Le serveur web DMZ doit uniquement répondre aux requêtes, jamais en initier vers le réseau interne. Si la DMZ est compromise, l'attaquant ne peut pas atteindre l'inside."},
+{e:'e3',t:'qcm',q:"Quelle est la différence entre NAT statique et NAT dynamique (PAT) ?",o:["Le NAT statique est plus rapide","NAT statique = mappage 1-pour-1 permanent ; PAT = plusieurs-vers-1 via numéros de port","Le PAT ne fonctionne que pour UDP","Ils sont identiques"],a:1,ex:"<strong>NAT statique</strong> : un mappage fixe (192.168.1.10 ↔ 1.1.1.253) pour le ServeurWeb. <strong>PAT/Overload</strong> : plusieurs IPs internes partagent une seule IP publique, distinguées par les ports — pour les clients VLAN10/20."},
+{e:'e3',t:'qcm',q:"Pourquoi 'no forward interface Vlan1' doit-il précéder 'nameif dmz' ?",o:["Convention uniquement","Ajouter nameif en premier déclenche une erreur de licence — 3 interfaces nommées sans no forward ne sont pas autorisées","Packet Tracer l'exige","no forward ne fonctionne qu'avant nameif"],a:1,ex:"La licence ASA 5505 limite à 2 interfaces nommées. En ajoutant <code>nameif dmz</code> sans <code>no forward</code>, l'ASA détecte une 3ème interface nommée et retourne une erreur. <strong>L'ordre est critique</strong> : no forward → nameif → security-level → ip address."},
+{e:'e3',t:'qcm',q:"Depuis ASA 8.3, les ACLs pour le NAT référencent quelle adresse ?",o:["L'adresse NATée (publique)","L'adresse IP réelle (privée) du serveur","L'adresse de l'interface outside","N'importe laquelle"],a:1,ex:"Depuis ASA 8.3, l'ASA <strong>dé-NAT le paquet AVANT de vérifier l'ACL</strong>. L'ACL doit donc référencer l'adresse IP réelle et privée du serveur (192.168.1.10), pas l'adresse publique NATée (1.1.1.253)."},
+{e:'e3',t:'qcm',q:"Quel problème cause le 'double NAT' dans ce projet ?",o:["Accélère le routage","Router_FAI traduit 1.1.1.253→192.168.1.10, l'ASA reçoit une IP privée qu'il ne reconnaît pas et abandonne le paquet","Le double NAT est obligatoire","Aucun effet"],a:1,ex:"<strong>Double NAT</strong> : si Router_FAI traduit 1.1.1.253→192.168.1.10 d'abord, l'ASA reçoit une IP privée en destination sur son interface outside. Il ne reconnaît pas ce trafic et l'abandonne. Solution : NAT statique uniquement sur l'ASA."},
+{e:'e3',t:'qcm',q:"Pourquoi 'ip route 1.1.1.253 255.255.255.255 192.168.11.253' est-il nécessaire sur Router_FAI ?",o:["Pour activer EIGRP","1.1.1.253 est dans le même /24 que Fa0/0 — sans route hôte, Router_FAI croit que c'est directement connecté et crée une boucle","Limitation Packet Tracer","Pour activer le NAT"],a:1,ex:"1.1.1.253 appartient à 1.1.1.0/24, le même réseau que Fa0/0 de Router_FAI. Il croit que l'adresse est directement sur Fa0/0 et ne la transmet pas à l'ASA. La <strong>route hôte /32</strong> prend la priorité et force l'envoi vers l'ASA."},
+{e:'e3',t:'qcm',q:"Que fait 'inspect icmp' dans la policy-map de l'ASA ?",o:["Bloque tout ICMP","Permet le suivi stateful des sessions ICMP — les réponses aux pings sont autorisées en retour","N'autorise l'ICMP que depuis l'inside","Active les pings depuis l'outside"],a:1,ex:"Sans <strong>inspect icmp</strong>, l'ASA bloque les réponses ICMP car il ne suit pas l'état des sessions ping. En l'ajoutant à la policy-map globale, l'ASA maintient une table de sessions et autorise les réponses automatiquement."},
+{e:'e3',t:'qcm',q:"Pourquoi ajouter 'route inside 172.16.10.0 ...' sur l'ASA ?",o:["Pour le NAT","L'ASA ne connaît que ses réseaux directement connectés — sans cette route il ne peut pas retourner les réponses aux clients VLAN10","Pour activer l'inspection HTTP","Pour STP"],a:1,ex:"L'ASA ne connaît que ses interfaces directement connectées. Pour retourner les réponses aux clients VLAN10 (172.16.10.x) et VLAN20 (172.16.20.x), il faut lui indiquer le chemin via le MLS (192.168.10.1)."},
+{e:'e3',t:'qcm',q:"Quel est le rôle de 'ip nat inside' et 'ip nat outside' sur Router_FAI ?",o:["Aucun rôle","Marque les interfaces comme intérieure/extérieure pour que le routeur sache dans quel sens appliquer le NAT","Remplace les ACLs","Active EIGRP"],a:1,ex:"NAT a un sens directionnel. <strong>ip nat inside</strong> sur Fa0/1 indique que le trafic entrant sera traduit. <strong>ip nat outside</strong> sur Fa0/0 indique l'interface de sortie publique. Sans ces marques, le routeur ne peut pas appliquer le NAT."},
+{e:'e3',t:'qcm',q:"Quelle est l'adresse IP du ServeurWeb dans la DMZ ?",o:["192.168.1.1","192.168.1.10","1.1.1.253","192.168.11.253"],a:1,ex:"Le <strong>ServeurWeb a l'IP statique 192.168.1.10</strong> dans la DMZ (réseau 192.168.1.0/24). Sa passerelle est 192.168.1.1 (interface DMZ de l'ASA). L'adresse publique accessible depuis Internet est 1.1.1.253 via le NAT statique."},
+{e:'e4',t:'qcm',q:"Pourquoi une interface Loopback a-t-elle été créée sur Router_FAI ?",o:["Pour l'administration SSH","Rendre 1.1.1.0/24 'connecté' sur Router_FAI afin qu'EIGRP puisse l'annoncer à Router_Externe","Exigé par Packet Tracer","Pour créer une route de secours"],a:1,ex:"EIGRP n'annonce que les réseaux <strong>directement connectés</strong>. Le bloc 1.1.1.0/24 n'est pas câblé physiquement. Créer <code>interface Loopback1</code> avec l'IP 1.1.1.1/24 rend ce réseau 'connecté' et EIGRP peut l'annoncer à Router_Externe."},
+{e:'e4',t:'qcm',q:"Que fait 'no auto-summary' dans EIGRP ?",o:["Désactive le résumé automatique — EIGRP annonce les sous-réseaux exacts","Empêche EIGRP de résumer la table des voisins","Désactive la découverte automatique","Arrête toutes les mises à jour"],a:0,ex:"Sans <strong>no auto-summary</strong>, EIGRP résumerait 1.1.2.128/30 en 1.0.0.0/8 — totalement incorrect. Cette commande force EIGRP à annoncer les sous-réseaux exactement comme configurés."},
+{e:'e4',t:'qcm',q:"Pourquoi EIGRP a-t-il été choisi plutôt qu'OSPF ?",o:["OSPF ne fonctionne pas dans Packet Tracer","Le cahier des charges l'impose explicitement, et EIGRP est plus simple pour les petits réseaux Cisco","EIGRP est plus rapide","OSPF n'est pas supporté"],a:1,ex:"Le <strong>cahier des charges impose explicitement EIGRP</strong> : 'Le routage se fera en EIGRP'. De plus, EIGRP est propriétaire Cisco (tous les équipements sont Cisco), plus simple (pas de zones), adapté aux petits réseaux."},
+{e:'e4',t:'qcm',q:"Quel numéro de processus EIGRP les deux routeurs doivent-ils utiliser ?",o:["N'importe lequel, ils négocient","Le même numéro — ici 100","1 est toujours utilisé","Des numéros différents sont nécessaires"],a:1,ex:"Les voisins EIGRP doivent utiliser le <strong>même numéro de processus</strong> pour établir une adjacence. Dans ce projet, Router_FAI et Router_Externe utilisent tous les deux le processus 100."},
+{e:'e4',t:'qcm',q:"Que doit résoudre le serveur DNS externe (8.8.0.2) ?",o:["www.test.com → 8.8.0.10","www.entreprise.com → 1.1.1.253","www.test.com → 192.168.1.10","www.entreprise.com → 192.168.1.10"],a:1,ex:"Le DNS_Externe résout <strong>www.entreprise.com → 1.1.1.253</strong> pour que PC_Externe accède au serveur web de la DMZ par nom de domaine. L'IP publique 1.1.1.253 est ensuite NATée par l'ASA vers 192.168.1.10."},
+{e:'e4',t:'qcm',q:"Quelle commande permet de vérifier les voisins EIGRP ?",o:["show ip route","show ip eigrp neighbors","show eigrp status","show ip protocols"],a:1,ex:"<strong>show ip eigrp neighbors</strong> affiche la liste des voisins EIGRP actifs avec leur adresse IP, interface, et uptime. Chaque routeur doit voir l'autre dans cette liste pour confirmer que l'adjacence EIGRP est établie."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Les ports de l'ASA 5505 sont des ports trunk par défaut.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Les ports de l'ASA 5505 sont des ports <em>access</em> par défaut (un seul VLAN chacun). Chaque port physique est assigné à un VLAN spécifique avec <code>switchport access vlan X</code>."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Dans ASA 8.3+, les ACLs doivent référencer l'adresse IP publique NATée.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Depuis ASA 8.3, l'ASA effectue le dé-NAT AVANT de vérifier l'ACL. Il faut donc référencer l'adresse IP <em>réelle et privée</em> du serveur (192.168.1.10), pas l'adresse publique (1.1.1.253)."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : 'no forward interface Vlan1' doit être configuré AVANT 'nameif dmz' sur l'ASA 5505.",o:["Vrai","Faux"],a:0,ex:"<strong>Vrai.</strong> Sur l'ASA 5505, la licence limite à 2 interfaces avec nameif sans restriction. Si on ajoute <code>nameif</code> avant <code>no forward</code>, l'ASA retourne une erreur de licence. L'ordre obligatoire : <code>no forward</code> → <code>nameif</code>."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Une interface Loopback peut tomber en panne si le câble est débranché.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Une interface Loopback est <em>toujours active</em> (always up) car elle est virtuelle — pas de câble physique. C'est pourquoi elle est utilisée pour rendre le réseau 1.1.1.0/24 stable et disponible pour EIGRP."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Le NAT dynamique (PAT) permet à plusieurs machines d'utiliser la même IP publique.",o:["Vrai","Faux"],a:0,ex:"<strong>Vrai.</strong> Le PAT (Port Address Translation / overload) permet à de nombreux hôtes internes de partager une seule IP publique. Les sessions sont distinguées par les numéros de port source."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : L'inspection stateful autorise automatiquement le trafic retour initié depuis l'outside.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> L'inspection stateful autorise uniquement le trafic retour pour les connexions initiées depuis des zones de <em>sécurité plus élevée</em> (inside→outside). Le trafic initié depuis l'outside est bloqué par défaut."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : EIGRP n'annonce que les réseaux directement connectés à un routeur.",o:["Vrai","Faux"],a:0,ex:"<strong>Vrai.</strong> EIGRP utilise la commande <code>network X wildcard</code> pour sélectionner les interfaces à inclure, mais il n'annonce que les réseaux <em>directement connectés</em> sur ces interfaces. C'est pourquoi la loopback 1.1.1.1/24 a été nécessaire."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Sans 'no auto-summary', EIGRP annonce les sous-réseaux exacts configurés.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Sans <code>no auto-summary</code>, EIGRP <em>résume automatiquement</em> les routes vers leurs frontières classful (ex: 1.1.2.128/30 devient 1.0.0.0/8). <code>no auto-summary</code> désactive ce comportement."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : L'adresse 192.168.11.252/30 donne 2 IPs utilisables : .253 et .254.",o:["Vrai","Faux"],a:0,ex:"<strong>Vrai.</strong> Le réseau 192.168.11.252/30 : réseau = .252, broadcast = .255, utilisables = <strong>.253</strong> (ASA outside) et <strong>.254</strong> (Router_FAI Fa0/1). C'est la liaison ASA↔Router_FAI dans le projet."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : 'spanning-tree portfast' peut être appliqué sur un port trunk inter-switch.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> <code>portfast</code> est réservé aux ports connectés à des <em>équipements finaux</em> (PCs, serveurs). Sur un port inter-switch avec portfast, les protections STP seraient désactivées et des boucles réseau pourraient apparaître."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Le ServeurWeb DMZ (192.168.1.10) peut initier des connexions vers 172.16.x.x car son security-level (50) est supérieur à l'outside (0).",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Même si le security-level DMZ (50) est supérieur à outside (0), la commande <code>no forward interface Vlan1</code> bloque spécifiquement le trafic DMZ→inside, indépendamment des niveaux de sécurité."},
+{e:'tf',t:'tf',q:"Vrai ou Faux : Le serveur DNS interne peut résoudre des requêtes itératives dans Packet Tracer.",o:["Vrai","Faux"],a:1,ex:"<strong>Faux.</strong> Le serveur DNS de Packet Tracer ne supporte pas les requêtes itératives (résolution récursive). On doit ajouter manuellement des enregistrements A statiques pour chaque nom de domaine à résoudre."},
+{e:'gen',t:'qcm',q:"Qu'est-ce qu'une DMZ en termes de sécurité réseau ?",o:["Un VPN sécurisé","Une zone réseau entre inside et outside où les serveurs sont accessibles d'Internet mais isolés du réseau interne","Un réseau public sans pare-feu","Un VLAN pour serveurs internes uniquement"],a:1,ex:"Une <strong>DMZ</strong> est une zone intermédiaire entre le réseau interne (privé) et Internet (public). Les serveurs DMZ sont accessibles depuis Internet mais ne peuvent pas initier de connexions vers le réseau interne. Si un serveur DMZ est compromis, l'attaquant est isolé."},
+{e:'gen',t:'qcm',q:"Quelle est la plage d'adresses privées de classe B selon RFC 1918 ?",o:["10.0.0.0/8","172.16.0.0/12","192.168.0.0/16","169.254.0.0/16"],a:1,ex:"Selon RFC 1918, les trois plages privées sont : <strong>10.0.0.0/8</strong> (A), <strong>172.16.0.0/12</strong> (B — utilisée pour VLAN10/20 dans ce projet), et <strong>192.168.0.0/16</strong> (C). Ces adresses ne sont pas routables sur Internet."},
+{e:'gen',t:'qcm',q:"Quel protocole utilise le port 80 et quel protocole utilise le port 443 ?",o:["FTP (80) et SSH (443)","HTTP (80) et HTTPS (443)","Telnet (80) et SMTP (443)","DNS (80) et SNMP (443)"],a:1,ex:"<strong>HTTP</strong> utilise le port 80 (non chiffré) et <strong>HTTPS</strong> utilise le port 443 (chiffré TLS/SSL). Dans les ACLs de l'ASA, on autorise ces deux ports : <code>eq www</code> = port 80, <code>eq 443</code> = port 443."},
+{e:'gen',t:'qcm',q:"Pourquoi les adresses privées ne sont-elles pas routables sur Internet ?",o:["Elles sont trop lentes","Plusieurs réseaux peuvent utiliser les mêmes adresses — elles ne sont pas uniques globalement, NAT est nécessaire","Elles sont réservées","Pour des raisons politiques"],a:1,ex:"Les adresses privées (172.16.x.x, 192.168.x.x, 10.x.x.x) peuvent être utilisées par n'importe quelle organisation. Elles ne sont pas uniques globalement. NAT traduit ces adresses vers des IPs publiques uniques pour Internet."},
+{e:'gen',t:'qcm',q:"Quel est le rôle du protocole DHCP ?",o:["Résoudre les noms de domaine en adresses IP","Distribuer automatiquement des adresses IP et paramètres réseau aux équipements clients","Chiffrer les communications réseau","Router les paquets entre réseaux"],a:1,ex:"<strong>DHCP</strong> (Dynamic Host Configuration Protocol) distribue automatiquement : adresse IP, masque, passerelle, serveur DNS aux clients. Sans DHCP, chaque équipement doit être configuré manuellement — ce que le projet évite grâce au serveur DHCP centralisé et au relay."},
+{e:'gen',t:'qcm',q:"Qu'est-ce que le protocole STP protège ?",o:["Les données contre le vol","Les réseaux Layer 2 contre les boucles de commutation","Les routeurs contre les attaques DDoS","Les VLANs contre les intrusions"],a:1,ex:"<strong>STP (Spanning Tree Protocol)</strong> prévient les boucles dans les réseaux commutés (Layer 2). Sans STP, des trames Ethernet pourraient circuler indéfiniment dans une boucle, saturant complètement le réseau (broadcast storm)."},
 ];
 
-let currentFilter = 'all';
-let filteredQuestions = [];
-let currentIndex = 0;
-let score = 0;
-let answered = false;
+let filter='all',filtered=[],idx=0,score=0,answered=false;
 
-function setFilter(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.quiz-filter').forEach(b => b.classList.remove('active'));
+function setF(f,btn){
+  filter=f;
+  document.querySelectorAll('.qf').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  restartQuiz();
+  restart();
 }
 
-function restartQuiz() {
-  filteredQuestions = currentFilter === 'all'
-    ? [...allQuestions]
-    : allQuestions.filter(q => q.etape === currentFilter);
-  // Shuffle
-  for (let i = filteredQuestions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [filteredQuestions[i], filteredQuestions[j]] = [filteredQuestions[j], filteredQuestions[i]];
-  }
-  currentIndex = 0;
-  score = 0;
-  answered = false;
-  document.getElementById('quiz-result').style.display = 'none';
-  document.getElementById('quiz-container').style.display = 'block';
-  renderQuestion();
+function restart(){
+  if(filter==='all') filtered=[...Q];
+  else if(filter==='tf') filtered=Q.filter(q=>q.t==='tf');
+  else filtered=Q.filter(q=>q.e===filter);
+  for(let i=filtered.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[filtered[i],filtered[j]]=[filtered[j],filtered[i]];}
+  idx=0;score=0;answered=false;
+  document.getElementById('qresult').style.display='none';
+  document.getElementById('qcontainer').style.display='block';
+  render();
 }
 
-function renderQuestion() {
-  if (currentIndex >= filteredQuestions.length) {
-    showResult();
-    return;
-  }
-  const q = filteredQuestions[currentIndex];
-  const total = filteredQuestions.length;
-  answered = false;
-
-  document.getElementById('quiz-counter').textContent = `Question ${currentIndex + 1} of ${total}`;
-  document.getElementById('quiz-bar').style.width = `${((currentIndex) / total) * 100}%`;
-  document.getElementById('quiz-score').textContent = `${score} / ${currentIndex}`;
-
-  const letters = ['A', 'B', 'C', 'D'];
-  const tagClass = `q-${q.etape}`;
-  const tagLabel = q.etape === 'general' ? 'General' : q.etape.replace('etape', 'Étape ');
-
-  document.getElementById('quiz-container').innerHTML = `
-    <div class="question-card">
-      <div class="question-meta">
-        <span class="question-tag ${tagClass}">${tagLabel}</span>
-        <span class="question-num">#${currentIndex + 1}</span>
-      </div>
-      <div class="question-text">${q.q}</div>
-      <div class="options">
-        ${q.opts.map((opt, i) => `
-          <div class="option" onclick="selectAnswer(${i})" id="opt-${i}">
-            <div class="option-letter">${letters[i]}</div>
-            <div>${opt}</div>
-          </div>
-        `).join('')}
-      </div>
-      <div class="explanation" id="explanation">${q.exp}</div>
-    </div>
-    <div class="quiz-nav">
-      <button class="btn-restart" onclick="restartQuiz()">↺ Restart</button>
-      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question →</button>
-    </div>
-  `;
+function render(){
+  if(idx>=filtered.length){showResult();return;}
+  const q=filtered[idx];
+  const total=filtered.length;
+  answered=false;
+  document.getElementById('qcounter').textContent='Question '+(idx+1)+' / '+total;
+  document.getElementById('qbar').style.width=((idx/total)*100)+'%';
+  document.getElementById('qscore').textContent=score+' / '+idx;
+  const letters=['A','B','C','D'];
+  const tagMap={e1:'q1 Étape 1',e2:'q2 Étape 2',e3:'q3 Étape 3',e4:'q4 Étape 4',tf:'qtf Vrai/Faux',gen:'qg Général'};
+  const parts=tagMap[q.e].split(' ');
+  const tcls=parts[0];
+  const tlbl=parts.slice(1).join(' ');
+  const typeLabel=q.t==='tf'?'Vrai / Faux':'QCM';
+  document.getElementById('qcontainer').innerHTML=
+    '<div class="question-card">'+
+    '<div class="question-meta">'+
+    '<span class="qtag '+tcls+'">'+tlbl+'</span>'+
+    '<span class="qtype-badge">'+typeLabel+'</span>'+
+    '<span class="qnum">#'+(idx+1)+'</span>'+
+    '</div>'+
+    '<div class="question-text">'+q.q+'</div>'+
+    '<div class="options">'+
+    q.opts.map(function(o,i){return '<div class="option" onclick="pick('+i+')" id="o'+i+'"><div class="opt-letter">'+letters[i]+'</div><div>'+o+'</div></div>';}).join('')+
+    '</div>'+
+    '<div class="explanation" id="exp">'+q.ex+'</div>'+
+    '</div>'+
+    '<div class="quiz-nav">'+
+    '<button class="btn-restart" onclick="restart()">↺ Recommencer</button>'+
+    '<button class="btn-next" id="bnext" onclick="next()">Question suivante →</button>'+
+    '</div>';
 }
 
-function selectAnswer(idx) {
-  if (answered) return;
-  answered = true;
-  const q = filteredQuestions[currentIndex];
-  const opts = document.querySelectorAll('.option');
-
-  opts.forEach(o => o.classList.add('disabled'));
-  opts[q.ans].classList.add('correct');
-  if (idx !== q.ans) {
-    opts[idx].classList.add('wrong');
-  } else {
-    score++;
-  }
-
-  document.getElementById('explanation').classList.add('show');
-  document.getElementById('btn-next').style.display = 'block';
-  document.getElementById('quiz-score').textContent = `${score} / ${currentIndex + 1}`;
+function pick(i){
+  if(answered)return;
+  answered=true;
+  const q=filtered[idx];
+  document.querySelectorAll('.option').forEach(function(o){o.classList.add('disabled');});
+  document.getElementById('o'+q.a).classList.add('correct');
+  if(i!==q.a)document.getElementById('o'+i).classList.add('wrong');
+  else score++;
+  document.getElementById('exp').classList.add('show');
+  document.getElementById('bnext').style.display='block';
+  document.getElementById('qscore').textContent=score+' / '+(idx+1);
 }
 
-function nextQuestion() {
-  currentIndex++;
-  renderQuestion();
+function next(){idx++;render();}
+
+function showResult(){
+  document.getElementById('qcontainer').style.display='none';
+  document.getElementById('qresult').style.display='block';
+  const total=filtered.length;
+  const pct=Math.round((score/total)*100);
+  document.getElementById('qbar').style.width='100%';
+  document.getElementById('qscore').textContent=score+' / '+total;
+  document.getElementById('rscore').textContent=score+'/'+total;
+  document.getElementById('rpct').textContent=pct+'% de bonnes réponses';
+  document.getElementById('rb-correct').textContent=score;
+  document.getElementById('rb-wrong').textContent=total-score;
+  document.getElementById('rb-total').textContent=total;
+  var grade,color;
+  if(pct>=90){grade='🏆 Excellent ! Tu maîtrises le sujet.';color='var(--green)';}
+  else if(pct>=75){grade='✅ Bon travail ! Quelques points à revoir.';color='var(--cyan)';}
+  else if(pct>=60){grade='⚡ En bonne voie — relis les fiches.';color='var(--orange)';}
+  else{grade='📚 Continue à réviser — retourne aux étapes.';color='var(--red)';}
+  document.getElementById('rgrade').style.color=color;
+  document.getElementById('rgrade').textContent=grade;
 }
 
-function showResult() {
-  document.getElementById('quiz-container').style.display = 'none';
-  document.getElementById('quiz-result').style.display = 'block';
-  const total = filteredQuestions.length;
-  const pct = Math.round((score / total) * 100);
-  document.getElementById('result-score').textContent = `${score}/${total}`;
-  document.getElementById('quiz-bar').style.width = '100%';
-  document.getElementById('quiz-score').textContent = `${score} / ${total}`;
-
-  let grade, color;
-  if (pct >= 90) { grade = '🏆 Excellent! You know this cold.'; color = 'var(--green)'; }
-  else if (pct >= 75) { grade = '✅ Good work! A few things to review.'; color = 'var(--cyan)'; }
-  else if (pct >= 60) { grade = '⚡ Getting there — review the notes again.'; color = 'var(--orange)'; }
-  else { grade = '📚 Keep studying — go back through the étapes.'; color = 'var(--red)'; }
-
-  document.getElementById('result-label').textContent = `${pct}% correct`;
-  document.getElementById('result-grade').style.color = color;
-  document.getElementById('result-grade').textContent = grade;
+function go(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  var map={home:0,e1:1,e2:2,e3:3,e4:4,cmds:5,quiz:6};
+  var links=document.querySelectorAll('.nav-link');
+  if(map[id]!==undefined)links[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='quiz'&&filtered.length===0)restart();
 }
 
-// ── NAVIGATION ──
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.getElementById(`page-${id}`).classList.add('active');
-  const links = document.querySelectorAll('.nav-link');
-  links.forEach(l => { if (l.textContent.toLowerCase().includes(id.replace('etape','étape ').replace('home','home').replace('quiz','quiz'))) l.classList.add('active'); });
-  window.scrollTo(0, 0);
-
-  if (id === 'quiz' && filteredQuestions.length === 0) restartQuiz();
-}
-
-function toggleExpand(header) {
-  const block = header.parentElement;
-  block.classList.toggle('open');
-}
-
-// Fix nav active state
-document.querySelectorAll('.nav-link').forEach((btn, i) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
+function xpd(h){h.parentElement.classList.toggle('open');}
 </script>
 </body>
 </html>
