@@ -430,7 +430,21 @@
     background: white;
   }
 
-  /* PASSIVE TABLE */
+  /* TRANSLATION ITEMS */
+  .trans-item {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    background: white;
+    transition: background 0.2s;
+  }
+  .trans-item:hover { background: #f9f7f3; }
+  .trans-fr { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .trans-en { font-size: 14px; color: var(--green); margin-top: 4px; font-style: italic; }
+  .trans-tap { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
   .passive-grid { display: flex; flex-direction: column; gap: 10px; }
   .passive-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: start; }
   .tense-tag {
@@ -467,7 +481,9 @@
   <button onclick="show(6)">Quantifiers</button>
   <button onclick="show(7)">Prepositions</button>
   <button onclick="show(8)">Adj + Prep</button>
-  <button onclick="show(9)">🧠 Quiz</button>
+  <button onclick="show(9)">📧 Emails</button>
+  <button onclick="show(10)">📞 Phone</button>
+  <button onclick="show(11)">🧠 Quiz</button>
 </nav>
 
 <!-- SECTION 0: PASSIVE VOICE -->
@@ -863,8 +879,338 @@
   </div>
 </div>
 
-<!-- SECTION 9: QUIZ -->
+<!-- SECTION 9: EMAILS -->
 <div class="section" id="s9">
+  <p class="section-title">Writing Emails</p>
+  <p class="section-sub">10 model emails + key sentences to memorize — likely exam material.</p>
+
+  <div class="card" style="border-color:var(--yellow); background:#fffdf0;">
+    <div class="card-label" style="color:#a07000;">⭐ Standard Email Structure</div>
+    <table class="tbl">
+      <tr><th>Part</th><th>Examples</th></tr>
+      <tr><td>Subject</td><td>Meeting 14/5 · Re your email · Shipping confirmation</td></tr>
+      <tr><td>Opening</td><td>Dear Mr Smith, / Hello Mr Smith,</td></tr>
+      <tr><td>Reference</td><td>Thank you for your email. / Further to your last email…</td></tr>
+      <tr><td>Reason</td><td>I am writing to inform you that… / I am writing regarding…</td></tr>
+      <tr><td>Good news</td><td>We are pleased to inform you that… / We are able to confirm…</td></tr>
+      <tr><td>Bad news</td><td>Unfortunately… / We regret to inform you that…</td></tr>
+      <tr><td>Request</td><td>Could you please… / I would be grateful if you could…</td></tr>
+      <tr><td>Attachment</td><td>Please find attached… / I've attached…</td></tr>
+      <tr><td>Closing</td><td>I look forward to hearing from you. / Please do not hesitate to contact me.</td></tr>
+      <tr><td>Sign-off</td><td>Best regards, / Kind regards, / Yours faithfully,</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-label">🔑 10 Sentences to Memorize</div>
+    <div class="example"><div class="label">Opening</div>Thank you for your email.</div>
+    <div class="example"><div class="label">Opening</div>I am writing regarding…</div>
+    <div class="example"><div class="label">Opening</div>I am writing to inform you that…</div>
+    <div class="example"><div class="label">Request</div>I would be grateful if you could…</div>
+    <div class="example"><div class="label">Request</div>Please let me know if…</div>
+    <div class="example"><div class="label">Attachment</div>Please find attached…</div>
+    <div class="example"><div class="label">Bad news</div>Unfortunately,…</div>
+    <div class="example"><div class="label">Bad news</div>We regret to inform you that…</div>
+    <div class="example"><div class="label">Closing</div>If you require any further information, please do not hesitate to contact me.</div>
+    <div class="example"><div class="label">Closing</div>I look forward to hearing from you.</div>
+  </div>
+
+  <!-- Model emails as accordions -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">1. Requesting Information</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Sir or Madam,
+
+I am writing to request information about your network security services.
+
+In particular, I would like to know your prices, delivery times and support options.
+
+I would be grateful if you could send me further details.
+
+Thank you for your assistance.
+
+I look forward to hearing from you.
+
+Yours faithfully,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">2. Replying to a Request</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Brown,
+
+Thank you for your email.
+
+We are pleased to provide information about our services.
+
+Please find attached our brochure and price list.
+
+If you require any further information, please do not hesitate to contact me.
+
+Kind regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">3. Arranging a Meeting ⭐</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Ms Dupont,
+
+I am writing to arrange a meeting regarding our project.
+
+Would Thursday afternoon at 2:00 p.m. be convenient for you?
+
+Please let me know if another time would be more suitable.
+
+I look forward to meeting you.
+
+Best regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">4. Changing / Cancelling a Meeting ⭐</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Martin,
+
+I am afraid I will not be able to attend our meeting next Thursday.
+
+Unfortunately, I have another appointment.
+
+I wonder if we could move the meeting to Friday morning instead.
+
+I apologise for any inconvenience caused.
+
+Kind regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">5. Accepting an Invitation</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Ms Taylor,
+
+Thank you for your kind invitation.
+
+I would be delighted to attend the meeting on 15 June.
+
+The proposed date is convenient for me.
+
+I look forward to meeting you.
+
+Best regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">6. Refusing an Invitation</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Wilson,
+
+Thank you for your kind invitation.
+
+Unfortunately, I have another appointment on that day and will not be able to attend.
+
+Please accept my apologies.
+
+I hope we will have the opportunity to meet on another occasion.
+
+Kind regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">7. Confirming an Order</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Brown,
+
+Thank you for your recent order.
+
+We are pleased to confirm that your order has been received and processed.
+
+The goods will be shipped within three working days.
+
+Please do not hesitate to contact us if you require any further information.
+
+Best regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">8. Delivery Delay / Bad News ⭐</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Taylor,
+
+Thank you for your order.
+
+Unfortunately, the items you requested are currently out of stock.
+
+We expect new supplies to arrive next week and will inform you as soon as they are available.
+
+We apologise for any inconvenience caused.
+
+Kind regards,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">9. Complaint Email ⭐</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Sir or Madam,
+
+I am writing to complain about the quality of a product I recently purchased from your company.
+
+The item arrived damaged and does not function correctly.
+
+I would be grateful if you could replace the product as soon as possible.
+
+I look forward to your reply.
+
+Yours faithfully,
+Ainul Malik</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">10. Apology Email (Reply to Complaint)</button>
+    <div class="acc-body">
+      <div class="formula" style="white-space:pre-line; line-height:1.7;">Dear Mr Brown,
+
+Thank you for your email.
+
+We are very sorry to hear about the problem with your order.
+
+Please accept our sincere apologies.
+
+We have arranged for a replacement item to be sent immediately.
+
+We apologise for any inconvenience caused and thank you for your understanding.
+
+Kind regards,
+Ainul Malik</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 10: PHONE -->
+<div class="section" id="s10">
+  <p class="section-title">On the Phone</p>
+  <p class="section-sub">Key phrases + translation exercises — likely a French → English dialogue on the exam.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label">Answering</div>
+      <div class="example">Good morning, XYZ Ltd.</div>
+      <div class="example">Hello, how may I help you?</div>
+      <div class="example">XYZ Ltd, Sarah speaking.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Asking for Someone</div>
+      <div class="example">Could I speak to Mr Brown, please?</div>
+      <div class="example">Is Mr Brown available?</div>
+      <div class="example">I'd like to speak to Mr Brown.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Person Not Available</div>
+      <div class="example">I'm afraid he's in a meeting.</div>
+      <div class="example">I'm afraid she's not available at the moment.</div>
+      <div class="example">He's out of the office. / He's at lunch.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Putting Through</div>
+      <div class="example">Hold on a moment, please.</div>
+      <div class="example">I'll put you through.</div>
+      <div class="example">I'll just see if she's available.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Taking a Message</div>
+      <div class="example">Can I take a message?</div>
+      <div class="example">Would you like to leave a message?</div>
+      <div class="example">Could you ask him to call me back?</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Asking to Repeat ⭐</div>
+      <div class="example">Could you say that again, please?</div>
+      <div class="example">Could you say that more slowly?</div>
+      <div class="example">Could you spell that for me?</div>
+      <div class="example">Did you say fourteen or forty?</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-label">Telephone Phrasal Verbs — MEMORIZE</div>
+    <table class="tbl">
+      <tr><th>Expression</th><th>Meaning (FR)</th></tr>
+      <tr><td>put through</td><td>connecter / mettre en relation</td></tr>
+      <tr><td>call back / ring back</td><td>rappeler</td></tr>
+      <tr><td>hold on</td><td>attendre</td></tr>
+      <tr><td>hang up</td><td>raccrocher</td></tr>
+      <tr><td>pick up</td><td>décrocher</td></tr>
+      <tr><td>get through</td><td>réussir à joindre</td></tr>
+      <tr><td>cut off</td><td>être coupé</td></tr>
+      <tr><td>look up</td><td>chercher</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="border-color:var(--accent);">
+    <div class="card-label" style="color:var(--accent);">🎯 Mini Exam — Translate without looking</div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Tap each line to reveal the English translation.</p>
+    <div id="translations">
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Bonjour, société TechNet.</div>
+        <div class="trans-en" style="display:none;">Good morning, TechNet. How may I help you?</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Bonjour, je voudrais parler à Monsieur Davis.</div>
+        <div class="trans-en" style="display:none;">Hello, I'd like to speak to Mr Davis, please.</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Je suis désolé, il est en réunion.</div>
+        <div class="trans-en" style="display:none;">I'm afraid he's in a meeting.</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Voulez-vous laisser un message ?</div>
+        <div class="trans-en" style="display:none;">Would you like to leave a message?</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Oui. Pouvez-vous lui demander de me rappeler ?</div>
+        <div class="trans-en" style="display:none;">Yes. Could you ask him to call me back?</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Bien sûr. Quel est votre numéro ?</div>
+        <div class="trans-en" style="display:none;">Of course. What is your number?</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">C'est le 06 12 34 56 78.</div>
+        <div class="trans-en" style="display:none;">It's 06 12 34 56 78.</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+      <div class="trans-item" onclick="reveal(this)">
+        <div class="trans-fr">Merci. Il vous rappellera dès que possible.</div>
+        <div class="trans-en" style="display:none;">Thank you. He will call you back as soon as possible.</div>
+        <div class="trans-tap">Tap to reveal</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 11: QUIZ -->
+<div class="section" id="s11">
   <p class="section-title">Quiz</p>
   <p class="section-sub">5 sets · 35 questions total — all from your teacher's sheets.</p>
 
@@ -896,8 +1242,13 @@
         <div class="quiz-q" style="font-size:15px;">Prepositions, Phrasal Verbs &amp; Quantifiers</div>
         <div class="quiz-hint">Adjective+prep, verb+prep, teacher's phrasal verbs</div>
       </div>
-      <div class="quiz-card" style="cursor:pointer; background:var(--ink); border-color:var(--ink);" onclick="startSet(5)">
-        <div class="card-label" style="color:var(--yellow);">🔀 FULL MIX · 35 questions</div>
+      <div class="quiz-card" style="cursor:pointer; border-color: #00897b;" onclick="startSet(5)">
+        <div class="card-label" style="color:#00897b;">SET 6 · 8 questions</div>
+        <div class="quiz-q" style="font-size:15px;">Emails &amp; Phone</div>
+        <div class="quiz-hint">Formal phrases, email types, telephone expressions</div>
+      </div>
+      <div class="quiz-card" style="cursor:pointer; background:var(--ink); border-color:var(--ink);" onclick="startSet(6)">
+        <div class="card-label" style="color:var(--yellow);">🔀 FULL MIX · 43 questions</div>
         <div class="quiz-q" style="font-size:15px; color:white;">Everything — shuffled</div>
         <div class="quiz-hint" style="color:#aaa;">The ultimate exam prep</div>
       </div>
@@ -931,7 +1282,7 @@ function show(i) {
 }
 
 function updateProgress() {
-  const total = 10;
+  const total = 12;
   const count = visited.size;
   document.getElementById('prog-label').textContent = count + ' / ' + total;
   document.getElementById('prog-fill').style.width = (count / total * 100) + '%';
@@ -941,6 +1292,19 @@ function updateProgress() {
 function acc(btn) {
   btn.classList.toggle('open');
   btn.nextElementSibling.classList.toggle('open');
+}
+
+// PHONE TRANSLATION REVEAL
+function reveal(el) {
+  const en = el.querySelector('.trans-en');
+  const tap = el.querySelector('.trans-tap');
+  if (en.style.display === 'none') {
+    en.style.display = 'block';
+    tap.textContent = 'Tap to hide';
+  } else {
+    en.style.display = 'none';
+    tap.textContent = 'Tap to reveal';
+  }
 }
 
 // ── ALL QUESTIONS ──────────────────────────────────────────────
@@ -1014,13 +1378,25 @@ function shuffle(arr) {
   return a;
 }
 
-const ALL_SETS = [SET0, SET1, SET2, SET3, SET4];
+const SET5 = [ // Emails & Phone
+  { q:"You want to write an email asking for a catalogue. Which opening is correct?", hint:"Reason for writing", opts:["I write to request…","I am writing to request…","I wrote to request…","Writing to request…"], ans:1, explain:"Always use present continuous: I am writing to…" },
+  { q:"You cannot attend a meeting. Which phrase is correct?", hint:"Apologizing formally", opts:["I am afraid I will not be able to attend.","I am afraid I cannot to attend.","Unfortunately I don't attend.","I regret I won't attend."], ans:0, explain:"I am afraid I will not be able to attend. — the standard formal phrase." },
+  { q:"You want to attach a file. Which phrase do you use?", hint:"Attachment phrase", opts:["I attach herewith…","Please find attached…","See the file below…","I am attaching you…"], ans:1, explain:"Please find attached… is the standard professional phrase." },
+  { q:"Which sign-off do you use when you don't know the person's name?", hint:"Dear Sir or Madam → ?", opts:["Best regards,","Kind regards,","Yours faithfully,","Yours sincerely,"], ans:2, explain:"Dear Sir or Madam → Yours faithfully. Named person → Yours sincerely / Kind regards." },
+  { q:"On the phone: the person is busy. What do you say?", hint:"Person not available", opts:["He is busy.","I'm afraid he's in a meeting.","He cannot speak.","He doesn't want to talk."], ans:1, explain:"I'm afraid he's in a meeting. — polite and professional." },
+  { q:"You want to connect the caller. What do you say?", hint:"Putting through", opts:["I connect you now.","Please wait.","I'll put you through.","One moment, connecting."], ans:2, explain:"I'll put you through. — the standard telephone phrase." },
+  { q:"The caller wants to leave a message. How do you offer this?", hint:"Taking a message", opts:["You want a message?","Should I write a message?","Would you like to leave a message?","Can you leave message?"], ans:2, explain:"Would you like to leave a message? — polite modal question." },
+  { q:"You didn't understand. What do you say?", hint:"Asking to repeat", opts:["What?","Repeat please.","Could you say that again, please?","Say it again slowly."], ans:2, explain:"Could you say that again, please? — the polite, exam-ready phrase." }
+];
+
+const ALL_SETS = [SET0, SET1, SET2, SET3, SET4, SET5];
 const SET_NAMES = [
   "Passive & Reported Speech",
   "Past Tenses",
   "3rd Conditional & Superlatives",
   "Gerunds & Verb Constructions",
   "Prepositions, Phrasal Verbs & Quantifiers",
+  "Emails & Phone",
   "Full Mix"
 ];
 
@@ -1032,8 +1408,8 @@ let answered = false;
 
 function startSet(i) {
   activeSetIndex = i;
-  if (i === 5) {
-    activeSet = shuffle([...SET0, ...SET1, ...SET2, ...SET3, ...SET4]);
+  if (i === 6) {
+    activeSet = shuffle([...SET0, ...SET1, ...SET2, ...SET3, ...SET4, ...SET5]);
   } else {
     activeSet = [...ALL_SETS[i]];
   }
