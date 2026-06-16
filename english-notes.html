@@ -466,7 +466,7 @@
 <header>
   <h1>English Grammar <span>Notes</span></h1>
   <div class="progress-wrap">
-    <span id="prog-label">0 / 10</span>
+    <span id="prog-label">0 / 12</span>
     <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
   </div>
 </header>
@@ -475,8 +475,8 @@
   <button class="active" onclick="show(0)">Passive</button>
   <button onclick="show(1)">Reported</button>
   <button onclick="show(2)">Superlatives</button>
-  <button onclick="show(3)">3rd Cond.</button>
-  <button onclick="show(4)">Gerund</button>
+  <button onclick="show(3)">Conditionals</button>
+  <button onclick="show(4)">Gerund/Inf.</button>
   <button onclick="show(5)">Verb Constr.</button>
   <button onclick="show(6)">Quantifiers</button>
   <button onclick="show(7)">Prepositions</button>
@@ -493,106 +493,252 @@
 
   <div class="formula">Object + BE + past participle (+ by + agent)</div>
 
-  <div class="passive-grid">
+  <!-- WHEN TO USE -->
+  <div class="card" style="border-color:var(--yellow); background:#fffdf0;">
+    <div class="card-label" style="color:#a07000;">⭐ When to use the Passive — this is the key</div>
+    <table class="tbl">
+      <tr><th>Reason</th><th>Example</th></tr>
+      <tr><td>Agent is <strong>unknown</strong></td><td>My car was stolen. (we don't know who)</td></tr>
+      <tr><td>Agent is <strong>obvious</strong></td><td>He was arrested. (obviously by police)</td></tr>
+      <tr><td>Agent is <strong>unimportant</strong></td><td>The report has been sent. (who sent it doesn't matter)</td></tr>
+      <tr><td><strong>Formal / professional</strong> writing</td><td>The system will be upgraded next week.</td></tr>
+      <tr><td>Focus on the <strong>action</strong>, not the person</td><td>Three people were injured. (not "a car hit three people")</td></tr>
+      <tr><td><strong>Scientific</strong> / technical writing</td><td>The samples were tested at 37°C.</td></tr>
+    </table>
+    <div style="margin-top:10px; padding:8px 12px; background:#fff8e1; border-radius:6px; font-size:13px;">
+      💡 <strong>Rule of thumb:</strong> use passive when the <em>object</em> matters more than the <em>subject</em>.<br>
+      Active: <em>Apple launched the iPhone.</em> → focus on Apple<br>
+      Passive: <em>The iPhone was launched in 2007.</em> → focus on the iPhone
+    </div>
+  </div>
+
+  <!-- TENSE FORMS -->
+  <div class="passive-grid" style="margin-top:14px;">
     <div class="acc-wrap">
-      <button class="acc-btn" onclick="acc(this)">Present Simple</button>
+      <button class="acc-btn" onclick="acc(this)">Present Simple Passive</button>
       <div class="acc-body">
         <div class="formula">is / am / are + past participle</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use for habits, routines, general facts.</p>
         <div class="example"><div class="label">Active</div>They build houses.</div>
         <div class="example"><div class="label">Passive</div>Houses <strong>are built</strong>.</div>
         <div class="example"><div class="label">Example</div>The road <strong>is repaired</strong> every year.</div>
+        <div class="example"><div class="label">Example</div>Coffee <strong>is grown</strong> in Brazil.</div>
       </div>
     </div>
 
     <div class="acc-wrap">
-      <button class="acc-btn" onclick="acc(this)">Past Simple</button>
+      <button class="acc-btn" onclick="acc(this)">Past Simple Passive</button>
       <div class="acc-body">
         <div class="formula">was / were + past participle</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use for completed past actions where the agent is unknown/unimportant.</p>
         <div class="example"><div class="label">Active</div>They built the bridge.</div>
-        <div class="example"><div class="label">Passive</div>The bridge <strong>was built</strong>.</div>
-        <div class="example"><div class="label">Teacher example</div>He <strong>was recruited</strong> two weeks ago.</div>
+        <div class="example"><div class="label">Passive</div>The bridge <strong>was built</strong> in 1890.</div>
+        <div class="example"><div class="label">Teacher</div>He <strong>was recruited</strong> two weeks ago.</div>
+        <div class="example"><div class="label">Example</div>The window <strong>was broken</strong>. (we don't know who)</div>
       </div>
     </div>
 
     <div class="acc-wrap">
-      <button class="acc-btn" onclick="acc(this)">Present Perfect</button>
+      <button class="acc-btn" onclick="acc(this)">Present Perfect Passive</button>
       <div class="acc-body">
         <div class="formula">has / have + been + past participle</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use when a past action has a present result and the agent doesn't matter.</p>
         <div class="example"><div class="label">Active</div>They have completed the project.</div>
         <div class="example"><div class="label">Passive</div>The project <strong>has been completed</strong>.</div>
-        <div class="example"><div class="label">Teacher example</div>This document <strong>has not been understood</strong> by the staff.</div>
+        <div class="example"><div class="label">Teacher</div>This document <strong>has not been understood</strong> by the staff.</div>
+        <div class="example"><div class="label">Example</div>The building <strong>has been destroyed</strong>.</div>
       </div>
     </div>
 
     <div class="acc-wrap">
-      <button class="acc-btn" onclick="acc(this)">Future</button>
+      <button class="acc-btn" onclick="acc(this)">Future Passive</button>
       <div class="acc-body">
         <div class="formula">will + be + past participle</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use for scheduled or planned future actions in formal contexts.</p>
         <div class="example"><div class="label">Active</div>They will launch the product.</div>
-        <div class="example"><div class="label">Passive</div>The product <strong>will be launched</strong>.</div>
-        <div class="example"><div class="label">Another</div>The meeting <strong>will be postponed</strong>.</div>
+        <div class="example"><div class="label">Passive</div>The product <strong>will be launched</strong> next month.</div>
+        <div class="example"><div class="label">Example</div>The meeting <strong>will be postponed</strong>.</div>
+        <div class="example"><div class="label">Example</div>All staff <strong>will be informed</strong> by email.</div>
       </div>
     </div>
 
     <div class="acc-wrap">
-      <button class="acc-btn" onclick="acc(this)">Modal Verbs</button>
+      <button class="acc-btn" onclick="acc(this)">Modal Passive</button>
       <div class="acc-body">
         <div class="formula">modal + be + past participle</div>
-        <div class="example"><div class="label">Example</div>The work <strong>must be finished</strong>.</div>
-        <div class="example"><div class="label">Example</div>The problem <strong>can be solved</strong>.</div>
-        <div class="example"><div class="label">Example</div>Rules <strong>must be followed</strong>.</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use to express obligation, possibility, or advice without naming who does it.</p>
+        <table class="tbl" style="margin-bottom:8px;">
+          <tr><th>Modal</th><th>Passive Example</th></tr>
+          <tr><td>must</td><td>The rules <strong>must be followed</strong>.</td></tr>
+          <tr><td>can</td><td>The problem <strong>can be solved</strong>.</td></tr>
+          <tr><td>should</td><td>This <strong>should be checked</strong>.</td></tr>
+          <tr><td>could</td><td>It <strong>could be improved</strong>.</td></tr>
+          <tr><td>might</td><td>It <strong>might be delayed</strong>.</td></tr>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:16px;">
-    <div class="card-label">⚠️ Hold up = delayed (passive)</div>
+  <!-- BY vs WITHOUT BY -->
+  <div class="card" style="margin-top:12px;">
+    <div class="card-label">When to add "by + agent" — and when not to</div>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;margin-bottom:6px;">✅ Include "by" when the agent adds useful info</p>
+        <div class="example">This play was written <strong>by Shakespeare</strong>.</div>
+        <div class="example">The photo was taken <strong>by a professional</strong>.</div>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;margin-bottom:6px;">❌ Drop "by" when it's obvious or irrelevant</p>
+        <div class="example">He was arrested. <span style="color:var(--muted)">(not "by police")</span></div>
+        <div class="example">The report was sent. <span style="color:var(--muted)">(we don't care who)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <div class="card-label">⚠️ Teacher's passive examples</div>
     <div class="example">The train <strong>was delayed</strong>. / The train <strong>has been held up</strong>.</div>
+    <div class="example">He <strong>was recruited</strong> two weeks ago.</div>
+    <div class="example">This document <strong>has not been understood</strong> by the staff.</div>
   </div>
 </div>
 
 <!-- SECTION 1: REPORTED SPEECH -->
 <div class="section" id="s1">
   <p class="section-title">Reported Speech</p>
-  <p class="section-sub">Tenses shift back one step into the past.</p>
+  <p class="section-sub">Tenses shift back one step. Pronouns, time words, and structure all change.</p>
 
-  <div class="card">
-    <div class="card-label">Tense Changes</div>
+  <!-- SAY VS TELL -->
+  <div class="card" style="border-color:var(--accent); background:#fff5f5;">
+    <div class="card-label" style="color:var(--accent);">⭐ say vs tell — most common exam trap</div>
     <table class="tbl">
-      <tr><th>Direct</th><th>Reported</th></tr>
-      <tr><td>am / is</td><td>was</td></tr>
-      <tr><td>are</td><td>were</td></tr>
+      <tr><th></th><th>Rule</th><th>Example</th></tr>
+      <tr><td><strong>say</strong></td><td>No object needed after "say"</td><td>She <strong>said</strong> she was tired.</td></tr>
+      <tr><td><strong>tell</strong></td><td>Always needs a person after "tell"</td><td>She <strong>told me</strong> she was tired.</td></tr>
+    </table>
+    <div class="two-col" style="margin-top:8px;">
+      <div class="example" style="border-color:var(--green);"><div class="label">✅ Correct</div>He <strong>said</strong> that he was leaving.</div>
+      <div class="example" style="border-color:var(--accent);"><div class="label">❌ Wrong</div>He <strong>said me</strong> that he was leaving.</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">✅ Correct</div>He <strong>told me</strong> he was leaving.</div>
+      <div class="example" style="border-color:var(--accent);"><div class="label">❌ Wrong</div>He <strong>told</strong> he was leaving.</div>
+    </div>
+  </div>
+
+  <!-- TENSE CHANGES -->
+  <div class="card" style="margin-top:10px;">
+    <div class="card-label">Tense Backshift</div>
+    <table class="tbl">
+      <tr><th>Direct Speech</th><th>Reported Speech</th></tr>
+      <tr><td>am / is / are</td><td>was / were</td></tr>
       <tr><td>do / does</td><td>did</td></tr>
       <tr><td>have / has</td><td>had</td></tr>
+      <tr><td>did / past simple</td><td>had + past participle</td></tr>
       <tr><td>will</td><td>would</td></tr>
       <tr><td>can</td><td>could</td></tr>
       <tr><td>may</td><td>might</td></tr>
+      <tr><td>must</td><td>had to</td></tr>
+      <tr><td>shall</td><td>should</td></tr>
     </table>
+    <div style="margin-top:8px; font-size:12px; color:var(--muted); padding:6px 10px; background:#f9f7f3; border-radius:6px;">
+      💡 <strong>No backshift needed</strong> when the situation is still true now:<br>
+      She said Paris <strong>is</strong> the capital of France. ✅ (still true)
+    </div>
   </div>
 
+  <!-- TIME CHANGES -->
   <div class="card">
-    <div class="card-label">Time Expression Changes</div>
+    <div class="card-label">Time & Place Changes</div>
     <table class="tbl">
       <tr><th>Direct</th><th>Reported</th></tr>
       <tr><td>now</td><td>then</td></tr>
       <tr><td>today</td><td>that day</td></tr>
-      <tr><td>yesterday</td><td>the day before</td></tr>
-      <tr><td>tomorrow</td><td>the next day</td></tr>
+      <tr><td>yesterday</td><td>the day before / the previous day</td></tr>
+      <tr><td>tomorrow</td><td>the next day / the following day</td></tr>
       <tr><td>next week</td><td>the following week</td></tr>
       <tr><td>last year</td><td>the previous year</td></tr>
+      <tr><td>here</td><td>there</td></tr>
+      <tr><td>this</td><td>that</td></tr>
+      <tr><td>these</td><td>those</td></tr>
     </table>
   </div>
 
-  <div class="card">
-    <div class="card-label">Examples</div>
-    <div class="example"><div class="label">Direct</div>"I <strong>am</strong> tired."</div>
-    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>She said that she <strong>was</strong> tired.</div>
-    <hr>
-    <div class="example"><div class="label">Direct</div>"I <strong>can</strong> attend tomorrow."</div>
-    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>She said she <strong>could</strong> attend the following day.</div>
-    <hr>
-    <div class="example"><div class="label">Direct (Teacher)</div>Tom said, "I finished the report <strong>yesterday</strong>."</div>
-    <div class="example" style="border-color: var(--green);"><div class="label">Reported</div>Tom said he <strong>had finished</strong> the report <strong>the day before</strong>.</div>
+  <!-- STATEMENT EXAMPLES -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Reporting Statements</button>
+    <div class="acc-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use: said / told + (that) + subject + verb (backshifted)</p>
+      <div class="example"><div class="label">Direct</div>"I <strong>am</strong> tired."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She said she <strong>was</strong> tired.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"I <strong>will call</strong> you tomorrow."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>He told me he <strong>would call</strong> me the next day.</div>
+      <hr>
+      <div class="example"><div class="label">Direct (Teacher)</div>"I finished the report <strong>yesterday</strong>."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>Tom said he <strong>had finished</strong> the report <strong>the day before</strong>.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"I <strong>can</strong> attend tomorrow."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She said she <strong>could</strong> attend the following day.</div>
+    </div>
+  </div>
+
+  <!-- REPORTING QUESTIONS -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Reporting Questions ⭐</button>
+    <div class="acc-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use <strong>asked</strong>. No question mark. Normal word order (subject before verb).</p>
+
+      <p style="font-size:12px;font-weight:700;margin:8px 0 4px;">Yes/No questions → use if / whether</p>
+      <div class="formula">asked + if/whether + subject + verb</div>
+      <div class="example"><div class="label">Direct</div>"<strong>Are</strong> you coming?"</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She asked <strong>if</strong> I <strong>was</strong> coming.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"<strong>Can</strong> you help me?"</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>He asked <strong>whether</strong> I <strong>could</strong> help him.</div>
+
+      <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">Wh- questions → keep the question word</p>
+      <div class="formula">asked + wh-word + subject + verb</div>
+      <div class="example"><div class="label">Direct</div>"<strong>Where</strong> do you work?"</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She asked <strong>where</strong> I <strong>worked</strong>.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"<strong>What time</strong> will the meeting start?"</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>He asked <strong>what time</strong> the meeting <strong>would</strong> start.</div>
+
+      <div style="margin-top:10px; padding:8px; background:#fce4e4; border-radius:6px; font-size:12px;">
+        ❌ Common mistake: keeping question word order<br>
+        Wrong: He asked where <strong>did I work</strong>.<br>
+        ✅ Right: He asked where <strong>I worked</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTING COMMANDS -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Reporting Commands & Requests ⭐</button>
+    <div class="acc-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">Use <strong>told / asked / ordered + person + to + infinitive</strong>. Never use "said to".</p>
+      <div class="formula">told / asked / ordered + person + to + infinitive</div>
+
+      <table class="tbl" style="margin-bottom:8px;">
+        <tr><th>Verb</th><th>When to use</th></tr>
+        <tr><td>told … to</td><td>Direct instruction / order</td></tr>
+        <tr><td>asked … to</td><td>Polite request</td></tr>
+        <tr><td>ordered … to</td><td>Strong command</td></tr>
+        <tr><td>warned … not to</td><td>Warning / prohibition</td></tr>
+      </table>
+
+      <div class="example"><div class="label">Direct</div>"<strong>Close</strong> the door."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She <strong>told me to close</strong> the door.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"<strong>Please send</strong> me the report."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>He <strong>asked me to send</strong> him the report.</div>
+      <hr>
+      <div class="example"><div class="label">Direct</div>"<strong>Don't touch</strong> that."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>She <strong>told me not to touch</strong> that.</div>
+      <hr>
+      <div class="example"><div class="label">Negative command</div>"<strong>Don't be</strong> late."</div>
+      <div class="example" style="border-color:var(--green);"><div class="label">Reported</div>He <strong>warned me not to be</strong> late.</div>
+    </div>
   </div>
 </div>
 
@@ -622,83 +768,221 @@
   </div>
 </div>
 
-<!-- SECTION 3: THIRD CONDITIONAL -->
+<!-- SECTION 3: CONDITIONALS -->
 <div class="section" id="s3">
-  <p class="section-title">Third Conditional</p>
-  <p class="section-sub">For impossible / imaginary past situations. It didn't happen — but what if it had?</p>
+  <p class="section-title">Conditionals</p>
+  <p class="section-sub">5 types — zero to mixed. Your teacher focuses on 3rd but all can appear.</p>
 
-  <div class="formula">IF + had + past participle → would have + past participle</div>
-
-  <div class="card">
-    <div class="card-label">Teacher Example</div>
-    <div class="example">None of this <strong>would have happened</strong> if I <strong>hadn't been</strong> fired from Apple.</div>
+  <!-- OVERVIEW TABLE -->
+  <div class="card" style="border-color:var(--yellow); background:#fffdf0;">
+    <div class="card-label" style="color:#a07000;">Quick Reference — All Conditionals</div>
+    <table class="tbl">
+      <tr><th>Type</th><th>IF clause</th><th>Main clause</th><th>Meaning</th></tr>
+      <tr><td><strong>Zero</strong></td><td>present simple</td><td>present simple</td><td>Always true / scientific fact</td></tr>
+      <tr><td><strong>1st</strong></td><td>present simple</td><td>will + infinitive</td><td>Real / likely future</td></tr>
+      <tr><td><strong>2nd</strong></td><td>past simple</td><td>would + infinitive</td><td>Imaginary present/future</td></tr>
+      <tr><td><strong>3rd</strong></td><td>past perfect</td><td>would have + pp</td><td>Imaginary past (impossible)</td></tr>
+      <tr><td><strong>Mixed</strong></td><td>past perfect</td><td>would + infinitive</td><td>Past cause → present result</td></tr>
+    </table>
   </div>
 
-  <div class="card">
-    <div class="card-label">More Examples</div>
-    <div class="example">If I <strong>had studied</strong> harder, I <strong>would have passed</strong>.</div>
-    <div class="example">If we <strong>had left</strong> earlier, we <strong>would have caught</strong> the train.</div>
-    <div class="example">If she <strong>had called</strong> me, I <strong>would have come</strong>.</div>
-  </div>
-
-  <div class="card">
-    <div class="card-label">Inverted Form (Advanced)</div>
-    <p style="font-size:14px; color: var(--muted); margin-bottom:10px;">Drop "if" and invert the subject/verb.</p>
-    <div class="two-col">
-      <div class="example"><div class="label">Normal</div>If I had known…</div>
-      <div class="example" style="border-color: var(--green);"><div class="label">Inverted</div><strong>Had I known</strong>…</div>
+  <div class="acc-wrap" style="margin-top:12px;">
+    <button class="acc-btn" onclick="acc(this)">Zero Conditional — always true</button>
+    <div class="acc-body">
+      <div class="formula">IF + present simple → present simple</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use for facts, scientific truths, and things that are always the result of something.</p>
+      <div class="example">If you <strong>heat</strong> water to 100°C, it <strong>boils</strong>.</div>
+      <div class="example">If it <strong>rains</strong>, the ground <strong>gets</strong> wet.</div>
+      <div class="example">If I <strong>drink</strong> coffee late, I <strong>can't sleep</strong>.</div>
+      <div style="margin-top:8px; font-size:12px; padding:6px 10px; background:#f0f4ff; border-radius:6px;">
+        💡 You can also replace "if" with "when" — same meaning: <em>When water reaches 100°C, it boils.</em>
+      </div>
     </div>
-    <div class="example" style="margin-top:8px;">Had I known, I would have helped.</div>
   </div>
 
-  <div class="card" style="border-color:#ffcdd2; background:#fff5f5;">
-    <div class="card-label" style="color:#c62828;">⚠️ had better</div>
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">1st Conditional — real / likely future</button>
+    <div class="acc-body">
+      <div class="formula">IF + present simple → will + infinitive</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use when something is possible and you believe it could actually happen.</p>
+      <div class="example">If it <strong>rains</strong> tomorrow, I <strong>will stay</strong> home.</div>
+      <div class="example">If you <strong>study</strong> hard, you <strong>will pass</strong>.</div>
+      <div class="example">If she <strong>calls</strong>, I <strong>will tell</strong> her the news.</div>
+      <div style="margin-top:8px; font-size:12px; padding:6px 10px; background:#f0f4ff; border-radius:6px;">
+        ⚠️ Never use "will" in the IF clause:<br>
+        ❌ If it <strong>will rain</strong>… → ✅ If it <strong>rains</strong>…
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">2nd Conditional — imaginary present / future</button>
+    <div class="acc-body">
+      <div class="formula">IF + past simple → would + infinitive</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use for situations that are unlikely, hypothetical, or contrary to the present reality.</p>
+      <div class="example">If I <strong>had</strong> more time, I <strong>would learn</strong> Japanese.</div>
+      <div class="example">If she <strong>lived</strong> in Paris, she <strong>would visit</strong> the Eiffel Tower every day.</div>
+      <div class="example">If I <strong>were</strong> you, I <strong>would apply</strong> for the job.</div>
+      <div style="margin-top:8px; font-size:12px; padding:6px 10px; background:#f0f4ff; border-radius:6px;">
+        💡 After "if", use <strong>were</strong> for all persons (formal):<br>
+        If I <strong>were</strong> rich… / If she <strong>were</strong> here… (not "was" in formal writing)
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">3rd Conditional — impossible past ⭐ Teacher favourite</button>
+    <div class="acc-body">
+      <div class="formula">IF + had + past participle → would have + past participle</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use for imaginary past situations — it didn't happen, but what if it had?</p>
+      <div class="example"><div class="label">Teacher</div>None of this <strong>would have happened</strong> if I <strong>hadn't been</strong> fired from Apple.</div>
+      <div class="example">If I <strong>had studied</strong> harder, I <strong>would have passed</strong>.</div>
+      <div class="example">If we <strong>had left</strong> earlier, we <strong>would have caught</strong> the train.</div>
+      <div class="example">If she <strong>had called</strong> me, I <strong>would have come</strong>.</div>
+
+      <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">Inverted form (drop "if", invert subject/verb):</p>
+      <div class="two-col">
+        <div class="example"><div class="label">Normal</div>If I had known…</div>
+        <div class="example" style="border-color:var(--green);"><div class="label">Inverted</div><strong>Had I known</strong>…</div>
+      </div>
+      <div class="example" style="margin-top:6px;">Had she arrived earlier, she <strong>would have met</strong> him.</div>
+    </div>
+  </div>
+
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Mixed Conditional — past cause, present result</button>
+    <div class="acc-body">
+      <div class="formula">IF + had + past participle → would + infinitive (now)</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Use when a past event affects the present situation. The past didn't happen, so the present is different.</p>
+      <div class="example">If I <strong>had studied</strong> medicine, I <strong>would be</strong> a doctor now.</div>
+      <div class="example">If she <strong>hadn't missed</strong> the flight, she <strong>would be</strong> here now.</div>
+      <div class="example">If he <strong>had saved</strong> his money, he <strong>wouldn't need</strong> a loan today.</div>
+      <div style="margin-top:10px; padding:8px 12px; background:#fff8e1; border-radius:6px; font-size:12px;">
+        💡 <strong>How to tell 3rd vs Mixed:</strong><br>
+        3rd: Both halves are about the past → <em>would <strong>have</strong> + pp</em><br>
+        Mixed: Past IF, present result → <em>would + infinitive</em> (no "have")
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#ffcdd2; background:#fff5f5; margin-top:8px;">
+    <div class="card-label" style="color:#c62828;">⚠️ had better — not a conditional but often confused</div>
     <div class="two-col">
       <div class="example" style="border-color: var(--green);"><div class="label">✅ Correct</div>Students <strong>had better start</strong> working.</div>
       <div class="example" style="border-color: var(--accent);"><div class="label">❌ Wrong</div>Students had better <strong>to start</strong> working.</div>
     </div>
-    <p style="font-size:12px; color:var(--muted); margin-top:8px;">had better + BASE VERB (no "to")</p>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px;">had better + BASE VERB (no "to", no -ing). Meaning: strong advice / warning.</p>
   </div>
 </div>
 
-<!-- SECTION 4: GERUND -->
+<!-- SECTION 4: GERUND vs INFINITIVE -->
 <div class="section" id="s4">
-  <p class="section-title">Gerund (-ING)</p>
-  <p class="section-sub">A verb used as a noun. Three main contexts.</p>
+  <p class="section-title">Gerund vs Infinitive</p>
+  <p class="section-sub">-ING or TO + verb? The choice sometimes changes the meaning entirely.</p>
 
-  <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">After prepositions</button>
-    <div class="acc-body">
-      <p style="font-size:13px; margin-bottom:8px; color:var(--muted);">Any verb after a preposition → -ING</p>
-      <div class="example">interested in <strong>learning</strong></div>
-      <div class="example">good at <strong>solving</strong></div>
-      <div class="example">without <strong>saying</strong></div>
-      <div class="example">capable of <strong>solving</strong></div>
-      <div class="example">used to <strong>working</strong> → ✅</div>
+  <!-- MEANING CHANGES - TOP PRIORITY -->
+  <div class="card" style="border-color:var(--accent); background:#fff5f5;">
+    <div class="card-label" style="color:var(--accent);">⭐ Verbs that CHANGE MEANING — classic exam trap</div>
+
+    <p style="font-size:12px;font-weight:700;margin:8px 0 4px;">REMEMBER</p>
+    <div class="two-col">
+      <div class="example" style="border-color:var(--blue);"><div class="label">remember + ING</div>I remember <strong>locking</strong> the door. <span style="font-size:11px;color:var(--muted);display:block;">→ I locked it and I recall doing it (past memory)</span></div>
+      <div class="example" style="border-color:var(--green);"><div class="label">remember + TO</div>Remember <strong>to lock</strong> the door. <span style="font-size:11px;color:var(--muted);display:block;">→ Don't forget to do it (future task)</span></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">FORGET</p>
+    <div class="two-col">
+      <div class="example" style="border-color:var(--blue);"><div class="label">forget + ING</div>I'll never forget <strong>meeting</strong> her. <span style="font-size:11px;color:var(--muted);display:block;">→ I met her and I won't forget that moment</span></div>
+      <div class="example" style="border-color:var(--green);"><div class="label">forget + TO</div>I forgot <strong>to call</strong> him. <span style="font-size:11px;color:var(--muted);display:block;">→ I didn't call him (future task not done)</span></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">STOP</p>
+    <div class="two-col">
+      <div class="example" style="border-color:var(--blue);"><div class="label">stop + ING</div>She stopped <strong>smoking</strong>. <span style="font-size:11px;color:var(--muted);display:block;">→ She no longer smokes (quit the habit)</span></div>
+      <div class="example" style="border-color:var(--green);"><div class="label">stop + TO</div>She stopped <strong>to smoke</strong>. <span style="font-size:11px;color:var(--muted);display:block;">→ She paused in order to have a cigarette</span></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">TRY</p>
+    <div class="two-col">
+      <div class="example" style="border-color:var(--blue);"><div class="label">try + ING</div>Try <strong>adding</strong> more salt. <span style="font-size:11px;color:var(--muted);display:block;">→ Experiment / see if it helps</span></div>
+      <div class="example" style="border-color:var(--green);"><div class="label">try + TO</div>I tried <strong>to open</strong> the door. <span style="font-size:11px;color:var(--muted);display:block;">→ I made an effort (may or may not succeed)</span></div>
+    </div>
+
+    <p style="font-size:12px;font-weight:700;margin:12px 0 4px;">REGRET</p>
+    <div class="two-col">
+      <div class="example" style="border-color:var(--blue);"><div class="label">regret + ING</div>I regret <strong>saying</strong> that. <span style="font-size:11px;color:var(--muted);display:block;">→ I'm sorry I said it (past action)</span></div>
+      <div class="example" style="border-color:var(--green);"><div class="label">regret + TO</div>I regret <strong>to inform</strong> you… <span style="font-size:11px;color:var(--muted);display:block;">→ Formal: I'm sorry to tell you this now</span></div>
     </div>
   </div>
 
-  <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">As a subject</button>
+  <!-- GERUND USES -->
+  <div class="acc-wrap" style="margin-top:12px;">
+    <button class="acc-btn" onclick="acc(this)">Gerund (-ING) — when to use it</button>
     <div class="acc-body">
-      <div class="example"><strong>Swimming</strong> is fun.</div>
-      <div class="example"><strong>Reading</strong> improves vocabulary.</div>
-    </div>
-  </div>
-
-  <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">After certain verbs</button>
-    <div class="acc-body">
-      <div class="verb-list">
-        <span class="pill">avoid</span><span class="pill">enjoy</span><span class="pill">suggest</span>
-        <span class="pill">admit</span><span class="pill">deny</span><span class="pill">consider</span>
-        <span class="pill">finish</span><span class="pill">keep</span><span class="pill">practise</span>
-        <span class="pill">recommend</span><span class="pill">mind</span>
+      <table class="tbl">
+        <tr><th>Context</th><th>Example</th></tr>
+        <tr><td>After a preposition</td><td>interested in <strong>learning</strong>, good at <strong>solving</strong>, without <strong>saying</strong></td></tr>
+        <tr><td>As a subject</td><td><strong>Swimming</strong> is fun. <strong>Reading</strong> improves vocabulary.</td></tr>
+        <tr><td>After certain verbs</td><td>avoid, enjoy, suggest, admit, deny, consider, finish, keep, practise, mind, recommend</td></tr>
+      </table>
+      <div class="verb-list" style="margin-top:8px;">
+        <span class="pill green">avoid</span><span class="pill green">enjoy</span><span class="pill green">suggest</span>
+        <span class="pill green">admit</span><span class="pill green">deny</span><span class="pill green">consider</span>
+        <span class="pill green">finish</span><span class="pill green">keep</span><span class="pill green">practise</span>
+        <span class="pill green">recommend</span><span class="pill green">mind</span><span class="pill green">miss</span>
+        <span class="pill green">risk</span><span class="pill green">involve</span>
       </div>
-      <div class="example">avoid <strong>answering</strong></div>
-      <div class="example">deny <strong>cheating</strong></div>
-      <div class="example">suggest <strong>leaving</strong></div>
     </div>
+  </div>
+
+  <!-- INFINITIVE USES -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Infinitive (TO + verb) — when to use it</button>
+    <div class="acc-body">
+      <table class="tbl">
+        <tr><th>Context</th><th>Example</th></tr>
+        <tr><td>After certain verbs</td><td>decide, hope, plan, want, need, promise, agree, refuse, learn, offer</td></tr>
+        <tr><td>Express purpose</td><td>I went to the shop <strong>to buy</strong> milk. (= in order to)</td></tr>
+        <tr><td>After adjectives</td><td>It's difficult <strong>to understand</strong>. / I'm happy <strong>to help</strong>.</td></tr>
+        <tr><td>After "it is" + adj</td><td>It is important <strong>to study</strong> every day.</td></tr>
+      </table>
+      <div class="verb-list" style="margin-top:8px;">
+        <span class="pill">decide</span><span class="pill">hope</span><span class="pill">plan</span>
+        <span class="pill">want</span><span class="pill">need</span><span class="pill">learn</span>
+        <span class="pill">promise</span><span class="pill">agree</span><span class="pill">refuse</span>
+        <span class="pill">offer</span><span class="pill">manage</span><span class="pill">fail</span>
+        <span class="pill">expect</span><span class="pill">appear</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTH WITH NO MEANING CHANGE -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Verbs that take BOTH — no meaning change</button>
+    <div class="acc-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">These verbs work with either form and mean the same thing.</p>
+      <table class="tbl">
+        <tr><th>Verb</th><th>ING</th><th>TO</th></tr>
+        <tr><td>begin</td><td>began raining</td><td>began to rain</td></tr>
+        <tr><td>start</td><td>started working</td><td>started to work</td></tr>
+        <tr><td>continue</td><td>continued talking</td><td>continued to talk</td></tr>
+        <tr><td>like</td><td>like swimming</td><td>like to swim</td></tr>
+        <tr><td>love</td><td>love reading</td><td>love to read</td></tr>
+        <tr><td>hate</td><td>hate waiting</td><td>hate to wait</td></tr>
+        <tr><td>prefer</td><td>prefer walking</td><td>prefer to walk</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- USED TO TRAP -->
+  <div class="card" style="border-color:#ffcdd2; background:#fff5f5; margin-top:8px;">
+    <div class="card-label" style="color:#c62828;">⚠️ "used to" — three different structures</div>
+    <table class="tbl">
+      <tr><th>Structure</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td>used to + infinitive</td><td>Past habit (no longer true)</td><td>I <strong>used to live</strong> in Lyon.</td></tr>
+      <tr><td>be used to + ING</td><td>Accustomed to (ongoing)</td><td>I <strong>am used to working</strong> nights.</td></tr>
+      <tr><td>get used to + ING</td><td>Becoming accustomed to</td><td>I'm <strong>getting used to driving</strong> on the left.</td></tr>
+    </table>
   </div>
 </div>
 
@@ -786,57 +1070,168 @@
 <!-- SECTION 7: PREPOSITIONS -->
 <div class="section" id="s7">
   <p class="section-title">Prepositions</p>
-  <p class="section-sub">Time, place, and phrasal verbs from your teacher's sheet.</p>
+  <p class="section-sub">Time, place, manner, purpose — plus all the fixed expressions your teacher uses.</p>
 
+  <!-- TIME -->
   <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">ON — days, dates, surfaces</button>
+    <button class="acc-btn" onclick="acc(this)">Time Prepositions — ON / IN / AT</button>
     <div class="acc-body">
-      <div class="verb-list">
-        <span class="pill">on Monday</span><span class="pill">on 5 June</span>
-        <span class="pill">on the table</span><span class="pill">on TV</span>
-        <span class="pill">on the phone</span><span class="pill">on the internet</span>
+      <table class="tbl">
+        <tr><th>Prep</th><th>Use</th><th>Examples</th></tr>
+        <tr><td><strong>ON</strong></td><td>Days &amp; dates</td><td>on Monday · on 5 June · on my birthday · on Christmas Day</td></tr>
+        <tr><td><strong>IN</strong></td><td>Months, years, seasons, periods</td><td>in June · in 2025 · in summer · in the morning · in the 20th century · in two hours</td></tr>
+        <tr><td><strong>AT</strong></td><td>Clock times &amp; fixed points</td><td>at 8 o'clock · at noon · at midnight · at the weekend · at Christmas · at Easter</td></tr>
+        <tr><td><strong>BY</strong></td><td>Deadline (not later than)</td><td>by Friday · by 9am · by the end of the month</td></tr>
+        <tr><td><strong>SINCE</strong></td><td>Starting point (with perfect tenses)</td><td>since 2020 · since Monday · since I was a child</td></tr>
+        <tr><td><strong>FOR</strong></td><td>Duration</td><td>for two hours · for years · for a long time</td></tr>
+        <tr><td><strong>UNTIL / TILL</strong></td><td>Up to a point in time</td><td>until Friday · till midnight</td></tr>
+        <tr><td><strong>DURING</strong></td><td>Within a period</td><td>during the meeting · during summer</td></tr>
+        <tr><td><strong>WITHIN</strong></td><td>Before a period ends</td><td>within two days · within the hour</td></tr>
+      </table>
+      <div style="margin-top:8px; font-size:12px; padding:6px 10px; background:#f0f4ff; border-radius:6px;">
+        💡 <strong>No preposition</strong> with: yesterday, today, tomorrow, last week, next year, this morning.<br>
+        ❌ <em>on yesterday</em> → ✅ <em>yesterday</em>
       </div>
     </div>
   </div>
 
+  <!-- PLACE -->
   <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">IN — months, years, countries</button>
+    <button class="acc-btn" onclick="acc(this)">Place Prepositions — IN / ON / AT + more</button>
     <div class="acc-body">
-      <div class="verb-list">
-        <span class="pill">in June</span><span class="pill">in 2025</span>
-        <span class="pill">in summer</span><span class="pill">in France</span>
-        <span class="pill">in Paris</span><span class="pill">in two hours</span>
-      </div>
+      <table class="tbl">
+        <tr><th>Prep</th><th>Use</th><th>Examples</th></tr>
+        <tr><td><strong>IN</strong></td><td>Inside / enclosed space / countries, cities</td><td>in the box · in France · in Paris · in the room · in bed</td></tr>
+        <tr><td><strong>ON</strong></td><td>Surface / floors / roads / screens</td><td>on the table · on the wall · on the 3rd floor · on the street · on TV · on the phone · on the internet</td></tr>
+        <tr><td><strong>AT</strong></td><td>Specific point / institution</td><td>at school · at home · at work · at university · at the station · at the top</td></tr>
+        <tr><td><strong>ABOVE</strong></td><td>Higher than (not touching)</td><td>above the clouds · above the door</td></tr>
+        <tr><td><strong>BELOW</strong></td><td>Lower than</td><td>below zero · below the surface</td></tr>
+        <tr><td><strong>BETWEEN</strong></td><td>In the middle of two things</td><td>between the two buildings · between 9 and 5</td></tr>
+        <tr><td><strong>AMONG</strong></td><td>In the middle of many things</td><td>among the crowd · among friends</td></tr>
+        <tr><td><strong>NEXT TO / BESIDE</strong></td><td>Right next to</td><td>next to the bank · beside the river</td></tr>
+        <tr><td><strong>OPPOSITE</strong></td><td>Facing</td><td>opposite the post office</td></tr>
+        <tr><td><strong>NEAR</strong></td><td>Close to</td><td>near the airport</td></tr>
+      </table>
     </div>
   </div>
 
+  <!-- MOVEMENT -->
   <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">AT — times, places</button>
+    <button class="acc-btn" onclick="acc(this)">Movement Prepositions</button>
     <div class="acc-body">
-      <div class="verb-list">
-        <span class="pill">at 8 o'clock</span><span class="pill">at school</span>
-        <span class="pill">at home</span><span class="pill">at work</span>
-        <span class="pill">at university</span><span class="pill">at the station</span>
-      </div>
+      <table class="tbl">
+        <tr><th>Prep</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><strong>TO</strong></td><td>Direction towards</td><td>go to school · travel to Paris · move to France</td></tr>
+        <tr><td><strong>INTO</strong></td><td>Entering an enclosed space</td><td>walk into the room · get into the car</td></tr>
+        <tr><td><strong>OUT OF</strong></td><td>Leaving an enclosed space</td><td>get out of the car · walk out of the office</td></tr>
+        <tr><td><strong>ONTO</strong></td><td>Moving to a surface</td><td>jump onto the stage · climb onto the roof</td></tr>
+        <tr><td><strong>THROUGH</strong></td><td>From one side to the other</td><td>walk through the tunnel · go through customs</td></tr>
+        <tr><td><strong>PAST</strong></td><td>Going beyond a point</td><td>drive past the school</td></tr>
+        <tr><td><strong>ALONG</strong></td><td>Following a line / path</td><td>walk along the river</td></tr>
+        <tr><td><strong>ACROSS</strong></td><td>From one side to the other (flat)</td><td>swim across the lake · walk across the street</td></tr>
+        <tr><td><strong>TOWARDS</strong></td><td>In the direction of</td><td>walk towards the exit</td></tr>
+      </table>
     </div>
   </div>
 
+  <!-- COMPLEX PREPOSITIONS -->
   <div class="acc-wrap">
-    <button class="acc-btn" onclick="acc(this)">Teacher's Key Phrasal Verbs</button>
+    <button class="acc-btn" onclick="acc(this)">Complex Prepositions — very likely exam material</button>
+    <div class="acc-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">These are multi-word prepositional phrases. Memorize them as single units.</p>
+      <table class="tbl">
+        <tr><th>Expression</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td>in charge of</td><td>responsible for managing</td><td>She is <strong>in charge of</strong> the project.</td></tr>
+        <tr><td>on behalf of</td><td>representing someone</td><td>I'm writing <strong>on behalf of</strong> Mr Smith.</td></tr>
+        <tr><td>due to</td><td>because of</td><td>The delay was <strong>due to</strong> bad weather.</td></tr>
+        <tr><td>according to</td><td>as stated by</td><td><strong>According to</strong> the report, sales are up.</td></tr>
+        <tr><td>in spite of</td><td>despite</td><td>She passed <strong>in spite of</strong> her illness.</td></tr>
+        <tr><td>instead of</td><td>in place of</td><td>Use email <strong>instead of</strong> calling.</td></tr>
+        <tr><td>apart from / except for</td><td>excluding</td><td><strong>Apart from</strong> John, everyone agreed.</td></tr>
+        <tr><td>in addition to</td><td>as well as</td><td><strong>In addition to</strong> the price, check delivery.</td></tr>
+        <tr><td>as a result of</td><td>because of</td><td><strong>As a result of</strong> the strike, trains stopped.</td></tr>
+        <tr><td>in order to</td><td>with the purpose of</td><td>She studied hard <strong>in order to</strong> pass.</td></tr>
+        <tr><td>with regard to</td><td>concerning / about</td><td><strong>With regard to</strong> your email…</td></tr>
+        <tr><td>in case of</td><td>if something happens</td><td><strong>In case of</strong> fire, use the stairs.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TEACHER PHRASAL VERBS -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Teacher's Key Phrasal Verbs ⭐</button>
     <div class="acc-body">
       <table class="tbl">
         <tr><th>Expression</th><th>Meaning</th><th>Example</th></tr>
         <tr><td>account for</td><td>explain</td><td>How can this be accounted for?</td></tr>
-        <tr><td>put through to</td><td>connect a call</td><td>Put you through to his colleague.</td></tr>
-        <tr><td>come across</td><td>find unexpectedly</td><td>I came across it.</td></tr>
+        <tr><td>put through to</td><td>connect a call</td><td>I'll put you through to his colleague.</td></tr>
+        <tr><td>come across</td><td>find unexpectedly</td><td>I came across an old report.</td></tr>
         <tr><td>break down</td><td>stop working</td><td>My car keeps breaking down.</td></tr>
         <tr><td>hold up</td><td>delay</td><td>The train has been held up.</td></tr>
-        <tr><td>cut down on</td><td>reduce</td><td>Cut down on expenses.</td></tr>
+        <tr><td>cut down on</td><td>reduce</td><td>We need to cut down on expenses.</td></tr>
         <tr><td>keep out of</td><td>don't get involved</td><td>Keep out of it.</td></tr>
-        <tr><td>short of</td><td>except</td><td>Short of murder.</td></tr>
-        <tr><td>faced with</td><td>confronted by</td><td>Faced with a problem.</td></tr>
-        <tr><td>remind of</td><td>make remember</td><td>Remind me of his name.</td></tr>
+        <tr><td>short of</td><td>except / almost</td><td>Short of murder, he'd do anything.</td></tr>
+        <tr><td>faced with</td><td>confronted by</td><td>Faced with a difficult problem.</td></tr>
+        <tr><td>remind of</td><td>make someone remember</td><td>Remind me of his name.</td></tr>
+        <tr><td>look up</td><td>search for information</td><td>Look it up in the dictionary.</td></tr>
+        <tr><td>carry out</td><td>perform / execute</td><td>carry out an investigation</td></tr>
+        <tr><td>set up</td><td>establish / create</td><td>set up a meeting</td></tr>
+        <tr><td>deal with</td><td>handle / manage</td><td>deal with a complaint</td></tr>
+        <tr><td>find out</td><td>discover information</td><td>find out the answer</td></tr>
+        <tr><td>put off</td><td>postpone</td><td>The meeting was put off until Friday.</td></tr>
+        <tr><td>take over</td><td>take control of</td><td>She took over as manager.</td></tr>
+        <tr><td>point out</td><td>draw attention to</td><td>He pointed out the mistake.</td></tr>
       </table>
+    </div>
+  </div>
+
+  <!-- FIXED EXPRESSION GROUPS -->
+  <div class="acc-wrap">
+    <button class="acc-btn" onclick="acc(this)">Fixed Preposition Groups — IN / ON / AT / BY</button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;color:var(--blue);">IN</p>
+          <div class="example">in the end (= finally)</div>
+          <div class="example">in fact</div>
+          <div class="example">in general</div>
+          <div class="example">in particular</div>
+          <div class="example">in public / in private</div>
+          <div class="example">in advance</div>
+          <div class="example">in stock / out of stock</div>
+          <div class="example">in touch (with)</div>
+          <div class="example">in charge of</div>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;color:var(--blue);">ON</p>
+          <div class="example">on time (= punctual)</div>
+          <div class="example">on average</div>
+          <div class="example">on purpose</div>
+          <div class="example">on strike</div>
+          <div class="example">on sale</div>
+          <div class="example">on duty / off duty</div>
+          <div class="example">on behalf of</div>
+          <div class="example">on second thought</div>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;color:var(--blue);">AT</p>
+          <div class="example">at last (= finally)</div>
+          <div class="example">at least</div>
+          <div class="example">at first</div>
+          <div class="example">at once (= immediately)</div>
+          <div class="example">at risk</div>
+          <div class="example">at a loss</div>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;color:var(--blue);">BY</p>
+          <div class="example">by accident / by mistake</div>
+          <div class="example">by heart (= memorized)</div>
+          <div class="example">by hand</div>
+          <div class="example">by car / by train / by plane</div>
+          <div class="example">by the way</div>
+          <div class="example">by far (= much more)</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1212,7 +1607,7 @@ Ainul Malik</div>
 <!-- SECTION 11: QUIZ -->
 <div class="section" id="s11">
   <p class="section-title">Quiz</p>
-  <p class="section-sub">5 sets · 35 questions total — all from your teacher's sheets.</p>
+  <p class="section-sub">7 sets · 62 questions — all from your teacher's sheets.</p>
 
   <!-- Set picker -->
   <div id="set-picker">
@@ -1220,7 +1615,7 @@ Ainul Malik</div>
       <div class="quiz-card" style="cursor:pointer; border-color: var(--blue);" onclick="startSet(0)">
         <div class="card-label" style="color:var(--blue);">SET 1 · 10 questions</div>
         <div class="quiz-q" style="font-size:15px;">Passive Voice &amp; Reported Speech</div>
-        <div class="quiz-hint">Tenses, passive forms, indirect speech shifts</div>
+        <div class="quiz-hint">Tenses, passive forms, say vs tell, questions, commands</div>
       </div>
       <div class="quiz-card" style="cursor:pointer; border-color: var(--green);" onclick="startSet(1)">
         <div class="card-label" style="color:var(--green);">SET 2 · 7 questions</div>
@@ -1228,27 +1623,32 @@ Ainul Malik</div>
         <div class="quiz-hint">Past simple vs past perfect vs present perfect</div>
       </div>
       <div class="quiz-card" style="cursor:pointer; border-color: var(--accent);" onclick="startSet(2)">
-        <div class="card-label" style="color:var(--accent);">SET 3 · 7 questions</div>
-        <div class="quiz-q" style="font-size:15px;">3rd Conditional &amp; Superlatives</div>
-        <div class="quiz-hint">Impossible past situations + best/worst/most</div>
+        <div class="card-label" style="color:var(--accent);">SET 3 · 8 questions</div>
+        <div class="quiz-q" style="font-size:15px;">All Conditionals</div>
+        <div class="quiz-hint">Zero, 1st, 2nd, 3rd, and Mixed conditionals</div>
       </div>
       <div class="quiz-card" style="cursor:pointer; border-color: #9c27b0;" onclick="startSet(3)">
-        <div class="card-label" style="color:#9c27b0;">SET 4 · 7 questions</div>
-        <div class="quiz-q" style="font-size:15px;">Gerunds &amp; Verb Constructions</div>
+        <div class="card-label" style="color:#9c27b0;">SET 4 · 8 questions</div>
+        <div class="quiz-q" style="font-size:15px;">Gerund vs Infinitive</div>
+        <div class="quiz-hint">Meaning changes: remember, stop, try, regret + used to</div>
+      </div>
+      <div class="quiz-card" style="cursor:pointer; border-color: #00695c;" onclick="startSet(4)">
+        <div class="card-label" style="color:#00695c;">SET 5 · 7 questions</div>
+        <div class="quiz-q" style="font-size:15px;">Verb Constructions</div>
         <div class="quiz-hint">-ING, to+infinitive, verb+preposition+ING</div>
       </div>
-      <div class="quiz-card" style="cursor:pointer; border-color: #e67e22;" onclick="startSet(4)">
-        <div class="card-label" style="color:#e67e22;">SET 5 · 14 questions</div>
+      <div class="quiz-card" style="cursor:pointer; border-color: #e67e22;" onclick="startSet(5)">
+        <div class="card-label" style="color:#e67e22;">SET 6 · 14 questions</div>
         <div class="quiz-q" style="font-size:15px;">Prepositions, Phrasal Verbs &amp; Quantifiers</div>
-        <div class="quiz-hint">Adjective+prep, verb+prep, teacher's phrasal verbs</div>
+        <div class="quiz-hint">Adjective+prep, complex prepositions, teacher's phrasal verbs</div>
       </div>
-      <div class="quiz-card" style="cursor:pointer; border-color: #00897b;" onclick="startSet(5)">
-        <div class="card-label" style="color:#00897b;">SET 6 · 8 questions</div>
+      <div class="quiz-card" style="cursor:pointer; border-color: #00897b;" onclick="startSet(6)">
+        <div class="card-label" style="color:#00897b;">SET 7 · 8 questions</div>
         <div class="quiz-q" style="font-size:15px;">Emails &amp; Phone</div>
         <div class="quiz-hint">Formal phrases, email types, telephone expressions</div>
       </div>
-      <div class="quiz-card" style="cursor:pointer; background:var(--ink); border-color:var(--ink);" onclick="startSet(6)">
-        <div class="card-label" style="color:var(--yellow);">🔀 FULL MIX · 43 questions</div>
+      <div class="quiz-card" style="cursor:pointer; background:var(--ink); border-color:var(--ink);" onclick="startSet(7)">
+        <div class="card-label" style="color:var(--yellow);">🔀 FULL MIX · 62 questions</div>
         <div class="quiz-q" style="font-size:15px; color:white;">Everything — shuffled</div>
         <div class="quiz-hint" style="color:#aaa;">The ultimate exam prep</div>
       </div>
@@ -1331,17 +1731,29 @@ const SET1 = [ // Past tenses
   { q:"I ___ that movie three times.", hint:"Life experience — no specific time", opts:["saw","have seen","had seen","see"], ans:1, explain:"Present Perfect for life experiences with no specific time." }
 ];
 
-const SET2 = [ // 3rd conditional & superlatives
+const SET2 = [ // All conditionals + mixed
+  { q:"If you ___ water to 100°C, it boils.", hint:"Zero conditional — always true", opts:["heated","will heat","heat","would heat"], ans:2, explain:"Zero conditional: IF + present simple → present simple. For facts that are always true." },
+  { q:"If it ___ tomorrow, I will stay home.", hint:"1st conditional — real possibility", opts:["rained","rains","will rain","would rain"], ans:1, explain:"1st conditional: IF + present simple (never 'will' in the IF clause)." },
+  { q:"If I ___ more time, I would learn Japanese.", hint:"2nd conditional — imaginary present", opts:["have","had","will have","would have"], ans:1, explain:"2nd conditional: IF + past simple → would + infinitive. Unlikely/hypothetical." },
+  { q:"If I ___ you, I would apply for the job.", hint:"2nd conditional — advice", opts:["am","was","were","would be"], ans:2, explain:"After 'if', use 'were' for all persons in formal/written English." },
   { q:"If she ___ harder, she would have passed.", hint:"3rd conditional — IF clause", opts:["studied","had studied","would study","studies"], ans:1, explain:"3rd conditional: IF + had + past participle." },
   { q:"If they had left earlier, they ___ the train.", hint:"3rd conditional — main clause", opts:["would catch","would have caught","caught","had caught"], ans:1, explain:"Main clause: would have + past participle." },
   { q:"Had I known the answer, I ___ you.", hint:"Inverted 3rd conditional", opts:["would help","would have helped","helped","had helped"], ans:1, explain:"Inverted form: Had I known… → would have + past participle." },
-  { q:"This is the best restaurant I ___.", hint:"Superlative + present perfect", opts:["ever visited","have ever visited","had ever visited","visited"], ans:1, explain:"Superlative + present perfect: the best … I have ever + past participle." },
-  { q:"This is the most difficult project I ___.", hint:"Superlative + present perfect", opts:["have ever completed","completed","had completed","ever complete"], ans:0, explain:"have ever + past participle after a superlative." },
-  { q:"This is the ___ film I have ever seen.", hint:"good → ? → best", opts:["better","more good","goodest","best"], ans:3, explain:"good → better → best. Irregular superlative." },
-  { q:"None of this ___ if I hadn't been fired.", hint:"3rd conditional — main clause", opts:["would happen","would have happened","had happened","happened"], ans:1, explain:"would have + past participle in the main clause of a 3rd conditional." }
+  { q:"If I had studied medicine, I ___ a doctor now.", hint:"Mixed conditional — past cause, present result", opts:["would have been","would be","had been","am"], ans:1, explain:"Mixed conditional: IF + past perfect → would + infinitive (not 'would have been')." }
 ];
 
-const SET3 = [ // Gerunds & verb constructions
+const SET3 = [ // Gerund vs infinitive (meaning changes + basics)
+  { q:"I remember ___ the door before I left.", hint:"Past memory of doing something", opts:["to lock","lock","locking","locked"], ans:2, explain:"remember + ING = I recall doing it (past memory). remember + TO = don't forget to do it (future)." },
+  { q:"Remember ___ the door before you leave!", hint:"Future task — don't forget", opts:["locking","lock","to lock","locked"], ans:2, explain:"remember + TO + infinitive = future task, reminder to do something." },
+  { q:"She stopped ___. She no longer smokes.", hint:"Quitting a habit", opts:["to smoke","smoke","smoking","smoked"], ans:2, explain:"stop + ING = quit the habit. stop + TO = pause in order to do something." },
+  { q:"He stopped ___ a cigarette on the way.", hint:"Paused in order to do", opts:["smoking","smoke","to smoke","smoked"], ans:2, explain:"stop + TO + infinitive = stopped in order to do something (he didn't quit)." },
+  { q:"I regret ___ that to her — it was unkind.", hint:"Sorry about a past action", opts:["to say","say","saying","said"], ans:2, explain:"regret + ING = sorry about something already done (past)." },
+  { q:"We regret ___ you that the flight is cancelled.", hint:"Formal: sorry to tell you this", opts:["informing","inform","to inform","informed"], ans:2, explain:"regret + TO = formal phrase used when giving bad news ('I regret to inform you...')." },
+  { q:"Try ___ more water — it might help your headache.", hint:"Experiment / see if it works", opts:["to drink","drink","drinking","drank"], ans:2, explain:"try + ING = experiment to see if it helps. try + TO = make an effort to do something." },
+  { q:"I am ___ working night shifts — it's normal for me now.", hint:"Accustomed to (ongoing)", opts:["used to","use to","used of","use of"], ans:0, explain:"be used to + ING = accustomed to. 'used to' + infinitive = past habit (no longer true)." }
+];
+
+const SET4 = [ // Verb constructions
   { q:"He avoided ___ the question.", hint:"avoid + ?", opts:["answer","answering","to answer","answered"], ans:1, explain:"avoid + ING always." },
   { q:"They denied ___.", hint:"deny + ?", opts:["cheat","cheating","to cheat","cheated"], ans:1, explain:"deny + ING. Never 'deny to'." },
   { q:"She suggested ___ earlier.", hint:"suggest + ?", opts:["leaving","leave","to leave","left"], ans:0, explain:"suggest + ING." },
@@ -1351,7 +1763,7 @@ const SET3 = [ // Gerunds & verb constructions
   { q:"I am looking forward ___ hearing from you.", hint:"look forward + ?", opts:["for","at","of","to"], ans:3, explain:"look forward TO + ING. 'to' is a preposition." }
 ];
 
-const SET4 = [ // Prepositions, phrasal verbs, quantifiers
+const SET5 = [ // Prepositions, phrasal verbs, quantifiers
   { q:"She is interested ___ cybersecurity.", hint:"interested + ?", opts:["on","at","in","of"], ans:2, explain:"interested IN." },
   { q:"He is responsible ___ network security.", hint:"responsible + ?", opts:["of","for","with","at"], ans:1, explain:"responsible FOR." },
   { q:"They are capable ___ solving the problem.", hint:"capable + ?", opts:["in","at","of","for"], ans:2, explain:"capable OF." },
@@ -1378,7 +1790,7 @@ function shuffle(arr) {
   return a;
 }
 
-const SET5 = [ // Emails & Phone
+const SET6 = [ // Emails & Phone
   { q:"You want to write an email asking for a catalogue. Which opening is correct?", hint:"Reason for writing", opts:["I write to request…","I am writing to request…","I wrote to request…","Writing to request…"], ans:1, explain:"Always use present continuous: I am writing to…" },
   { q:"You cannot attend a meeting. Which phrase is correct?", hint:"Apologizing formally", opts:["I am afraid I will not be able to attend.","I am afraid I cannot to attend.","Unfortunately I don't attend.","I regret I won't attend."], ans:0, explain:"I am afraid I will not be able to attend. — the standard formal phrase." },
   { q:"You want to attach a file. Which phrase do you use?", hint:"Attachment phrase", opts:["I attach herewith…","Please find attached…","See the file below…","I am attaching you…"], ans:1, explain:"Please find attached… is the standard professional phrase." },
@@ -1389,12 +1801,13 @@ const SET5 = [ // Emails & Phone
   { q:"You didn't understand. What do you say?", hint:"Asking to repeat", opts:["What?","Repeat please.","Could you say that again, please?","Say it again slowly."], ans:2, explain:"Could you say that again, please? — the polite, exam-ready phrase." }
 ];
 
-const ALL_SETS = [SET0, SET1, SET2, SET3, SET4, SET5];
+const ALL_SETS = [SET0, SET1, SET2, SET3, SET4, SET5, SET6];
 const SET_NAMES = [
   "Passive & Reported Speech",
   "Past Tenses",
-  "3rd Conditional & Superlatives",
-  "Gerunds & Verb Constructions",
+  "All Conditionals",
+  "Gerund vs Infinitive",
+  "Verb Constructions",
   "Prepositions, Phrasal Verbs & Quantifiers",
   "Emails & Phone",
   "Full Mix"
@@ -1408,8 +1821,8 @@ let answered = false;
 
 function startSet(i) {
   activeSetIndex = i;
-  if (i === 6) {
-    activeSet = shuffle([...SET0, ...SET1, ...SET2, ...SET3, ...SET4, ...SET5]);
+  if (i === 7) {
+    activeSet = shuffle([...SET0, ...SET1, ...SET2, ...SET3, ...SET4, ...SET5, ...SET6]);
   } else {
     activeSet = [...ALL_SETS[i]];
   }
