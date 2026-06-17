@@ -452,6 +452,129 @@ const CHAPTERS = [
 ];
 
 const EXERCISES = [
+  // ══ ÉVALUATION 1 — Suites & Signaux ══
+  {
+    chapter: "suites",
+    title: "⭐ ÉVAL 1 — Ex2 : Suite vₙ = ln(4n−5) − 9n²",
+    question: "1. Calculer les 2 premiers termes. 2. Calculer vₙ₊₁. 3. Étudier la convergence. 4. Conclure sur la majoration.",
+    steps: [
+      { title: "1. Domaine de définition", content: "ln(4n−5) est défini quand 4n−5 > 0\n⟹  n > 5/4\n⟹  n ≥ 2  (premier entier valide)\n\nDonc (vₙ) est définie pour n ≥ 2." },
+      { title: "1. Calculer v₂ et v₃", content: "v₂ = ln(4·2−5) − 9·(2)²\n   = ln(3) − 36  ≈ 1,099 − 36  ≈ −34,9\n\nv₃ = ln(4·3−5) − 9·(3)²\n   = ln(7) − 81  ≈ 1,946 − 81  ≈ −79,05" },
+      { title: "2. Calculer vₙ₊₁", content: "vₙ₊₁ = ln(4(n+1)−5) − 9(n+1)²\n      = ln(4n−1) − 9(n+1)²" },
+      { title: "3. Monotonie — calculer vₙ₊₁ − vₙ", content: "vₙ₊₁ − vₙ = ln(4n−1) − 9(n+1)² − ln(4n−5) + 9n²\n           = ln((4n−1)/(4n−5)) − 9[n²+2n+1−n²]\n           = ln((4n−1)/(4n−5)) − 18n − 9\n\nPour n ≥ 2 : (4n−1)/(4n−5) > 1  donc  ln(…) > 0\nMais  −18n − 9 << 0  domine largement\n\n⟹  vₙ₊₁ − vₙ < 0  pour n ≥ 2\n⟹  (vₙ) est DÉCROISSANTE" },
+      { title: "3. Convergence", content: "lim(n→+∞) vₙ = lim(n→+∞) [ln(4n−5) − 9n²]\n\nln(4n−5) → +∞ mais très lentement\n−9n² → −∞ très rapidement\n\n⟹  lim vₙ = −∞\n⟹  (vₙ) DIVERGE vers −∞" },
+      { title: "4. Conclure sur la majoration", content: "(vₙ) est décroissante ⟹ son maximum est v₂\n\nDonc (vₙ) est MAJORÉE par v₂ = ln(3) − 36\n\n(vₙ) n'est PAS minorée car elle tend vers −∞\n(vₙ) n'est donc PAS bornée." },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "⭐ ÉVAL 1 — Ex3 : Suite dₙ = 0,6·dₙ₋₁, d₃ = 5",
+    question: "1. Expression non récurrente de dₙ. 2. Convergence. 3. Majorée ? Minorée ? 4. Calculer Sₙ.",
+    steps: [
+      { title: "1. Identifier le type de suite", content: "dₙ = 0,6·dₙ₋₁  ⟹  suite GÉOMÉTRIQUE de raison q = 0,6\n\nOn connaît d₃ = 5, donc le terme général est :\ndₙ = d₃ · q^(n−3) = 5 · (0,6)^(n−3)\n\nOu depuis d₁ : d₁ = d₃ / q² = 5 / 0,36 = 125/9\ndₙ = (125/9) · (0,6)^(n−1)" },
+      { title: "1. Simplification", content: "dₙ = 5 · (0,6)^(n−3)\n\nVérification : d₃ = 5·(0,6)⁰ = 5 ✓\nd₄ = 5·(0,6)¹ = 3 ✓\nd₅ = 5·(0,6)² = 1,8 ✓\n\n⚠️ Attention dans ton éval : tu as écrit dₙ = 5·0,6^(n−3) ce qui est correct,\nmais la prof a noté 0,5/5 car tu n'as pas calculé la somme Sₙ (question 4)." },
+      { title: "2. Convergence", content: "q = 0,6  ⟹  |q| = 0,6 < 1\n\nlim(n→+∞) dₙ = lim 5·(0,6)^(n−3) = 5 · 0 = 0\n\n⟹  (dₙ) CONVERGE vers 0\n\n⚠️ Dans ton éval tu as dit 'diverge' — c'est FAUX.\nAvec |q| < 1, la suite géométrique CONVERGE toujours vers 0 !" },
+      { title: "3. Majorée ? Minorée ?", content: "Comme q = 0,6 > 0 et d₃ = 5 > 0 :\nTous les termes sont strictement positifs.\n\n(dₙ) est DÉCROISSANTE (0 < q < 1)\n\n⟹  Majorée par d₃ = 5  (ou d₁ si la suite démarre à n=1)\n⟹  Minorée par 0  (car dₙ > 0 pour tout n et tend vers 0)\n⟹  (dₙ) est BORNÉE\n\n⚠️ Dans ton éval tu as dit 'non majorée' — c'est FAUX.\nUne suite décroissante est toujours majorée par son premier terme !" },
+      { title: "4. Calculer Sₙ = ∑ dₖ", content: "Sₙ = ∑(k=3 → n) dₖ  =  ∑(k=3 → n) 5·(0,6)^(k−3)\n\n1er terme = d₃ = 5\nraison = 0,6\nnb de termes = n − 3 + 1 = n − 2\n\nSₙ = 5 · (1 − 0,6^(n−2)) / (1 − 0,6)\n   = 5 · (1 − 0,6^(n−2)) / 0,4\n   = 12,5 · (1 − 0,6^(n−2))\n\nQuand n→+∞ :  Sₙ → 12,5  (série convergente car |q|<1)" },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "⭐ ÉVAL 1 — Ex4 : Monotonie de wₙ = e^(2n−5) / (3n), n ≥ 1",
+    question: "Étudier la monotonie. Conclure sur la minoration.",
+    steps: [
+      { title: "Choisir la méthode — Quotient", content: "wₙ > 0 pour tout n ≥ 1 (exponentielle > 0 et 3n > 0)\n⟹ On peut utiliser la méthode du QUOTIENT : calculer wₙ₊₁/wₙ et comparer à 1." },
+      { title: "Calculer wₙ₊₁", content: "wₙ₊₁ = e^(2(n+1)−5) / (3(n+1))\n      = e^(2n−3) / (3n+3)" },
+      { title: "Calculer le quotient wₙ₊₁/wₙ", content: "wₙ₊₁/wₙ = [e^(2n−3)/(3n+3)] × [(3n)/(e^(2n−5))]\n\n         = e^(2n−3−(2n−5)) × (3n)/(3n+3)\n\n         = e^(2n−3−2n+5) × 3n/(3n+3)\n\n         = e² × 3n/(3n+3)" },
+      { title: "Comparer à 1", content: "wₙ₊₁/wₙ = e² · 3n/(3n+3)\n\ne² ≈ 7,389\n\n3n/(3n+3) < 1 toujours, mais...\n\nPour n ≥ 1 :  e² · 3n/(3n+3) ≥ e² · 3/(3+3) = e²/2 ≈ 3,69 > 1\n\n⟹  wₙ₊₁/wₙ > 1 pour tout n ≥ 1\n⟹  (wₙ) est STRICTEMENT CROISSANTE\n\n⚠️ Dans ton éval, tu n'as pas justifié pourquoi 3n/(3n+3) > 1 — en fait c'est < 1,\nc'est e² qui est assez grand pour que le produit reste > 1. Il faut le démontrer !" },
+      { title: "Conclure — minoration", content: "Comme (wₙ) est croissante, le plus petit terme est w₁.\n\nw₁ = e^(2·1−5) / (3·1) = e^(−3) / 3\n\n⟹  (wₙ) est MINORÉE par w₁ = e⁻³/3\n\nComme elle croît et n'est pas majorée (e^(2n−5) croît plus vite que 3n),\n(wₙ) DIVERGE vers +∞." },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "⭐ ÉVAL 1 — Ex5 : Convergence de xₙ = (8−2n⁸+6n⁶) / (3−9n³−14n⁶)",
+    question: "Étudier la convergence de xₙ. Conclure sur la majoration.",
+    steps: [
+      { title: "Identifier les termes dominants", content: "Numérateur :   8 − 2n⁸ + 6n⁶\n→ terme dominant : −2n⁸\n\nDénominateur : 3 − 9n³ − 14n⁶\n→ terme dominant : −14n⁶\n\nQuand n→+∞, les autres termes deviennent négligeables." },
+      { title: "Factoriser", content: "xₙ = (8 − 2n⁸ + 6n⁶) / (3 − 9n³ − 14n⁶)\n\nFactoriser n⁸ au numérateur et n⁶ au dénominateur :\n\nxₙ = n⁸(8/n⁸ − 2 + 6/n²) / [n⁶(3/n⁶ − 9/n³ − 14)]\n\n   = n² · (8/n⁸ − 2 + 6/n²) / (3/n⁶ − 9/n³ − 14)" },
+      { title: "Calculer la limite", content: "Quand n→+∞ :\n  8/n⁸ → 0\n  6/n² → 0\n  3/n⁶ → 0\n  9/n³ → 0\n\n⟹  xₙ ≈ n² · (−2) / (−14) = n² · (1/7)\n\nlim(n→+∞) xₙ = lim n²/7 = +∞\n\n⟹  (xₙ) DIVERGE vers +∞" },
+      { title: "Conclure sur la majoration", content: "Comme (xₙ) → +∞,\n\n(xₙ) n'est PAS majorée.\n\n(car elle dépasse tout réel M pour n assez grand)" },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "⭐ ÉVAL 1 — Ex1 : Signal a[n] = n!·(u[n] − u[n−5])",
+    question: "Construire le tableau des valeurs et tracer a[n] et a[n/2 + 3]. Périodicité de b[n] = 7cos(θn+3).",
+    steps: [
+      { title: "Comprendre le signal a[n]", content: "u[n] = 1 si n≥0, 0 sinon\nu[n−5] = 1 si n≥5, 0 sinon\n\nu[n] − u[n−5] = 1 si 0 ≤ n < 5,  0 sinon\n\nDonc a[n] = n!  si 0 ≤ n ≤ 4\n            0   sinon\n\n(le signal ne vaut quelque chose que pour n = 0,1,2,3,4)" },
+      { title: "Tableau des valeurs de a[n]", content: "n  |  n!  |  a[n]\n0  |  1   |   1\n1  |  1   |   1\n2  |  2   |   2\n3  |  6   |   6\n4  |  24  |  24\n\nPour n ≥ 5 ou n < 0 : a[n] = 0" },
+      { title: "Calculer a[n/2 + 3]", content: "On substitue n par (n/2 + 3) dans a[·]\n\na[n/2 + 3] ≠ 0  ssi  0 ≤ n/2+3 < 5\n⟹  −3 ≤ n/2 < 2\n⟹  −6 ≤ n < 4\n\nTableau :\nn=-1 : indice=5/2 (non entier) → 0\nn=0  : indice=3 → a[3]=6\nn=2  : indice=4 → a[4]=24\nn=4  : indice=5 → a[5]=0\n\nNote : seuls les n pairs donnent un indice entier !" },
+      { title: "Périodicité de b[n] = 7cos(θn+3)", content: "b[n] est T-périodique ⟺  b[n] = b[n+T] pour tout n\n\n7cos(θn+3) = 7cos(θ(n+T)+3)\n⟺  cos(θn+3) = cos(θn+θT+3)\n⟺  θT = 2πk  pour k ∈ ℤ\n⟺  θ = (2π/T)·k = (p/q)·π  où p/q ∈ ℚ\n\nConclusion : b[n] est périodique ⟺ θ/π est rationnel\n\nSi θ = (p/q)π (fraction irréductible) :\n- T = q  si p est pair\n- T = 2q  si p est impair" },
+    ],
+  },
+  // ══ ÉVALUATION 2 — Matrices & Vecteurs ══
+  {
+    chapter: "matrices",
+    title: "⭐ ÉVAL 2 — Ex1 : Système 3×3 par pivot de Gauss",
+    question: "Système : 2x₁−3x₂+x₃=8 | 4x₁+x₂+5x₃=1 | 6x₁−2x₂+6x₃=9. Forme matricielle puis résoudre.",
+    steps: [
+      { title: "1. Forme matricielle Ax = b", content: "A = ( 2  -3   1 )    x = (x₁)    b = (8)\n    ( 4   1   5 )        (x₂)        (1)\n    ( 6  -2   6 )        (x₃)        (9)\n\nLe système s'écrit : Ax = b\n\n⚠️ Dans ton éval tu n'as pas précisé ce qu'est A — la prof a commenté 'Ax=b avec A=...'" },
+      { title: "2. Matrice augmentée (A|b)", content: "( 2  -3   1 | 8 )\n( 4   1   5 | 1 )\n( 6  -2   6 | 9 )" },
+      { title: "2. Opération L2←L2−2L1  |  L3←L3−3L1", content: "L2 ← L2 − 2·L1 :\n4−4=0  |  1+6=7  |  5−2=3  |  1−16=−15\n\nL3 ← L3 − 3·L1 :\n6−6=0  |  −2+9=7  |  6−3=3  |  9−24=−15\n\nRésultat :\n( 2  -3   1 |  8 )\n( 0   7   3 | -15 )\n( 0   7   3 | -15 )" },
+      { title: "2. Opération L3←L3−L2", content: "L3 ← L3 − L2 :\n0−0=0  |  7−7=0  |  3−3=0  |  −15+15=0\n\nRésultat :\n( 2  -3   1 |  8 )\n( 0   7   3 | -15 )\n( 0   0   0 |  0 )\n\nLigne nulle avec second membre 0\n⟹ Infinité de solutions (cas 3)" },
+      { title: "3. Résoudre — paramètre libre", content: "On a 3 inconnues mais seulement 2 équations utiles.\n⟹ x₃ est libre : on pose x₃ = λ (λ ∈ ℝ)\n\nDepuis L2 :  7x₂ + 3x₃ = −15\n⟹  x₂ = (−15 − 3λ) / 7 = −15/7 − 3λ/7\n\nDepuis L1 :  2x₁ − 3x₂ + x₃ = 8\n⟹  x₁ = (8 + 3x₂ − x₃) / 2\n         = (8 + 3·(−15/7 − 3λ/7) − λ) / 2\n         = (8 − 45/7 − 9λ/7 − λ) / 2\n         = (56/7 − 45/7 − 9λ/7 − 7λ/7) / 2\n         = (11/7 − 16λ/7) / 2\n         = 11/14 − 8λ/7" },
+      { title: "4. Solution finale", content: "S = { (11/14 − 8λ/7,  −15/7 − 3λ/7,  λ) ;  λ ∈ ℝ }\n\nOu en vecteur :\n(x₁)   (11/14)   (−8/7 )\n(x₂) = (−15/7) + (−3/7 ) · λ\n(x₃)   (  0  )   (  1  )\n\n✅ Ta correction était correcte mais avec des fractions légèrement différentes\n(vérifier la substitution de x₁ soigneusement)" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "⭐ ÉVAL 2 — Ex2 : Opérations matricielles (A+B, CV, AC, AV, C^T)",
+    question: "Avec A(3×3), B(3×3), C(3×2), V(3×1). Calculer A+B, −3V, CV, C^T, AC, AV.",
+    steps: [
+      { title: "Matrices données", content: "A = ( 2   0  -1 )    B = ( 2   9  -5 )\n    (-4  -2  -7 )        ( 6  -4  11 )\n    (-5  -3   0 )        (-3   2  -3 )\n\nC = ( 4   3 )    V = (-5)\n    (-3   0 )        ( 2)\n    ( 1  -2 )        ( 4)" },
+      { title: "A + B (possible : même taille 3×3)", content: "A+B = ( 2+2    0+9   -1-5 )   = ( 4   9  -6 )\n      (-4+6  -2-4  -7+11 )     ( 2  -6   4 )\n      (-5-3  -3+2   0-3  )     (-8  -1  -3 )" },
+      { title: "−3V", content: "-3V = -3·(-5)   = (15)\n      -3·( 2)     (-6)\n      -3·( 4)     (-12)" },
+      { title: "CV : impossible !", content: "C est 3×2 et V est 3×1\n\nPour faire CV : nb colonnes de C = 2\n                nb lignes de V = 3\n\n2 ≠ 3  ⟹  CV est INDÉFINI\n\n⚠️ Il faut toujours vérifier : colonnes(A) = lignes(B) pour que AB existe !" },
+      { title: "C^T (transposée de C)", content: "C est 3×2, donc C^T est 2×3\n\nC^T = ( 4  -3   1 )\n      ( 3   0  -2 )\n\nRègle : ligne i de C devient colonne i de C^T" },
+      { title: "AC (possible : 3×3 fois 3×2 = 3×2)", content: "AC = A · C\n\nLigne 1 de A × colonnes de C :\n(2)(4)+(0)(-3)+(-1)(1) = 8+0-1 = 7\n(2)(3)+(0)(0)+(-1)(-2) = 6+0+2 = 8\n\nLigne 2 :\n(-4)(4)+(-2)(-3)+(-7)(1) = -16+6-7 = -17\n(-4)(3)+(-2)(0)+(-7)(-2) = -12+0+14 = 2\n\nLigne 3 :\n(-5)(4)+(-3)(-3)+(0)(1) = -20+9+0 = -11\n(-5)(3)+(-3)(0)+(0)(-2) = -15+0+0 = -15\n\nAC = (  7   8 )\n     (-17   2 )\n     (-11 -15 )" },
+      { title: "AV (possible : 3×3 fois 3×1 = 3×1)", content: "AV = A · V\n\nLigne 1 : (2)(-5)+(0)(2)+(-1)(4) = -10+0-4 = -14\nLigne 2 : (-4)(-5)+(-2)(2)+(-7)(4) = 20-4-28 = -12\nLigne 3 : (-5)(-5)+(-3)(2)+(0)(4) = 25-6+0 = 19\n\nAV = (-14)\n     (-12)\n     ( 19)" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "⭐ ÉVAL 2 — Ex3 : Somme ∑(k=4→n) 6^k/7",
+    question: "Calculer la somme ∑(k=4→n) 6^k/7.",
+    steps: [
+      { title: "Identifier le type de somme", content: "∑(k=4 → n) 6^k/7  =  (1/7) · ∑(k=4 → n) 6^k\n\nC'est une SOMME GÉOMÉTRIQUE de raison q = 6\n\n1er terme (k=4) : 6⁴/7\nnb de termes : n − 4 + 1 = n − 3" },
+      { title: "Appliquer la formule", content: "∑(k=p→n) uₖ = (1er terme) · (1 − q^(nb termes)) / (1 − q)\n\n∑(k=4→n) 6^k/7 = (6⁴/7) · (1 − 6^(n−3)) / (1 − 6)\n\n                = (6⁴/7) · (1 − 6^(n−3)) / (−5)" },
+      { title: "Simplifier", content: "(6⁴/7) · (1 − 6^(n−3)) / (−5)\n\n= 6⁴(1 − 6^(n−3)) / (−35)\n\n= 6⁴(6^(n−3) − 1) / 35\n\n⚠️ Dans ton éval tu avais écrit (n+1) dans l'exposant au lieu de (n−3).\nLe nb de termes est n−4+1 = n−3, pas n+1 !\nn+1 serait le nb de termes si la somme commençait à k=0." },
+      { title: "Résultat final", content: "∑(k=4 → n) (6^k / 7)  =  6⁴·(6^(n−3) − 1) / 35\n\nOu de façon équivalente :\n= (6^(n+1) − 6⁴) / 35\n\nVérification pour n=4 :\n= (6⁵ − 6⁴)/35 = 6⁴(6−1)/35 = 6⁴·5/35 = 6⁴/7 ✓" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "⭐ ÉVAL 2 — Ex4 : Droite (d) : −4x+5y−1=0",
+    question: "1. Vecteur directeur et normal. 2. Équation de (d') passant par A(−6;2) perpendiculaire à (d).",
+    steps: [
+      { title: "1. Vecteur directeur de (d)", content: "Droite d'équation ax + by + c = 0\n⟹ vecteur directeur = (−b, a)\n\nIci a=−4, b=5 :\nvecteur directeur = (−5, −4)\n\n✅ Correct dans ton éval !" },
+      { title: "1. Vecteur normal de (d)", content: "Droite d'équation ax + by + c = 0\n⟹ vecteur normal = (a, b)\n\nIci a=−4, b=5 :\nvecteur normal n⃗ = (−4, 5)\n\n✅ Correct dans ton éval !" },
+      { title: "2. Trouver (d') perpendiculaire à (d)", content: "(d') ⊥ (d)\n⟺  vecteur directeur de (d') ⊥ vecteur directeur de (d)\n⟺  vecteur directeur de (d') est parallèle au vecteur NORMAL de (d)\n\nDonc :  vecteur normal de (d') = vecteur directeur de (d) = (−5, −4)\nOu équivalemment : n⃗_{d'} = (−5, −4)" },
+      { title: "2. Équation de (d') — méthode produit scalaire", content: "M(x;y) ∈ (d')  ⟺  AM⃗ ⊥ n⃗_{d'}  ⟺  ⟨AM⃗ ; n⃗_{d'}⟩ = 0\n\navec A(−6; 2) et n⃗_{d'} = (−5; −4) :\n\nAM⃗ = (x−(−6), y−2) = (x+6, y−2)\n\n⟨(x+6; y−2) ; (−5; −4)⟩ = 0\n−5(x+6) − 4(y−2) = 0\n−5x − 30 − 4y + 8 = 0\n−5x − 4y − 22 = 0\n\n⟹  (d') : −5x − 4y − 22 = 0  ✅" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "⭐ ÉVAL 2 — Ex5 : Produit scalaire u⃗, v⃗, w⃗ en ℝ³",
+    question: "u=(2,−1,2), v=(−4,3,6), w=(3,0,2). Calculer ⟨u;v⟩, ⟨v;w⟩, ⟨v;u⟩, ‖u‖. Conclure.",
+    steps: [
+      { title: "Calculer ⟨u⃗ ; v⃗⟩", content: "⟨u⃗ ; v⃗⟩ = u₁v₁ + u₂v₂ + u₃v₃\n         = (2)(−4) + (−1)(3) + (2)(6)\n         = −8 − 3 + 12\n         = 1\n\n✅ Correct dans ton éval !" },
+      { title: "Calculer ⟨v⃗ ; w⃗⟩", content: "⟨v⃗ ; w⃗⟩ = (−4)(3) + (3)(0) + (6)(2)\n          = −12 + 0 + 12\n          = 0\n\n✅ Correct dans ton éval !" },
+      { title: "Calculer ⟨v⃗ ; u⃗⟩", content: "⟨v⃗ ; u⃗⟩ = (−4)(2) + (3)(−1) + (6)(2)\n          = −8 − 3 + 12\n          = 1\n\n✅ Correct dans ton éval !\n\nRemarque : ⟨u⃗;v⃗⟩ = ⟨v⃗;u⃗⟩ = 1  ⟹  le produit scalaire est COMMUTATIF" },
+      { title: "Calculer ‖u⃗‖", content: "‖u⃗‖ = √(u₁² + u₂² + u₃²)\n     = √(2² + (−1)² + 2²)\n     = √(4 + 1 + 4)\n     = √9\n     = 3\n\n✅ Correct dans ton éval !" },
+      { title: "Conclusions", content: "• ⟨u⃗;v⃗⟩ = ⟨v⃗;u⃗⟩ = 1  ⟹  le produit scalaire est COMMUTATIF (toujours vrai) ✅\n\n• ⟨v⃗;w⃗⟩ = 0  ⟹  v⃗ et w⃗ sont ORTHOGONAUX (perpendiculaires) ✅\n\n• ‖u⃗‖ = 3 ≠ 1  ⟹  u⃗ n'est PAS un vecteur normé ✅\n  (un vecteur normé a une norme = 1)" },
+    ],
+  },
+  // ══ Exercices TD classiques ══
   {
     chapter: "suites",
     title: "Modélisation réseau (TD1-Ex4)",
