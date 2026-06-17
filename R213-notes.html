@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R213 — Révision Interactive</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8f7f4; color: #1a1a1a; min-height: 100vh; }
+
+  #header {
+    background: var(--color);
+    color: #fff;
+    padding: 20px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    transition: background 0.3s;
+  }
+  #header-inner { max-width: 700px; margin: 0 auto; }
+  #header-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.75; margin-bottom: 4px; }
+  #header h1 { font-size: 19px; font-weight: 700; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+
+  .chip-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 400;
+    transition: background 0.15s;
+  }
+  .chip-btn.active { background: rgba(255,255,255,0.28); font-weight: 700; }
+
+  .tab-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.82);
+    border-radius: 6px;
+    padding: 5px 13px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .tab-btn.active { background: #fff; color: var(--color); }
+
+  #main { max-width: 700px; margin: 0 auto; padding: 18px 14px 40px; }
+
+  .section-wrap { margin-bottom: 11px; }
+
+  .section-btn {
+    width: 100%;
+    background: #fff;
+    color: #1a1a1a;
+    border: 1.5px solid var(--color);
+    border-radius: 10px;
+    padding: 13px 15px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s, border-radius 0.1s;
+  }
+  .section-btn.open { background: var(--color); color: #fff; border-radius: 10px 10px 0 0; }
+
+  .section-body {
+    display: none;
+    background: #fff;
+    border: 1.5px solid var(--color);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 15px;
+  }
+  .section-body.open { display: block; }
+
+  .formula-item { margin-bottom: 13px; padding-bottom: 13px; border-bottom: 1px solid #f0eded; }
+  .formula-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .formula-label { font-size: 11px; font-weight: 700; color: var(--color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .formula-box { background: #f4f2ff; border-radius: 6px; padding: 8px 12px; font-family: monospace; font-size: 13px; color: #2d2060; white-space: pre-wrap; line-height: 1.75; }
+  .formula-desc { font-size: 12px; color: #666; margin-top: 4px; }
+
+  .sub-btn {
+    width: 100%;
+    background: #f8f7f4;
+    border: 1px solid rgba(128,128,128,0.25);
+    border-radius: 8px;
+    padding: 10px 13px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color);
+    margin-bottom: 8px;
+    transition: background 0.12s, border-radius 0.1s;
+  }
+  .sub-btn.open { background: rgba(128,128,200,0.1); border-radius: 8px 8px 0 0; margin-bottom: 0; }
+  .sub-body { display: none; border: 1px solid rgba(128,128,128,0.2); border-top: none; border-radius: 0 0 8px 8px; padding: 12px 13px; background: #fdfcff; margin-bottom: 8px; }
+  .sub-body.open { display: block; }
+  .sub-item { margin-bottom: 11px; padding-bottom: 11px; border-bottom: 1px dashed rgba(128,128,200,0.25); }
+  .sub-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .sub-formula-box { background: #f0eeff; border-radius: 6px; padding: 8px 12px; font-family: monospace; font-size: 13px; color: #2d2060; white-space: pre-wrap; line-height: 1.8; }
+
+  .step-row { display: flex; gap: 12px; margin-bottom: 13px; }
+  .step-num { min-width: 28px; height: 28px; background: var(--color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .step-title { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .step-desc { font-size: 13px; color: #444; white-space: pre-wrap; line-height: 1.6; }
+
+  .hint-box { font-size: 13px; color: #666; margin-bottom: 14px; background: #fff; border-radius: 8px; padding: 11px 13px; border: 1px solid #e8e6e0; }
+
+  .ex-btn {
+    width: 100%;
+    background: #fff;
+    color: #1a1a1a;
+    border: 1.5px solid var(--color);
+    border-radius: 10px;
+    padding: 13px 15px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .ex-btn.open { background: var(--color); color: #fff; border-radius: 10px 10px 0 0; }
+  .ex-btn-title { font-size: 13px; font-weight: 700; }
+  .ex-btn-q { font-size: 12px; opacity: 0.85; margin-top: 3px; font-weight: 400; }
+  .ex-body { display: none; background: #fff; border: 1.5px solid var(--color); border-top: none; border-radius: 0 0 10px 10px; padding: 14px; }
+  .ex-body.open { display: block; }
+
+  .step-reveal-btn {
+    width: 100%;
+    background: #fafafa;
+    border: 1px solid #e0ddd8;
+    border-radius: 8px;
+    padding: 9px 13px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    transition: all 0.12s;
+  }
+  .step-reveal-btn.open { background: #f0eeff; border-color: var(--color); border-radius: 8px 8px 0 0; margin-bottom: 0; }
+  .step-badge { background: var(--color); color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .step-reveal-title { font-weight: 600; font-size: 13px; color: var(--color); }
+  .step-plus { margin-left: auto; font-size: 15px; color: #999; }
+  .step-reveal-body { display: none; background: #f4f2ff; border-radius: 0 0 8px 8px; padding: 10px 13px; font-family: monospace; font-size: 13px; white-space: pre-wrap; color: #2d2060; line-height: 1.8; border-left: 3px solid var(--color); margin-bottom: 8px; }
+  .step-reveal-body.open { display: block; }
+
+  .arrow { font-size: 15px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-inner">
+    <div id="header-label">R213 · Révision Interactive</div>
+    <h1 id="header-title">Chapitre 1 — Suites &amp; Signaux</h1>
+    <div class="btn-row" id="chapter-btns"></div>
+    <div class="btn-row" id="tab-btns"></div>
+  </div>
+</div>
+
+<div id="main"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const CHAPTERS = [
+  {
+    id: "suites",
+    title: "Chapitre 1 — Suites & Signaux",
+    color: "#4f7c5f",
+    sections: [
+      {
+        title: "Définitions clés",
+        type: "formulas",
+        items: [
+          { label: "Suite par expression", formula: "uₙ = g(n)", desc: "Chaque terme calculé directement depuis n." },
+          { label: "Suite récurrente", formula: "uₙ₊₁ = g(uₙ),  u₀ donné", desc: "Chaque terme calculé à partir du précédent." },
+          { label: "Kronecker", formula: "δ[n] = 1 si n=0, 0 sinon\nδ[n−k] = 1 si n=k, 0 sinon", desc: "" },
+          { label: "Échelon unité", formula: "u[n] = 1 si n≥0,  0 si n<0", desc: "Signal discret de référence" },
+          { label: "Décomposition en Kronecker", formula: "x[n] = ∑ x(k)·δ[n−k]  (k=−∞..+∞)", desc: "Tout signal = somme d'impulsions pondérées" },
+          { label: "Périodicité sinus discret", formula: "x[n]=A·sin(θn+φ) périodique  ⟺  2π/θ ∈ ℤ", desc: "Un sinus continu périodique ne l'est pas forcément après discrétisation !" },
+        ],
+      },
+      {
+        title: "🔢 Suites géométriques — tout savoir",
+        type: "bigtable",
+        subsections: [
+          {
+            heading: "Définition & terme général",
+            items: [
+              { label: "Récurrence", formula: "uₙ₊₁ = q · uₙ   (q ∈ ℝ*, q ≠ 0)", desc: "" },
+              { label: "Terme général (depuis u₀)", formula: "uₙ = u₀ · qⁿ", desc: "Toujours partir du PREMIER terme de la suite." },
+              { label: "Terme général (depuis uₚ)", formula: "uₙ = uₚ · q^(n−p)", desc: "Si la suite démarre à p (ex: p=1), on utilise uₙ = u₁·q^(n−1)" },
+            ],
+          },
+          {
+            heading: "Calcul de somme — ATTENTION au rang de départ",
+            items: [
+              { label: "Formule générale", formula: "∑(k=p → n) uₖ  =  (1er terme) · (1 − q^(nb termes)) / (1 − q)", desc: "⚠️ si q ≠ 1.  Le nb de termes = n − p + 1" },
+              { label: "Cas k commence à 0", formula: "∑(k=0 → n) u₀·qᵏ  =  u₀ · (1 − q^(n+1)) / (1 − q)", desc: "Il y a n+1 termes (de 0 à n inclus)" },
+              { label: "Cas k commence à 1", formula: "∑(k=1 → n) u₁·q^(k−1)  =  u₁ · (1 − qⁿ) / (1 − q)", desc: "Il y a n termes (de 1 à n inclus)" },
+              { label: "Cas k commence à p (général)", formula: "∑(k=p → n) uₖ  =  uₚ · (1 − q^(n−p+1)) / (1 − q)", desc: "1er terme = uₚ, nb termes = n−p+1" },
+              { label: "Cas q = 1", formula: "∑(k=p → n) uₖ  =  u₀ · (n − p + 1)", desc: "Tous les termes sont égaux à u₀." },
+              { label: "Comment compter les termes ?", formula: "De k=p à k=n  →  il y a  n − p + 1  termes\nExemple : k=2 à k=5  →  5−2+1 = 4 termes", desc: "✅ Toujours vérifier avant d'appliquer la formule !" },
+            ],
+          },
+          {
+            heading: "Monotonie (si u₀ > 0)",
+            items: [
+              { label: "q > 1", formula: "Suite strictement croissante", desc: "" },
+              { label: "0 < q < 1", formula: "Suite strictement décroissante", desc: "" },
+              { label: "q = 1", formula: "Suite constante (tous les termes = u₀)", desc: "" },
+              { label: "q < 0", formula: "Suite non monotone (alterne positif/négatif)", desc: "Ex: q=−½ → termes alternent de signe" },
+            ],
+          },
+          {
+            heading: "Convergence — tous les cas",
+            items: [
+              { label: "|q| < 1  (−1 < q < 1)", formula: "qⁿ → 0  ⟹  uₙ → 0  ⟹  CONVERGE", desc: "Ex: q=0,5 → 0,5ⁿ → 0" },
+              { label: "q = 1", formula: "uₙ = u₀ constante  ⟹  CONVERGE vers u₀", desc: "" },
+              { label: "q > 1", formula: "uₙ → +∞  ⟹  DIVERGE vers +∞", desc: "Ex: q=2 → 2ⁿ → +∞" },
+              { label: "q ≤ −1", formula: "qⁿ n'a pas de limite  ⟹  DIVERGE", desc: "Ex: q=−1 → (−1)ⁿ alterne entre +1 et −1" },
+              { label: "Résumé", formula: "Converge  ⟺  |q| < 1  (ou q=1 trivial)\nDiverge   ⟺  |q| > 1  ou  q ≤ −1", desc: "" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "🔢 Suites arithmétiques — tout savoir",
+        type: "bigtable",
+        subsections: [
+          {
+            heading: "Définition & terme général",
+            items: [
+              { label: "Récurrence", formula: "uₙ₊₁ = uₙ + r   (r ∈ ℝ)", desc: "" },
+              { label: "Terme général (depuis u₀)", formula: "uₙ = u₀ + n·r", desc: "" },
+              { label: "Terme général (depuis uₚ)", formula: "uₙ = uₚ + (n−p)·r", desc: "Si la suite démarre à p, on décale l'indice." },
+            ],
+          },
+          {
+            heading: "Calcul de somme — ATTENTION au rang de départ",
+            items: [
+              { label: "Formule générale", formula: "∑(k=p → n) uₖ  =  (nb termes) × (1er terme + dernier terme) / 2\n                 =  (n−p+1) × (uₚ + uₙ) / 2", desc: "" },
+              { label: "Cas k commence à 0", formula: "∑(k=0 → n) uₖ  =  (n+1) × (u₀ + uₙ) / 2", desc: "n+1 termes, 1er = u₀, dernier = uₙ" },
+              { label: "Cas k commence à 1", formula: "∑(k=1 → n) k  =  n(n+1)/2", desc: "Somme des entiers de 1 à n (cas r=1, u₁=1)" },
+              { label: "Cas k commence à p (général)", formula: "∑(k=p → n) uₖ  =  (n−p+1) × (uₚ + uₙ) / 2", desc: "Toujours : nb termes × moyenne du 1er et du dernier" },
+              { label: "Formule utile : ∑k²", formula: "∑(k=1 → n) k²  =  n(n+1)(2n+1)/6", desc: "À connaître pour les démonstrations par récurrence" },
+              { label: "Astuce", formula: "Somme = nb_termes × (début + fin) / 2\nComme une moyenne pondérée", desc: "" },
+            ],
+          },
+          {
+            heading: "Monotonie",
+            items: [
+              { label: "r > 0", formula: "Suite strictement croissante", desc: "uₙ₊₁ − uₙ = r > 0" },
+              { label: "r < 0", formula: "Suite strictement décroissante", desc: "uₙ₊₁ − uₙ = r < 0" },
+              { label: "r = 0", formula: "Suite constante", desc: "Tous les termes sont égaux à u₀" },
+            ],
+          },
+          {
+            heading: "Convergence",
+            items: [
+              { label: "r ≠ 0", formula: "uₙ → +∞ si r>0  |  uₙ → −∞ si r<0\n⟹  TOUJOURS DIVERGE si r ≠ 0", desc: "Une suite arithmétique non constante diverge toujours." },
+              { label: "r = 0", formula: "uₙ = u₀ pour tout n  ⟹  CONVERGE vers u₀", desc: "Suite constante = cas trivial." },
+            ],
+          },
+        ],
+      },
+      {
+        title: "📈 Convergence & limites — tous les cas",
+        type: "bigtable",
+        subsections: [
+          {
+            heading: "Définitions",
+            items: [
+              { label: "Convergence", formula: "lim(n→+∞) uₙ = L  (L ∈ ℝ)", desc: "La suite admet une limite FINIE réelle." },
+              { label: "Divergence vers +∞", formula: "lim uₙ = +∞  :  uₙ dépasse tout réel A", desc: "" },
+              { label: "Divergence vers −∞", formula: "lim uₙ = −∞  :  uₙ descend sous tout réel −A", desc: "" },
+              { label: "Divergence (pas de limite)", formula: "lim uₙ n'existe pas  :  suite qui oscille sans se stabiliser", desc: "Ex: (−1)ⁿ alterne entre −1 et +1, pas de limite." },
+            ],
+          },
+          {
+            heading: "Théorèmes à connaître",
+            items: [
+              { label: "Th. suites monotones (P3)", formula: "Croissante + majorée  ⟹  converge\nDécroissante + minorée  ⟹  converge", desc: "Ne donne pas la valeur de la limite, juste son existence." },
+              { label: "Th. des gendarmes (P5)", formula: "Si uₙ ≤ vₙ ≤ wₙ\net  lim uₙ = lim wₙ = a\n⟹  lim vₙ = a", desc: "Utile quand on encadre entre deux suites de même limite." },
+              { label: "Th. de comparaison (P4)", formula: "Si uₙ ≤ vₙ  et  lim uₙ = +∞  ⟹  lim vₙ = +∞\nSi uₙ ≤ vₙ  et  lim vₙ = −∞  ⟹  lim uₙ = −∞", desc: "" },
+              { label: "Unicité de la limite", formula: "Une suite convergente a une limite UNIQUE.", desc: "" },
+            ],
+          },
+          {
+            heading: "Limites de somme",
+            items: [
+              { label: "L + L'", formula: "lim(uₙ+vₙ) = L + L'", desc: "" },
+              { label: "+∞ + L", formula: "= +∞", desc: "" },
+              { label: "−∞ + L", formula: "= −∞", desc: "" },
+              { label: "+∞ + (+∞)", formula: "= +∞", desc: "" },
+              { label: "−∞ + (−∞)", formula: "= −∞", desc: "" },
+              { label: "+∞ + (−∞)", formula: "= FORME INDÉTERMINÉE (F.I.)", desc: "⚠️ Factoriser ou changer de forme." },
+            ],
+          },
+          {
+            heading: "Limites de produit",
+            items: [
+              { label: "L × L'", formula: "= L·L'", desc: "" },
+              { label: "b × L  (b≠0)", formula: "= b·L", desc: "" },
+              { label: "+∞ × (+∞)", formula: "= +∞", desc: "" },
+              { label: "+∞ × (−∞)", formula: "= −∞", desc: "" },
+              { label: "L>0 × (+∞)", formula: "= +∞", desc: "" },
+              { label: "L<0 × (+∞)", formula: "= −∞", desc: "" },
+              { label: "0 × (±∞)", formula: "= FORME INDÉTERMINÉE (F.I.)", desc: "⚠️ Factoriser." },
+            ],
+          },
+          {
+            heading: "Limites de quotient",
+            items: [
+              { label: "L / L'  (L'≠0)", formula: "= L/L'", desc: "" },
+              { label: "L / (±∞)", formula: "= 0", desc: "" },
+              { label: "±∞ / L  (L>0)", formula: "= ±∞", desc: "" },
+              { label: "±∞ / L  (L<0)", formula: "Changer de signe", desc: "Ex: +∞ / L<0 = −∞" },
+              { label: "L / 0⁺", formula: "= +∞ si L>0,  −∞ si L<0", desc: "" },
+              { label: "L / 0⁻", formula: "= −∞ si L>0,  +∞ si L<0", desc: "" },
+              { label: "±∞ / ±∞", formula: "= FORME INDÉTERMINÉE (F.I.)", desc: "⚠️ Factoriser par le terme dominant." },
+              { label: "0 / 0", formula: "= FORME INDÉTERMINÉE (F.I.)", desc: "⚠️ Simplifier." },
+            ],
+          },
+          {
+            heading: "Cas courants à l'examen",
+            items: [
+              { label: "Fraction de polynômes", formula: "lim (aₙ·nᵏ + …)/(bₙ·nᵐ + …)\n→ Factoriser par nᵏ au num. et nᵐ au dén.", desc: "Ex: (3n²+7n)/(2n²−1) → factoriser n² → lim = 3/2" },
+              { label: "Suite avec (−1)ⁿ", formula: "(−1)ⁿ n'a pas de limite\n⟹ Si uₙ = (−1)ⁿ·vₙ avec vₙ→0 : gendarmes\n|uₙ| = |vₙ| → 0  ⟹  uₙ → 0", desc: "" },
+              { label: "Suite avec sin ou cos", formula: "sin(…) borné entre −1 et 1\n⟹ Si uₙ = sin(…)/n : gendarmes\n−1/n ≤ uₙ ≤ 1/n  →  lim = 0", desc: "" },
+              { label: "Suite n!", formula: "n! → +∞  (diverge)\nMais eⁿ/n! → 0 car n! croît plus vite que eⁿ", desc: "" },
+              { label: "Suite avec ln", formula: "ln(n) → +∞ mais très lentement\nln(n)/n → 0  (n domine ln)", desc: "" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "📐 Monotonie — méthode complète",
+        type: "bigtable",
+        subsections: [
+          {
+            heading: "Les 3 méthodes",
+            items: [
+              { label: "Méthode 1 — Différence (TOUJOURS utilisable)", formula: "Calculer  uₙ₊₁ − uₙ\n\n> 0  ⟹  strictement croissante\n≥ 0  ⟹  croissante\n< 0  ⟹  strictement décroissante\n≤ 0  ⟹  décroissante\n= 0  ⟹  constante", desc: "✅ Méthode universelle. À utiliser par défaut." },
+              { label: "Méthode 2 — Quotient (si uₙ > 0 pour tout n)", formula: "Calculer  uₙ₊₁ / uₙ\n\n> 1  ⟹  strictement croissante\n< 1  ⟹  strictement décroissante\n= 1  ⟹  constante", desc: "✅ Pratique avec les factorielles, puissances, produits." },
+              { label: "Méthode 3 — Fonction (si uₙ = g(n))", formula: "Poser f(x) = g(x), étudier f'(x)\n\nf'(x) > 0 sur [p;+∞[  ⟹  (uₙ) croissante à partir du rang p\nf'(x) < 0 sur [p;+∞[  ⟹  (uₙ) décroissante à partir du rang p", desc: "✅ Utilise les outils des fonctions réelles." },
+            ],
+          },
+          {
+            heading: "Vocabulaire & précisions",
+            items: [
+              { label: "Monotone à partir du rang p", formula: "Si la propriété n'est vraie que pour n ≥ p\n⟹ préciser : '(uₙ) est croissante à partir du rang p'", desc: "" },
+              { label: "Suite non monotone", formula: "Ni croissante ni décroissante sur tout ℕ\nEx: (−1)ⁿ, suites oscillantes", desc: "" },
+              { label: "Majorée / minorée / bornée", formula: "Majorée : ∃M tel que uₙ ≤ M pour tout n\nMinorée : ∃m tel que uₙ ≥ m pour tout n\nBornée : majorée ET minorée", desc: "" },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Récurrence — Méthode complète",
+        type: "steps",
+        steps: [
+          { n: 1, title: "Énoncer P(n)", desc: "Écrire explicitement la propriété à démontrer pour tout n ≥ n₀.\nEx: P(n) : uₙ = 2·(−1/5)ⁿ" },
+          { n: 2, title: "Initialisation", desc: "Vérifier que P(n₀) est vraie (calcul direct).\nEx: P(0) : u₀ = 2·(−1/5)⁰ = 2 ✓" },
+          { n: 3, title: "Hypothèse de récurrence (HR)", desc: "Supposer que P(n) est vraie pour un n ≥ n₀ fixé.\nEx: On suppose uₙ = 2·(−1/5)ⁿ" },
+          { n: 4, title: "Hérédité — démontrer P(n+1)", desc: "En utilisant HR, montrer P(n+1).\nEx: uₙ₊₁ = −(1/5)·uₙ = −(1/5)·2·(−1/5)ⁿ = 2·(−1/5)ⁿ⁺¹ ✓" },
+          { n: 5, title: "Conclusion", desc: "Par le principe de récurrence, P(n) est vraie pour tout n ≥ n₀." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "matrices",
+    title: "Chapitre 2 — Matrices & Vecteurs",
+    color: "#5a4fa0",
+    sections: [
+      {
+        title: "Opérations essentielles",
+        type: "formulas",
+        items: [
+          { label: "Addition", formula: "A + B = (aᵢⱼ + bᵢⱼ)  — même taille obligatoire", desc: "" },
+          { label: "Multiplication scalaire", formula: "kA = (k·aᵢⱼ)", desc: "" },
+          { label: "Produit matriciel", formula: "cᵢⱼ = ∑ aᵢₖ·bₖⱼ  (k=1..q)", desc: "A est p×q et B est q×r ⟹ AB est p×r" },
+          { label: "Non-commutativité", formula: "AB ≠ BA en général", desc: "⚠️ Ne pas inverser l'ordre !" },
+          { label: "Transposée", formula: "(A^T)ᵢⱼ = Aⱼᵢ  — lignes ↔ colonnes", desc: "(AB)^T = B^T · A^T" },
+          { label: "Produit scalaire ℝ²", formula: "⟨u,v⟩ = u₁v₁ + u₂v₂ = u^T·v", desc: "" },
+          { label: "Produit scalaire ℝ³", formula: "⟨u,v⟩ = u₁v₁ + u₂v₂ + u₃v₃", desc: "" },
+          { label: "Norme", formula: "‖u‖ = √⟨u,u⟩ = √(u₁²+u₂²+…)", desc: "" },
+          { label: "Orthogonalité", formula: "u ⊥ v  ⟺  ⟨u,v⟩ = 0", desc: "" },
+          { label: "Équation de droite (vecteur normal)", formula: "a(x−xₐ) + b(y−yₐ) = 0  avec n⃗=(a,b) normal", desc: "Droite ax+by+c=0 : directeur (−b,a), normal (a,b)" },
+        ],
+      },
+      {
+        title: "Déterminant",
+        type: "formulas",
+        items: [
+          { label: "det 2×2", formula: "|a b|\n|c d|  = ad − bc", desc: "" },
+          { label: "det 3×3 (Sarrus / développement 1ère ligne)", formula: "= a₁₁(a₂₂a₃₃−a₂₃a₃₂) − a₁₂(a₂₁a₃₃−a₂₃a₃₁) + a₁₃(a₂₁a₃₂−a₂₂a₃₁)", desc: "Développement par la 1ʳᵉ ligne" },
+          { label: "Inversibilité", formula: "A inversible  ⟺  det(A) ≠ 0", desc: "" },
+          { label: "det(A⁻¹)", formula: "det(A⁻¹) = 1/det(A)", desc: "" },
+        ],
+      },
+      {
+        title: "Pivot de Gauss — Résolution Ax=b",
+        type: "steps",
+        steps: [
+          { n: 1, title: "Former la matrice augmentée M = (A|b)", desc: "Écrire les coefficients et le second membre dans une même matrice." },
+          { n: 2, title: "Éliminer sous la diagonale (gauche→droite)", desc: "Pour chaque pivot aᵢᵢ : opération Lⱼ ← p·Lⱼ − k·Lᵢ pour annuler la colonne i sous la ligne i." },
+          { n: 3, title: "Lire le cas obtenu", desc: "• Ligne [0 0…0 | c≠0] ⟹ S = ∅\n• Même nb d'éq. et d'inconnues ⟹ solution unique\n• Plus d'inconnues que d'équations ⟹ infinité de solutions (paramètre libre)" },
+          { n: 4, title: "Remonter (back-substitution)", desc: "Trouver la dernière inconnue puis remonter ligne par ligne." },
+        ],
+      },
+      {
+        title: "Matrice inverse — Pivot de Gauss",
+        type: "steps",
+        steps: [
+          { n: 1, title: "Poser M = (A | Iₙ)", desc: "Écrire A à gauche et la matrice identité de même taille à droite." },
+          { n: 2, title: "Étape 1 : zéros sous la diagonale", desc: "Appliquer Gauss de gauche à droite. Si une ligne nulle apparaît à gauche ⟹ A non inversible, stop." },
+          { n: 3, title: "Étape 2 : zéros au-dessus de la diagonale", desc: "Remonter : annuler les coefficients au-dessus de chaque pivot (de droite à gauche)." },
+          { n: 4, title: "Étape 3 : 1 sur la diagonale", desc: "Diviser chaque ligne par son coefficient diagonal pour obtenir Iₙ à gauche." },
+          { n: 5, title: "Lire A⁻¹", desc: "La matrice à droite est A⁻¹." },
+        ],
+      },
+      {
+        title: "Comatrice & inverse (formule directe)",
+        type: "formulas",
+        items: [
+          { label: "Cofacteur (i,j)", formula: "Cᵢⱼ = (−1)^(i+j) · det(Aᵢⱼ)", desc: "Aᵢⱼ = A sans la ligne i et colonne j" },
+          { label: "Matrice inverse via comatrice", formula: "A⁻¹ = (1/det(A)) · com(A)^T", desc: "com(A) = matrice de tous les cofacteurs" },
+          { label: "Système de Cramer", formula: "Si det(A) ≠ 0  ⟹  X = A⁻¹·b", desc: "Solution unique, calculer A⁻¹ puis multiplier par b" },
+        ],
+      },
+    ],
+  },
+];
+
+const EXERCISES = [
+  {
+    chapter: "suites",
+    title: "Modélisation réseau (TD1-Ex4)",
+    question: "Un réseau commence avec 100 utilisateurs et augmente de 75% par heure. Après combien d'heures dépasse-t-on 10 000 utilisateurs ?",
+    steps: [
+      { title: "Modéliser", content: "C₀ = 100, Cₙ₊₁ = 1,75·Cₙ  ⟹  suite géométrique de raison q = 1,75" },
+      { title: "Terme général", content: "Cₙ = 100 · (1,75)ⁿ" },
+      { title: "Inégalité", content: "Cₙ > 10 000  ⟺  (1,75)ⁿ > 100\n⟺  n·ln(1,75) > ln(100)\n⟺  n > ln(100)/ln(1,75)" },
+      { title: "Calculer", content: "ln(100) ≈ 4,605  |  ln(1,75) ≈ 0,5596\n⟹  n > 4,605/0,5596 ≈ 8,23\n⟹  n = 9 heures" },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "Récurrence (TD3-Ex2)",
+    question: "Suite aₙ₊₁ = 2aₙ − 3, a₀ = 500. Montrer que bₙ = aₙ − 3 est géométrique de raison 2, puis trouver aₙ.",
+    steps: [
+      { title: "Définir bₙ", content: "bₙ = aₙ − 3  ⟹  b₀ = 500 − 3 = 497" },
+      { title: "Montrer géométrique", content: "bₙ₊₁ = aₙ₊₁ − 3 = (2aₙ − 3) − 3 = 2aₙ − 6 = 2(aₙ − 3) = 2·bₙ\n⟹ raison q = 2 ✓" },
+      { title: "Terme général bₙ", content: "bₙ = b₀ · 2ⁿ = 497 · 2ⁿ" },
+      { title: "En déduire aₙ", content: "aₙ = bₙ + 3 = 497 · 2ⁿ + 3" },
+      { title: "Quand aₙ > 2000 ?", content: "497·2ⁿ + 3 > 2000  ⟹  2ⁿ > 1997/497 ≈ 4,018\n2³=8 > 4,018  ⟹  n = 3 (après 3 minutes)" },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "Série géométrique (TD4-Ex1) — k commence à 1",
+    question: "dₖ = 50·(1,2)ᵏ (k démarre à 1). Consommation totale sur 30 jours ? Entre j20 et j30 ?",
+    steps: [
+      { title: "Identifier la somme", content: "Dₙ = ∑(k=1 → n) 50·(1,2)ᵏ\n1er terme : d₁ = 50·1,2 = 60\nraison : q = 1,2\nnb termes : n" },
+      { title: "Appliquer la formule", content: "Dₙ = d₁ · (1 − qⁿ)/(1 − q)\n= 60 · (1 − 1,2ⁿ)/(1 − 1,2)\n= 60 · (1 − 1,2ⁿ)/(−0,2)\n= 300·(1,2ⁿ − 1)" },
+      { title: "Sur 30 jours", content: "D₃₀ = 300·(1,2³⁰ − 1) ≈ 300·(237,38 − 1) ≈ 71 212 Mo" },
+      { title: "Entre j20 et j30", content: "= D₃₀ − D₂₀\n= 300·(1,2³⁰ − 1,2²⁰)\n≈ 300·(237,38 − 38,34) ≈ 59 712 Mo" },
+    ],
+  },
+  {
+    chapter: "suites",
+    title: "Convergence — suite avec sin (TD1-Ex3e)",
+    question: "Étudier la convergence de uₙ = (1/n)·sin(2nπ/3)  pour n ≥ 1.",
+    steps: [
+      { title: "Identifier le problème", content: "sin(2nπ/3) oscille entre −1 et +1, pas de limite directe.\nMais elle est BORNÉE : −1 ≤ sin(2nπ/3) ≤ 1" },
+      { title: "Encadrer — th. des gendarmes", content: "−1/n ≤ (1/n)·sin(2nπ/3) ≤ 1/n\n⟹  −1/n ≤ uₙ ≤ 1/n" },
+      { title: "Limites des bornes", content: "lim(n→+∞) (−1/n) = 0\nlim(n→+∞) (1/n) = 0" },
+      { title: "Conclure", content: "Par le théorème des gendarmes :\nlim uₙ = 0  ⟹  (uₙ) CONVERGE vers 0" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "Pivot de Gauss — système carré (TD7-S1)",
+    question: "Résoudre : −2x₁ − 2x₂ + x₃ = 2  |  x₁ − x₂ − 2x₃ = −6  |  3x₁ + x₂ − 2x₃ = −6",
+    steps: [
+      { title: "Matrice augmentée", content: "[ −2  −2   1 |  2 ]\n[  1  −1  −2 | −6 ]\n[  3   1  −2 | −6 ]" },
+      { title: "Échanger L1↔L2 (pivot ≠ 0)", content: "[  1  −1  −2 | −6 ]\n[ −2  −2   1 |  2 ]\n[  3   1  −2 | −6 ]" },
+      { title: "L2 ← L2 + 2L1  |  L3 ← L3 − 3L1", content: "[  1  −1  −2 | −6 ]\n[  0  −4  −3 | −10 ]\n[  0   4  −8 |  12 ]" },
+      { title: "L3 ← L3 + L2", content: "[  1  −1  −2 | −6 ]\n[  0  −4  −3 | −10 ]\n[  0   0  −11 |  2 ]" },
+      { title: "Back-substitution", content: "x₃ = 2/(−11) = −2/11\nx₂ = (−10 + 3·(−2/11))/(−4) = 29/11\nx₁ = −6 + 29/11 − 4/11 = −41/11" },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "Inverse par pivot (TD8-Ex3)",
+    question: "Soit A = [[0,−4,6],[2,4,0],[4,2,10]]. Calculer det(A) et A⁻¹.",
+    steps: [
+      { title: "Calculer det(A) — développement 1ère ligne", content: "det = 0·(4·10−0·2) − (−4)·(2·10−0·4) + 6·(2·2−4·4)\n= 0 + 80 + 6·(−12)\n= 80 − 72 = 8\n⟹ det(A) = 8 ≠ 0  ⟹  A inversible ✓" },
+      { title: "Poser (A | I₃) et échanger L1↔L2", content: "[ 2  4  0 | 0 1 0 ]\n[ 0 −4  6 | 1 0 0 ]\n[ 4  2 10 | 0 0 1 ]" },
+      { title: "L3 ← L3 − 2L1", content: "[ 2  4  0 | 0 1 0 ]\n[ 0 −4  6 | 1 0 0 ]\n[ 0 −6 10 | 0 −2 1 ]" },
+      { title: "L3 ← 2L3 − 3L2  puis normaliser", content: "Continuer jusqu'à I₃ à gauche.\nLa matrice à droite est A⁻¹." },
+      { title: "Vérification", content: "Calculer A·A⁻¹ = I₃ pour confirmer." },
+    ],
+  },
+  {
+    chapter: "matrices",
+    title: "Produit scalaire & droite (TD6-Ex3)",
+    question: "Droite d₁ passant par (−5; 2) de vecteur normal n⃗ = (3; 7). Trouver son équation.",
+    steps: [
+      { title: "Méthode vecteur normal", content: "M(x;y) ∈ d₁  ⟺  AM⃗ ⊥ n⃗  ⟺  ⟨AM⃗ ; n⃗⟩ = 0\navec A(−5; 2)" },
+      { title: "Calculer AM⃗", content: "AM⃗ = (x−(−5); y−2) = (x+5; y−2)" },
+      { title: "Produit scalaire = 0", content: "3·(x+5) + 7·(y−2) = 0\n3x + 15 + 7y − 14 = 0" },
+      { title: "Équation finale", content: "3x + 7y + 1 = 0" },
+    ],
+  },
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+
+let activeChapter = "suites";
+let activeTab = "formulas";
+let openSection = null;
+let openSubsections = {};  // "si-subi" -> bool
+let openExercise = null;
+let openSteps = {};        // "ei-si" -> bool
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+
+function getChapter() {
+  return CHAPTERS.find(c => c.id === activeChapter);
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// ─── RENDER ─────────────────────────────────────────────────────────────────
+
+function render() {
+  const ch = getChapter();
+  document.documentElement.style.setProperty('--color', ch.color);
+  document.getElementById('header').style.background = ch.color;
+  document.getElementById('header-title').textContent = ch.title;
+
+  // Chapter buttons
+  document.getElementById('chapter-btns').innerHTML = CHAPTERS.map(c =>
+    `<button class="chip-btn ${c.id === activeChapter ? 'active' : ''}" onclick="switchChapter('${c.id}')">
+      ${c.id === 'suites' ? 'Suites & Signaux' : 'Matrices'}
+    </button>`
+  ).join('');
+
+  // Tab buttons
+  document.getElementById('tab-btns').innerHTML = [
+    ['formulas', '📐 Formules & Méthodes'],
+    ['exercises', '✏️ Exercices guidés']
+  ].map(([t, label]) =>
+    `<button class="tab-btn ${activeTab === t ? 'active' : ''}" onclick="switchTab('${t}')">${label}</button>`
+  ).join('');
+
+  // Main content
+  const main = document.getElementById('main');
+  if (activeTab === 'formulas') {
+    main.innerHTML = ch.sections.map((section, si) => renderSection(section, si)).join('');
+  } else {
+    const exercises = EXERCISES.filter(e => e.chapter === activeChapter);
+    main.innerHTML = `<div class="hint-box">💡 Clique sur chaque étape pour la révéler progressivement — essaie d'abord par toi-même !</div>` +
+      exercises.map((ex, ei) => renderExercise(ex, ei)).join('');
+  }
+}
+
+function renderSection(section, si) {
+  const isOpen = openSection === si;
+  return `
+    <div class="section-wrap">
+      <button class="section-btn ${isOpen ? 'open' : ''}" onclick="toggleSection(${si})">
+        <span>${esc(section.title)}</span>
+        <span class="arrow">${isOpen ? '▲' : '▼'}</span>
+      </button>
+      <div class="section-body ${isOpen ? 'open' : ''}">
+        ${renderSectionBody(section, si)}
+      </div>
+    </div>`;
+}
+
+function renderSectionBody(section, si) {
+  if (section.type === 'formulas') {
+    return section.items.map((item, ii) => `
+      <div class="formula-item">
+        <div class="formula-label">${esc(item.label)}</div>
+        <div class="formula-box">${esc(item.formula)}</div>
+        ${item.desc ? `<div class="formula-desc">${esc(item.desc)}</div>` : ''}
+      </div>`).join('');
+  }
+  if (section.type === 'bigtable') {
+    return section.subsections.map((sub, subi) => {
+      const key = `${si}-${subi}`;
+      const isOpen = !!openSubsections[key];
+      return `
+        <div>
+          <button class="sub-btn ${isOpen ? 'open' : ''}" onclick="toggleSub('${key}')">
+            <span>▸ ${esc(sub.heading)}</span>
+            <span>${isOpen ? '▲' : '▼'}</span>
+          </button>
+          <div class="sub-body ${isOpen ? 'open' : ''}">
+            ${sub.items.map(item => `
+              <div class="sub-item">
+                <div class="formula-label">${esc(item.label)}</div>
+                <div class="sub-formula-box">${esc(item.formula)}</div>
+                ${item.desc ? `<div class="formula-desc">${esc(item.desc)}</div>` : ''}
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }).join('');
+  }
+  if (section.type === 'steps') {
+    return section.steps.map(step => `
+      <div class="step-row">
+        <div class="step-num">${step.n}</div>
+        <div>
+          <div class="step-title">${esc(step.title)}</div>
+          <div class="step-desc">${esc(step.desc)}</div>
+        </div>
+      </div>`).join('');
+  }
+  return '';
+}
+
+function renderExercise(ex, ei) {
+  const isOpen = openExercise === ei;
+  const stepsHtml = ex.steps.map((step, si) => {
+    const key = `${ei}-${si}`;
+    const sOpen = !!openSteps[key];
+    return `
+      <button class="step-reveal-btn ${sOpen ? 'open' : ''}" onclick="toggleStep('${key}')">
+        <span class="step-badge">${si + 1}</span>
+        <span class="step-reveal-title">${esc(step.title)}</span>
+        <span class="step-plus">${sOpen ? '−' : '+'}</span>
+      </button>
+      <div class="step-reveal-body ${sOpen ? 'open' : ''}">${esc(step.content)}</div>`;
+  }).join('');
+
+  return `
+    <div class="section-wrap">
+      <button class="ex-btn ${isOpen ? 'open' : ''}" onclick="toggleExercise(${ei})">
+        <div>
+          <div class="ex-btn-title">${esc(ex.title)}</div>
+          <div class="ex-btn-q">${esc(ex.question)}</div>
+        </div>
+        <span class="arrow">${isOpen ? '▲' : '▼'}</span>
+      </button>
+      <div class="ex-body ${isOpen ? 'open' : ''}">
+        <div style="font-size:12px;color:#888;margin-bottom:10px;">Révèle les étapes une par une :</div>
+        ${stepsHtml}
+      </div>
+    </div>`;
+}
+
+// ─── ACTIONS ────────────────────────────────────────────────────────────────
+
+function switchChapter(id) {
+  activeChapter = id;
+  activeTab = 'formulas';
+  openSection = null;
+  openSubsections = {};
+  openExercise = null;
+  openSteps = {};
+  render();
+}
+
+function switchTab(t) {
+  activeTab = t;
+  openSection = null;
+  openExercise = null;
+  openSteps = {};
+  render();
+}
+
+function toggleSection(si) {
+  openSection = openSection === si ? null : si;
+  render();
+}
+
+function toggleSub(key) {
+  openSubsections[key] = !openSubsections[key];
+  render();
+}
+
+function toggleExercise(ei) {
+  openExercise = openExercise === ei ? null : ei;
+  openSteps = {};
+  render();
+}
+
+function toggleStep(key) {
+  openSteps[key] = !openSteps[key];
+  render();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
