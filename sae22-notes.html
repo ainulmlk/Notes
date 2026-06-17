@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAÉ 22 — Mesurer & caractériser un signal · Révisions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --panel:#0F1714; --panel-2:#16211C; --panel-3:#1d2c25;
+  --paper:#F7F5EF; --card:#FFFFFF; --ink:#18211C; --ink-soft:#3a463e;
+  --moss:#5E7C4F; --moss-d:#46603a; --trace:#9BD45F; --trace-d:#7cb84a;
+  --amber:#E0A04A; --red:#d2693f; --muted:#727b6f; --line:#E4E1D6; --line-d:#2a3a32;
+  --shadow:0 1px 2px rgba(15,23,20,.06),0 8px 24px rgba(15,23,20,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* ---------- top instrument bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:var(--panel);color:#dfe7e0;border-bottom:1px solid var(--line-d)}
+.topbar-inner{display:flex;align-items:center;gap:14px;padding:10px 18px;max-width:1280px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk';font-weight:600;letter-spacing:-.01em;font-size:15px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--trace);box-shadow:0 0 0 3px rgba(155,212,95,.18);animation:pulse 2.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.readout{margin-left:auto;display:flex;gap:18px;align-items:center;font-family:'IBM Plex Mono';font-size:12px;color:#8fa494}
+.readout b{color:var(--trace);font-weight:500}
+.readout .seg{display:flex;flex-direction:column;line-height:1.25}
+.readout .seg span{font-size:9px;letter-spacing:.14em;color:#5f7065;text-transform:uppercase}
+.menu-btn{display:none;background:var(--panel-3);border:1px solid var(--line-d);color:#dfe7e0;border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}
+
+/* ---------- layout ---------- */
+.shell{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:0;align-items:start}
+nav.side{position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto;padding:20px 12px 50px;border-right:1px solid var(--line);background:linear-gradient(180deg,#f3f0e7,#f7f5ef)}
+.nav-grp{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:18px 12px 7px}
+.nav-grp:first-child{margin-top:0}
+.nav-link{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;border-radius:9px;padding:8px 12px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:.15s}
+.nav-link .num{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);min-width:18px}
+.nav-link:hover{background:rgba(94,124,79,.1);color:var(--ink)}
+.nav-link.active{background:var(--moss);color:#fff;box-shadow:var(--shadow)}
+.nav-link.active .num{color:#cfe6c0}
+.nav-link.qcm{background:var(--panel);color:#dfe7e0;margin-top:6px}
+.nav-link.qcm.active{background:var(--panel);outline:2px solid var(--trace)}
+.nav-link.qcm .num{color:var(--trace)}
+
+main{padding:34px 40px 90px;min-width:0}
+section.view{display:none;animation:fade .35s ease}
+section.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- typography ---------- */
+.eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--moss);font-weight:500}
+h1.title{font-family:'Space Grotesk';font-weight:600;font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;line-height:1.08;margin:8px 0 6px}
+h2{font-family:'Space Grotesk';font-weight:600;font-size:22px;letter-spacing:-.01em;margin:38px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+h2:first-of-type{border-top:none;padding-top:0}
+h3{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;margin:22px 0 8px;color:var(--ink)}
+p{margin:9px 0;color:var(--ink-soft)}
+.lead{font-size:17px;color:var(--ink-soft);max-width:62ch;margin:14px 0 4px}
+ul,ol{margin:9px 0 9px 4px;padding-left:20px}
+li{margin:5px 0;color:var(--ink-soft)}
+strong{color:var(--ink);font-weight:600}
+code{font-family:'IBM Plex Mono';background:#eceae0;padding:1px 6px;border-radius:5px;font-size:.88em;color:var(--moss-d)}
+.kw{color:var(--moss-d);font-weight:600}
+
+/* ---------- hero spectrum ---------- */
+.hero{background:var(--panel);border-radius:18px;padding:26px 28px 0;margin:18px 0 8px;color:#dfe7e0;overflow:hidden;position:relative}
+.hero h1{color:#fff}
+.hero .eyebrow{color:var(--trace)}
+.hero p{color:#9fb1a4;max-width:60ch}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+.chip{font-family:'IBM Plex Mono';font-size:11px;padding:5px 10px;border:1px solid var(--line-d);border-radius:20px;color:#b9cbbd}
+.chip b{color:var(--trace);font-weight:500}
+.spectrum{margin:14px -28px 0;height:96px;display:block}
+.spectrum line{stroke:#26352d;stroke-width:1}
+.spectrum .axis{stroke:#33453a}
+.spectrum text{fill:#5f7065;font-family:'IBM Plex Mono';font-size:9px}
+.spectrum polyline{fill:none;stroke:var(--trace);stroke-width:1.6;filter:drop-shadow(0 0 5px rgba(155,212,95,.5))}
+.spectrum .fillarea{fill:url(#g1);opacity:.25}
+
+/* ---------- cards / callouts ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.callout{border-left:3px solid var(--moss);background:linear-gradient(90deg,rgba(94,124,79,.08),transparent);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.callout.warn{border-left-color:var(--amber);background:linear-gradient(90deg,rgba(224,160,74,.1),transparent)}
+.callout .tag{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);font-weight:600;display:block;margin-bottom:3px}
+.callout.warn .tag{color:var(--amber)}
+
+/* formula readout block */
+.formula{background:var(--panel);color:#dfe7e0;border-radius:12px;padding:15px 18px;margin:14px 0;font-family:'IBM Plex Mono';position:relative;overflow:hidden}
+.formula .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--trace);display:block;margin-bottom:7px}
+.formula .eq{font-size:16px;color:#eef4ec;line-height:1.7}
+.formula .eq b{color:var(--trace);font-weight:600}
+.formula .note{font-size:11.5px;color:#8fa494;margin-top:8px;line-height:1.5;font-family:'Inter'}
+sub,sup{font-size:.72em}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:440px}
+th{background:var(--panel-2);color:#dfe7e0;font-family:'IBM Plex Mono';font-weight:500;font-size:11px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:10px 13px}
+td{padding:9px 13px;border-top:1px solid var(--line);color:var(--ink-soft)}
+tr:nth-child(even) td{background:#faf9f4}
+td b{color:var(--ink)}
+.up{color:var(--trace-d);font-weight:600}.down{color:var(--red);font-weight:600}
+
+/* mini stat */
+.stat{text-align:center;padding:14px 8px}
+.stat .v{font-family:'Space Grotesk';font-weight:700;font-size:26px;color:var(--moss-d);letter-spacing:-.02em}
+.stat .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* ---------- QCM ---------- */
+.qcm-head{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.theme-btn{font-size:13px;font-family:'Inter';padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--ink-soft);transition:.15s;display:flex;align-items:center;gap:8px}
+.theme-btn:hover{border-color:var(--moss);color:var(--ink)}
+.theme-btn .badge{font-family:'IBM Plex Mono';font-size:10px;background:#eceae0;padding:2px 6px;border-radius:6px;color:var(--muted)}
+.theme-btn.exam{background:var(--panel);color:#dfe7e0;border-color:var(--panel)}
+.theme-btn.exam .badge{background:var(--panel-3);color:var(--trace)}
+
+.quiz-stage{margin-top:18px}
+.qbar{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.qbar .prog{flex:1;height:7px;background:#e6e3d8;border-radius:5px;overflow:hidden}
+.qbar .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--moss),var(--trace));width:0;transition:width .4s}
+.qbar .count{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
+.qbar .score{font-family:'IBM Plex Mono';font-size:12px;color:var(--moss-d);font-weight:600}
+
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;box-shadow:var(--shadow)}
+.qtheme{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--moss);margin-bottom:9px}
+.qtext{font-family:'Space Grotesk';font-weight:500;font-size:18px;line-height:1.4;margin-bottom:16px;color:var(--ink)}
+.opt{display:block;width:100%;text-align:left;background:#fbfaf6;border:1.5px solid var(--line);border-radius:11px;padding:12px 15px;margin:9px 0;font-size:14.5px;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:.13s;display:flex;gap:11px;align-items:flex-start}
+.opt:hover:not(:disabled){border-color:var(--moss);background:#fff}
+.opt .key{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;color:var(--muted);background:#eceae0;border-radius:6px;min-width:23px;height:23px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--trace-d);background:rgba(155,212,95,.16)}
+.opt.correct .key{background:var(--trace-d);color:#fff}
+.opt.wrong{border-color:var(--red);background:rgba(210,105,63,.1)}
+.opt.wrong .key{background:var(--red);color:#fff}
+.explain{margin-top:14px;padding:13px 16px;border-radius:11px;background:#f1f4ee;border-left:3px solid var(--moss);font-size:13.5px;color:var(--ink-soft);display:none}
+.explain.show{display:block;animation:fade .3s}
+.explain b{color:var(--moss-d)}
+.qnav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.btn{font-family:'Inter';font-weight:500;font-size:14px;padding:11px 20px;border-radius:10px;border:none;cursor:pointer;transition:.15s}
+.btn.primary{background:var(--moss);color:#fff}
+.btn.primary:hover{background:var(--moss-d)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-soft)}
+.btn.ghost:hover{border-color:var(--moss)}
+.btn:disabled{opacity:.4;cursor:default}
+
+.result{text-align:center;padding:36px 20px}
+.result .ring{font-family:'Space Grotesk';font-weight:700;font-size:52px;color:var(--moss-d);letter-spacing:-.02em}
+.result .msg{font-size:16px;color:var(--ink-soft);margin:6px 0 20px}
+.result .mini{font-family:'IBM Plex Mono';font-size:13px;color:var(--muted)}
+
+.hidden{display:none!important}
+.footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);font-family:'IBM Plex Mono'}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  nav.side{position:fixed;top:51px;left:0;width:280px;z-index:40;transform:translateX(-105%);transition:.25s;box-shadow:0 10px 40px rgba(0,0,0,.2);height:calc(100vh - 51px)}
+  nav.side.open{transform:none}
+  .menu-btn{display:block}
+  main{padding:22px 18px 80px}
+  .readout{display:none}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .scrim{position:fixed;inset:51px 0 0;background:rgba(15,23,20,.4);z-index:35;display:none}
+  .scrim.open{display:block}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <button class="menu-btn" id="menuBtn">☰ Menu</button>
+    <div class="brand"><span class="dot"></span> SAÉ 22 · Field Notes</div>
+    <div class="readout">
+      <div class="seg"><span>bande</span><b>868 MHz</b></div>
+      <div class="seg"><span>P max</span><b>14 dBm</b></div>
+      <div class="seg"><span>section</span><b id="roSection">Intro</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="shell">
+  <nav class="side" id="side">
+    <div class="nav-grp">Cadre</div>
+    <button class="nav-link active" data-v="intro"><span class="num">00</span> La SAÉ 22</button>
+    <button class="nav-link" data-v="chaine"><span class="num">01</span> Chaîne de transmission</button>
+    <button class="nav-link" data-v="spectre"><span class="num">02</span> Spectre &amp; bandes ISM</button>
+    <button class="nav-link" data-v="compromis"><span class="num">03</span> Conso / débit / portée</button>
+    <div class="nav-grp">Projet LoRa</div>
+    <button class="nav-link" data-v="lora"><span class="num">04</span> Modulation LoRa</button>
+    <button class="nav-link" data-v="debit"><span class="num">05</span> Débit &amp; trame</button>
+    <button class="nav-link" data-v="portee"><span class="num">06</span> Portée &amp; bilan de liaison</button>
+    <button class="nav-link" data-v="conso"><span class="num">07</span> Consommation &amp; batterie</button>
+    <button class="nav-link" data-v="materiel"><span class="num">08</span> Cartes UCA &amp; Arduino</button>
+    <button class="nav-link" data-v="mesures"><span class="num">09</span> Mesures &amp; SDRangel</button>
+    <div class="nav-grp">Mesureurs de champ</div>
+    <button class="nav-link" data-v="tnt"><span class="num">10</span> TNT</button>
+    <button class="nav-link" data-v="sat"><span class="num">11</span> TV Satellite</button>
+    <div class="nav-grp">Outils</div>
+    <button class="nav-link" data-v="formulaire"><span class="num">∑</span> Formulaire</button>
+    <button class="nav-link qcm" data-v="qcm"><span class="num">?</span> QCM &amp; Examen blanc</button>
+  </nav>
+
+  <main id="main">
+
+  <!-- ============ INTRO ============ -->
+  <section class="view on" id="intro">
+    <div class="hero">
+      <span class="eyebrow">SAÉ 22 · BUT R&amp;T 1<sup>re</sup> année · UCA / IUT</span>
+      <h1>Mesurer et caractériser un signal ou un système de transmission</h1>
+      <p>Analyser des signaux dans le temps et la fréquence, caractériser une chaîne de transmission numérique, et mener un projet LoRa de bout en bout — du cahier des charges jusqu'à la portée mesurée.</p>
+      <div class="meta">
+        <span class="chip">Projet <b>LoRa 868 MHz</b></span>
+        <span class="chip">Mesureurs <b>TNT · SAT</b></span>
+        <span class="chip">Carte <b>UCA / RFM95W</b></span>
+        <span class="chip"><b>Okumura-Hata</b> · Friis</span>
+      </div>
+      <svg class="spectrum" viewBox="0 0 900 96" preserveAspectRatio="none">
+        <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9BD45F"/><stop offset="1" stop-color="#9BD45F" stop-opacity="0"/></linearGradient></defs>
+        <line class="axis" x1="0" y1="80" x2="900" y2="80"/>
+        <line x1="150" y1="20" x2="150" y2="80"/><line x1="300" y1="20" x2="300" y2="80"/>
+        <line x1="450" y1="20" x2="450" y2="80"/><line x1="600" y1="20" x2="600" y2="80"/>
+        <line x1="750" y1="20" x2="750" y2="80"/>
+        <polyline id="trace1" points=""/>
+        <text x="4" y="93">863</text><text x="430" y="93">868 MHz</text><text x="860" y="93">870</text>
+      </svg>
+    </div>
+
+    <p class="lead">Cette SAÉ s'appuie sur les ressources <span class="kw">R104</span> (Élec), <span class="kw">R205 / R206</span> (Élec-Télécom) et <span class="kw">R113-R114-R213-R214</span> (Maths du signal). Trois objectifs reviennent dans tous les livrables.</p>
+
+    <div class="grid3">
+      <div class="card stat"><div class="v">①</div><div class="l">Analyser un signal en temps &amp; fréquence</div></div>
+      <div class="card stat"><div class="v">②</div><div class="l">Caractériser un système de transmission</div></div>
+      <div class="card stat"><div class="v">③</div><div class="l">Présenter &amp; critiquer les résultats</div></div>
+    </div>
+
+    <h2>Organisation &amp; livrables</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Organisation</h3>
+        <ul>
+          <li>1 séance de cours (N. Fortino)</li>
+          <li>3 × 3 h de TP encadrés (Fortino, Payan, Roqui)</li>
+          <li>12 h de projet (travail personnel / en groupe)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Livrables</h3>
+        <ul>
+          <li>Un <strong>rapport écrit</strong></li>
+          <li>Le compte rendu des heures de <strong>projet</strong></li>
+          <li>Le compte rendu des <strong>TP encadrés</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Les trois volets de mesure</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Volet</th><th>Outil</th><th>Ce qu'on mesure</th></tr>
+      <tr><td><b>Simulation Python</b> (Payan)</td><td>Python</td><td>Caractérisation « black box », quantification / échantillonnage, débruitage audio</td></tr>
+      <tr><td><b>Projet LoRaWAN</b> (Fortino / Roqui)</td><td>Cartes UCA + SDR</td><td>Portée, consommation, débit d'une liaison LoRa 868 MHz</td></tr>
+      <tr><td><b>Mesureurs de champ</b> (Theys)</td><td>Televes / UNAOHM</td><td>Signaux TNT (UHF) et TV satellite (bande Ku)</td></tr>
+    </table></div>
+
+    <h2>Rôles dans le groupe projet</h2>
+    <div class="callout"><span class="tag">À retenir</span>
+      Chaque membre reçoit <strong>deux notes</strong> : une note sur sa partie et une note de groupe. Les rôles sont à indiquer en début de compte rendu.</div>
+    <div class="grid2">
+      <div class="card"><h3>Chef·fe de projet</h3><p>Cahier des charges, coordination, planning, synthèse des livrables, description des problèmes &amp; solutions, interlocuteur·trice des enseignants.</p></div>
+      <div class="card"><h3>3 Responsables techniques</h3><p>Spécialités <strong>Portée</strong>, <strong>Débit</strong>, <strong>Consommation</strong> : préparations et comptes rendus techniques liés à leur domaine.</p></div>
+    </div>
+
+    <h2>Prérequis « supposés connus »</h2>
+    <ul>
+      <li>Échelles logarithmiques : manipuler les <strong>dB, dBm, dBµV</strong>.</li>
+      <li>Numérisation : échantillonnage, quantification, rôle CAN / CNA (Shannon-Nyquist).</li>
+      <li>Analyse spectrale : passage temps ↔ fréquence (Fourier).</li>
+      <li>Propagation &amp; antennes (R205) : <strong>formule de Friis</strong>, gains d'antenne, notion de bilan de liaison.</li>
+    </ul>
+  </section>
+
+  <!-- ============ CHAINE ============ -->
+  <section class="view" id="chaine">
+    <span class="eyebrow">01 · Fondamentaux</span>
+    <h1 class="title">Chaîne de transmission numérique</h1>
+    <p class="lead">La chaîne convertit une onde acoustique en bits, les transporte sur un support, puis reconstruit le son. Connaître l'<strong>ordre des blocs</strong> et la conversion réalisée par chacun est incontournable.</p>
+
+    <div class="formula"><span class="lbl">Schéma complet</span>
+      <div class="eq">Micro → Éch.-bloqueur → <b>CAN</b> → Émetteur num. → <b>[ support ]</b> → Récepteur num. → <b>CNA</b> → Haut-parleur</div>
+      <div class="note">La SAÉ13 portait sur le câble coaxial ; la SAÉ22 ajoute la transmission hertzienne (LoRa).</div>
+    </div>
+
+    <h2>Système d'émission</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Bloc</th><th>Entrée → Sortie</th></tr>
+      <tr><td><b>Microphone</b></td><td>Ondes acoustiques → signal électrique <b>analogique</b></td></tr>
+      <tr><td><b>Échantillonneur-bloqueur</b></td><td>Analogique → analogique <b>à temps discret</b> (marche d'escalier)</td></tr>
+      <tr><td><b>CAN</b> (convertisseur analogique-numérique)</td><td>Analogique → numérique <b>binaire</b></td></tr>
+      <tr><td><b>Émetteur numérique</b></td><td>Codage + <b>modulation numérique</b></td></tr>
+    </table></div>
+
+    <h2>Supports de transmission</h2>
+    <p>Ils transportent le signal porteur de l'information :</p>
+    <ul>
+      <li><strong>Espace libre de propagation</strong> — communications hyperfréquences (le cas de LoRa).</li>
+      <li><strong>Fibres optiques</strong> — communications optiques.</li>
+      <li><strong>Câbles coaxiaux &amp; paires torsadées</strong> — signaux électriques.</li>
+    </ul>
+
+    <h2>Système de réception (symétrique)</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Bloc</th><th>Entrée → Sortie</th></tr>
+      <tr><td><b>Récepteur numérique</b></td><td><b>Démodulation</b> numérique + décodage</td></tr>
+      <tr><td><b>CNA</b> (convertisseur numérique-analogique)</td><td>Numérique binaire → <b>analogique</b></td></tr>
+      <tr><td><b>Haut-parleur</b></td><td>Signal électrique → onde acoustique</td></tr>
+    </table></div>
+
+    <div class="callout warn"><span class="tag">Piège d'examen</span>
+      L'échantillonneur-bloqueur produit un signal <strong>encore analogique</strong> (discrétisé en temps, pas en amplitude). C'est le <strong>CAN</strong> qui rend le signal numérique. Ne pas confondre échantillonnage (temps) et quantification (amplitude).</div>
+  </section>
+
+  <!-- ============ SPECTRE ============ -->
+  <section class="view" id="spectre">
+    <span class="eyebrow">02 · Fondamentaux</span>
+    <h1 class="title">Spectre des fréquences &amp; bandes ISM</h1>
+    <p class="lead">Le choix de la bande de fréquence influence à la fois le <strong>bilan de liaison</strong> (portée) et la <strong>taille des antennes</strong>. C'est la réponse-clé d'une question clicker du cours.</p>
+
+    <div class="grid2">
+      <div class="callout"><span class="tag">Basse fréquence</span><strong>Longue portée</strong>, antennes de grande dimension.</div>
+      <div class="callout"><span class="tag">Haute fréquence</span><strong>Courte portée</strong>, antennes petites.</div>
+    </div>
+
+    <h2>Découpage du spectre radio</h2>
+    <p>De VLF à EHF : <code>VLF · LF · MF · HF · VHF · UHF · SHF · EHF</code>, échelonnés du kHz au GHz. La « sweetspot » des télécoms grand public (DAB, GSM, 3G…) se situe autour de l'<strong>UHF</strong>.</p>
+
+    <h2>Fréquences sous licence vs sans licence (ISM)</h2>
+    <p>Une partie du spectre appartient à des opérateurs privés (téléphonie, TV). Les bandes <strong>ISM</strong> (<span class="kw">Industrial, Scientific, Medical</span>) sont utilisables <strong>gratuitement, sans licence</strong>. En contrepartie, des règles limitent les interférences entre utilisateurs.</p>
+    <div class="callout warn"><span class="tag">Règle ISM 868 MHz (Europe)</span>
+      Temps d'occupation du canal radio limité — <strong>duty cycle</strong> de 0,1 % / 1 % / 10 % selon le sous-canal.</div>
+
+    <h3>Qui utilise l'ISM ?</h3>
+    <p><span class="up">Oui :</span> Wi-Fi, four micro-ondes, LoRa. &nbsp; <span class="down">Non (sous licence) :</span> TV satellite, GSM, TNT, LTE (4G).</p>
+
+    <h2>Comparatif des bandes ISM</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Bande</th><th>Avantages</th><th>Inconvénients</th></tr>
+      <tr><td><b>Sous le GHz</b> (868 MHz…)</td><td>Bonne portée</td><td>Bandes non uniformisées dans le monde, duty cycle, <b>BP limitée</b></td></tr>
+      <tr><td><b>2,4 – 2,48 GHz</b></td><td>Sans licence presque partout, grande BP, gros débits</td><td>Courte portée</td></tr>
+      <tr><td><b>5 – 6 GHz</b></td><td>Disponible partout, très large BP</td><td>Portée plus courte</td></tr>
+      <tr><td><b>57 – 64 GHz</b></td><td>Partout, énorme BP / débits</td><td>Très courte portée</td></tr>
+    </table></div>
+    <div class="callout"><span class="tag">Tendance générale</span>
+      Plus la fréquence monte → plus la <strong>bande passante / débit</strong> disponible augmente, mais plus la <strong>portée diminue</strong> et plus les antennes sont petites.</div>
+  </section>
+
+  <!-- ============ COMPROMIS ============ -->
+  <section class="view" id="compromis">
+    <span class="eyebrow">03 · Fondamentaux</span>
+    <h1 class="title">Le compromis conso / débit / portée</h1>
+    <p class="lead">Aucune technologie ne maximise tout à la fois. LoRa fait partie des <strong>LPWAN</strong> (Low Power Wide Area Network) : longue portée et faible consommation, au prix d'un très faible débit.</p>
+
+    <div class="grid3">
+      <div class="card stat"><div class="v">≈15 km</div><div class="l">Portée LoRa (zone dégagée)</div></div>
+      <div class="card stat"><div class="v">25 mW</div><div class="l">Puissance ≈ 14 dBm</div></div>
+      <div class="card stat"><div class="v">0,29–5 kb/s</div><div class="l">Débit LoRa</div></div>
+    </div>
+
+    <h2>Familles de technologies sans fil</h2>
+    <ul>
+      <li><strong>Courte portée</strong> : Bluetooth/BLE, Zigbee, Thread (2,4 GHz).</li>
+      <li><strong>Wi-Fi</strong> : haut débit, portée moyenne, forte conso.</li>
+      <li><strong>Cellulaire</strong> : GSM, UMTS, LTE/4G, 5G (sous licence).</li>
+      <li><strong>LPWAN</strong> : <strong>LoRa</strong>, Sigfox, NB-IoT — faible conso, longue portée, faible débit.</li>
+    </ul>
+
+    <h2>Tableau de référence (extrait cours)</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Techno</th><th>Type</th><th>Fréq.</th><th>Portée</th><th>Débit</th><th>Puissance</th></tr>
+      <tr><td>Wi-Fi</td><td>Star</td><td>2,4–5 GHz</td><td>100 m</td><td>100 Mb/s</td><td>1 W</td></tr>
+      <tr><td>BLE</td><td>P2P/mesh</td><td>2,4–5 GHz</td><td>100 m</td><td>1 Mb/s</td><td>10 mW</td></tr>
+      <tr><td>Zigbee</td><td>P2P/mesh</td><td>2,4–5 GHz</td><td>250 m</td><td>250 kb/s</td><td>100 mW</td></tr>
+      <tr><td>RFID</td><td>P2P</td><td>900 MHz</td><td>7 m</td><td>500 kb/s</td><td>2 W</td></tr>
+      <tr><td>NFC</td><td>P2P</td><td>13,56 MHz</td><td>0,1 m</td><td>500 kb/s</td><td>100 mW</td></tr>
+      <tr><td>LTE</td><td>UTRAN</td><td>700 MHz</td><td>10 km</td><td>100 Mb/s</td><td>2 W</td></tr>
+      <tr><td>Sigfox</td><td>Star</td><td>900 MHz</td><td>15 km</td><td>100 b/s</td><td>25 mW</td></tr>
+      <tr><td><b>LoRa</b></td><td>Star</td><td>900 MHz</td><td>15 km</td><td>290 b/s–5 kb/s</td><td>25 mW</td></tr>
+    </table></div>
+    <div class="callout"><span class="tag">Le point clé</span>
+      Sur l'axe <em>Puissance/Débit × Portée</em>, LoRa et Sigfox occupent le coin « basse conso + longue portée + bas débit ». Wi-Fi/BT = haut débit courte portée ; cellulaire = haut débit longue portée mais forte conso.</div>
+  </section>
+
+  <!-- ============ LORA MODULATION ============ -->
+  <section class="view" id="lora">
+    <span class="eyebrow">04 · Projet LoRa</span>
+    <h1 class="title">Modulation LoRa : SF &amp; bande passante</h1>
+    <p class="lead">LoRa utilise une modulation à <strong>étalement de spectre par chirp</strong>. Deux paramètres pilotent tout : le <strong>Spreading Factor (SF)</strong> et la <strong>bande passante (BW)</strong>. Ils arbitrent débit ↔ portée.</p>
+
+    <h2>Les deux paramètres maîtres</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Spreading Factor (SF)</h3>
+        <p>Nombre de <strong>bits d'information par symbole</strong>. Plage <code>SF 7 → 12</code> (défaut 12). Plus le SF est élevé, plus le symbole est « étalé » dans le temps.</p>
+      </div>
+      <div class="card">
+        <h3>Bande passante (BW)</h3>
+        <p>Largeur de fréquence autour de la porteuse (f<sub>high</sub> − f<sub>low</sub>). Valeurs : <code>7,8 / 10,4 / 15,6 / 20,8 / 31,25 / 41,7 / 62,5 / 125 / 250 / 500 kHz</code> (défaut 125 kHz).</p>
+      </div>
+    </div>
+
+    <h2>Tableau des effets — à connaître par cœur</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Si on augmente…</th><th>Débit</th><th>Portée / sensibilité</th><th>Durée trame</th><th>Conso</th></tr>
+      <tr><td><b>SF ↑</b></td><td class="down">↓ baisse</td><td class="up">↑ meilleure</td><td class="down">↑ plus longue</td><td class="down">↑ plus forte</td></tr>
+      <tr><td><b>BW ↑</b></td><td class="up">↑ augmente</td><td class="down">↓ dégradée</td><td class="up">↓ plus courte</td><td class="up">↓ plus faible</td></tr>
+    </table></div>
+    <div class="callout"><span class="tag">Mémo</span>
+      <strong>SF élevé = portée, BW élevée = débit.</strong> Les deux jouent en sens opposé sur le débit et la portée. Pour optimiser la portée à débit suffisant : prendre le <strong>SF le plus élevé</strong> et la <strong>BW la plus faible</strong> compatibles avec le débit requis.</div>
+
+    <h2>Structure d'une trame LoRa</h2>
+    <div class="formula"><span class="lbl">Trame = préambule + synchro + payload + CRC</span>
+      <div class="eq"><b>Préambule</b> (2–20 symboles) · <b>Synchro</b> (4 symboles) · <b>Données (payload)</b> · <b>CRC</b></div>
+      <div class="note">Pour les calculs de la SAÉ, on évalue préambule + synchro ≈ 100 bits.</div>
+    </div>
+    <ul>
+      <li><strong>Préambule</strong> — synchronise l'émetteur et le récepteur. Plus long = plus robuste mais moins de bits utiles / plus de conso. À <strong>optimiser</strong> (réduire) pour gagner en débit utile et conso. Défaut = 8 symboles.</li>
+      <li><strong>CRC / coding rate</strong> — bits correcteurs d'erreur ajoutés selon la sûreté désirée (de <code>CR 4/5</code> faible à <code>CR 4/8</code> élevé).</li>
+    </ul>
+  </section>
+
+  <!-- ============ DEBIT ============ -->
+  <section class="view" id="debit">
+    <span class="eyebrow">05 · Projet LoRa</span>
+    <h1 class="title">Débit de données &amp; trame</h1>
+    <p class="lead">Dimensionner le débit binaire nécessaire à l'application : estimer le <strong>payload</strong>, ajouter l'overhead de trame, puis multiplier par le nombre de transmissions désirées.</p>
+
+    <h2>1 · Estimation du payload</h2>
+    <p>Identifier le capteur, puis le nombre de bits par donnée (doc technique du capteur, ou nombre de chiffres significatifs codés en <strong>ASCII 8 bits</strong>). Ajouter l'éventuel texte accompagnant la donnée (chaque caractère = 8 bits). Le total des <strong>bits utiles</strong> = payload.</p>
+
+    <h2>2 · Coding rate (CRC)</h2>
+    <div class="formula"><span class="lbl">Majoration due au coding rate</span>
+      <div class="eq">taille = payload × <b>(dénominateur / 4)</b></div>
+      <div class="note">Ex. CR 4/6 → facteur 6/4 = 1,5 : un message de 60 bits devient 90 bits. CR 4/8 → ×2 (sûreté maximale).</div>
+    </div>
+
+    <h2>3 · Débit binaire nécessaire</h2>
+    <ul>
+      <li><strong>Q2</strong> — Total trame = préambule + synchro (≈100 bits) + payload + CRC.</li>
+      <li><strong>Q3</strong> — Débit nécessaire = bits par trame × nombre de transmissions par seconde (ou /min, /heure).</li>
+    </ul>
+
+    <h2>Débit max théorique LoRa</h2>
+    <div class="formula"><span class="lbl">Débit binaire</span>
+      <div class="eq">R<sub>b</sub> = <b>SF × BW / 2<sup>SF</sup></b> &nbsp;&nbsp;(= 1 / T<sub>b</sub>)</div>
+      <div class="note">Maximal pour <b>SF faible (7)</b> et <b>BW élevée (500 kHz)</b> → de l'ordre de 25–30 kb/s. Minimal pour SF 12 / BW 7,8 kHz.</div>
+    </div>
+    <div class="callout"><span class="tag">Lecture des courbes (sujet)</span>
+      Le débit chute fortement quand le SF augmente (de 7 à 12) ; il monte avec la BW (de 7,8 kHz à 500 kHz). On retient en pratique <strong>2 ou 3 valeurs de BW et 2 ou 3 de SF</strong> à départager par la mesure.</div>
+
+    <div class="callout warn"><span class="tag">Influence sur la portée</span>
+      Un SF élevé et une BW faible <strong>améliorent la sensibilité</strong> du récepteur (seuil plus bas) donc la portée. À débit équivalent, on privilégie donc le couple qui maximise la sensibilité.</div>
+  </section>
+
+  <!-- ============ PORTEE ============ -->
+  <section class="view" id="portee">
+    <span class="eyebrow">06 · Projet LoRa</span>
+    <h1 class="title">Portée &amp; bilan de liaison</h1>
+    <p class="lead">La portée se déduit d'un <strong>bilan de liaison</strong> : puissance émise − pertes ≥ sensibilité du récepteur. On en tire la distance via un modèle de propagation (Okumura-Hata) ou Friis en vue directe.</p>
+
+    <h2>Étape 1 — Pertes maximales tolérables</h2>
+    <div class="formula"><span class="lbl">Condition de fonctionnement</span>
+      <div class="eq">P<sub>reçue</sub> = P<sub>émise</sub> − Pertes &nbsp;≥&nbsp; <b>Sensibilité</b></div>
+      <div class="eq">⟹ &nbsp; Pertes<sub>max</sub> = <b>P<sub>émise</sub> − Sensibilité</b></div>
+      <div class="note">P<sub>émise</sub> = 14 dBm (max ISM 868 MHz). La sensibilité (en dBm, négative) se lit sur les courbes selon SF/BW.</div>
+    </div>
+    <div class="callout"><span class="tag">Sensibilité — sens du signe</span>
+      La sensibilité est négative : <strong>plus elle est basse (ex. −137 dBm), meilleure elle est</strong> — le récepteur capte des signaux plus faibles. SF↑ et BW↓ abaissent la sensibilité.</div>
+
+    <h2>Étape 2 — Modèle Okumura-Hata (simplifié)</h2>
+    <div class="formula"><span class="lbl">Affaiblissement (R en km, pertes en dB)</span>
+      <div class="eq">Pertes = <b>146,4 + 44,9 · log(R) + C</b></div>
+      <div class="eq">C = <b>0</b> (urbain) · <b>−9,85</b> (suburbain) · <b>−28,35</b> (rural)</div>
+      <div class="note">On isole R : &nbsp; R = 10<sup>(Pertes<sub>max</sub> − 146,4 − C) / 44,9</sup></div>
+    </div>
+    <p>Le milieu rural ayant le C le plus négatif, il donne <strong>les pertes les plus faibles à distance égale</strong> → meilleure portée. Le milieu urbain (C = 0) est le plus pénalisant.</p>
+
+    <h2>Étape 3 — Friis (vue directe / espace libre)</h2>
+    <div class="formula"><span class="lbl">Affaiblissement espace libre — R205</span>
+      <div class="eq">L<sub>fs</sub> (dB) = <b>32,44 + 20·log(d<sub>km</sub>) + 20·log(f<sub>MHz</sub>)</b></div>
+      <div class="eq">Bilan : P<sub>r</sub> = P<sub>e</sub> + G<sub>e</sub> + G<sub>r</sub> − L<sub>fs</sub></div>
+      <div class="note">À utiliser <b>uniquement en vue directe</b> (line of sight) entre émetteur et récepteur. Plus f monte, plus L augmente → portée réduite.</div>
+    </div>
+
+    <h2>Mesure &amp; RSSI</h2>
+    <ul>
+      <li>On mesure le <strong>RSSI</strong> (Received Signal Strength Indicator) = puissance reçue en dBm. On relève le <strong>RSSI moyen</strong> en attendant la fin du cycle d'acquisition.</li>
+      <li>≥ <strong>8 points de mesure</strong> entre la distance minimale et la distance où la liaison décroche.</li>
+      <li>Courbes d'atténuation tracées sur <strong>papier semi-logarithmique</strong>.</li>
+      <li>Perte due à un <strong>bâtiment / cloison / porte / dalle</strong> = écart de niveau (dB) avec et sans l'obstacle.</li>
+    </ul>
+
+    <h2>Extrapolation au-delà de 100 m</h2>
+    <div class="callout warn"><span class="tag">Contrainte SAÉ</span>
+      Impossible de mesurer des portées &gt; 100 m. On mesure l'atténuation jusqu'à 100 m, on en déduit la <strong>pente de la loi de propagation</strong> (régression sur l'échelle log), puis on <strong>extrapole</strong> jusqu'à la distance visée — à comparer ensuite à la sensibilité pour valider (ou non) le cahier des charges.</div>
+  </section>
+
+  <!-- ============ CONSO ============ -->
+  <section class="view" id="conso">
+    <span class="eyebrow">07 · Projet LoRa</span>
+    <h1 class="title">Consommation &amp; dimensionnement batterie</h1>
+    <p class="lead">Estimer l'énergie par trame, en déduire le nombre de trames possibles sur une batterie, donc la durée de vie. Tout repose sur <strong>P = U·I</strong> et <strong>E = P·t</strong>.</p>
+
+    <h2>Définitions de base</h2>
+    <div class="formula"><span class="lbl">Puissance &amp; énergie</span>
+      <div class="eq">P = <b>U · I</b> &nbsp;(W = V × A)</div>
+      <div class="eq">E = <b>P · t</b> &nbsp;(Wh si t en h · ou J si t en s)</div>
+    </div>
+
+    <h2>Modes de fonctionnement (V = 3,3 V)</h2>
+    <p>La carte LoRa passe par 4 modes successifs sur un cycle de <strong>10,3 ms</strong> :</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mode</th><th>Courant (ex.)</th><th>Durée (ex.)</th><th>P = U·I</th></tr>
+      <tr><td>Émission</td><td>≈ 82 mA</td><td>2,1 ms</td><td>≈ 0,27 W</td></tr>
+      <tr><td>Réception</td><td>≈ 17 mA</td><td>1,6 ms</td><td>≈ 0,056 W</td></tr>
+      <tr><td>Mode normal</td><td>≈ 7,2 mA</td><td>2,4 ms</td><td>≈ 0,024 W</td></tr>
+      <tr><td>Veille</td><td>≈ 95 µA</td><td>4,2 ms</td><td>≈ 0,0003 W</td></tr>
+    </table></div>
+    <div class="callout"><span class="tag">Méthode Q3</span>
+      Énergie d'une phase = P × t. Énergie du cycle = somme des 4 phases. Attention aux unités : convertir les ms en heures pour obtenir des W·h (1 ms = 1/3 600 000 h).</div>
+
+    <h2>Durée d'une trame</h2>
+    <div class="formula"><span class="lbl">Durée d'un bit puis de la trame</span>
+      <div class="eq">T<sub>b</sub> = <b>2<sup>SF</sup> / (BW · SF)</b></div>
+      <div class="eq">T<sub>trame</sub> = N<sub>bits</sub> × T<sub>b</sub></div>
+      <div class="note">SF↑ ou BW↓ → trame plus longue → plus d'énergie par trame. On calcule un min et un max selon les couples SF/BW retenus.</div>
+    </div>
+
+    <h2>Dimensionnement de la batterie</h2>
+    <div class="formula"><span class="lbl">Énergie d'une pile AA Li 2,6 Ah · 3,7 V</span>
+      <div class="eq">E<sub>batt</sub> = U · Q = <b>3,7 × 2,6 ≈ 9,62 Wh</b></div>
+      <div class="note">Nbre de trames = E<sub>batt</sub> / E<sub>trame</sub>. Durée de vie = Nbre de trames × période d'émission. Calcul séparé émission / réception.</div>
+    </div>
+
+    <h2>Règle du duty cycle</h2>
+    <div class="formula"><span class="lbl">Temps de silence imposé après une trame</span>
+      <div class="eq">T<sub>silence</sub> = T<sub>trame</sub> × <b>(1/DC − 1)</b></div>
+      <div class="note">Pour DC = 1 % → T<sub>silence</sub> = 99 × T<sub>trame</sub>. Vérifier que c'est compatible avec la fréquence d'envoi voulue par l'application.</div>
+    </div>
+    <p>Bonus énergie renouvelable : penser au rendement (W/cm²) des panneaux solaires pour dimensionner la surface nécessaire.</p>
+  </section>
+
+  <!-- ============ MATERIEL ============ -->
+  <section class="view" id="materiel">
+    <span class="eyebrow">08 · Projet LoRa</span>
+    <h1 class="title">Cartes UCA &amp; programmation Arduino</h1>
+    <p class="lead">La carte UCA est une plateforme pédagogique IoT. Savoir la composer, installer la chaîne logicielle, et commenter le code d'émission/réception.</p>
+
+    <h2>Composition de la carte UCA</h2>
+    <div class="grid2">
+      <div class="card"><h3>Cœur</h3><ul>
+        <li>Microcontrôleur <strong>ATMEGA 328P</strong></li>
+        <li>Programmeur USB <strong>CH340C</strong> (driver requis)</li>
+        <li>Module LoRa <strong>RFM95W</strong> — bande <strong>868 MHz</strong></li>
+        <li>Antenne LoRa intégrée (sigle UCA)</li>
+        <li>Arduino mini pro 3,3 V / 8 MHz · step-up converter</li>
+      </ul></div>
+      <div class="card"><h3>Capteurs &amp; E/S</h3><ul>
+        <li>Luminosité</li>
+        <li><strong>BMP280</strong> : T°C, pression, humidité (ou DHT22)</li>
+        <li>Accéléromètre 3 axes</li>
+        <li>21 LEDs RGB · capteur ultrason de distance</li>
+        <li>Connecteur Grove <strong>I2C</strong> · breadboard</li>
+      </ul></div>
+    </div>
+
+    <h2>Chaîne logicielle</h2>
+    <ol>
+      <li>Installer le driver <strong>CH340</strong>.</li>
+      <li>Arduino IDE (v1.6.8+), ajouter l'URL de gestionnaire de cartes RFThings.</li>
+      <li>Installer « RFThings AVR Boards », choisir la carte <strong>RFThings UCA</strong>, board version <code>3.9 and newer : AT328PB</code>.</li>
+      <li>Sélectionner le port, charger « Émission » / « Réception » LoRa depuis Moodle.</li>
+      <li>Si erreur : installer la bibliothèque <strong>LoRa by Sandeep Mistry</strong>.</li>
+    </ol>
+
+    <h2>Paramètres du code (à savoir justifier)</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Define</th><th>Rôle</th><th>Valeur / plage</th></tr>
+      <tr><td><code>SS / RST / DI0</code></td><td>Broches du module (10 / 8 / 2)</td><td>fixes</td></tr>
+      <tr><td><code>BAND</code></td><td>Fréquence porteuse</td><td>868E6 (allouée par l'enseignant)</td></tr>
+      <tr><td><code>spreadingFactor</code></td><td>SF</td><td>7 → 12 (défaut 12)</td></tr>
+      <tr><td><code>SignalBandwidth</code></td><td>BW</td><td>125E3 par défaut</td></tr>
+      <tr><td><code>preambleLength</code></td><td>Longueur de préambule</td><td>2 → 20 (défaut 8)</td></tr>
+      <tr><td><code>codingRateDenominator</code></td><td>Dénominateur du CR (CRC)</td><td>5 → 8 (défaut 5)</td></tr>
+      <tr><td><code>Pow / txPower</code></td><td>Puissance d'émission</td><td>0 → 20 dBm (on fixe 14)</td></tr>
+    </table></div>
+
+    <div class="callout"><span class="tag">Allocation de fréquence par projet</span>
+      L'enseignant attribue une porteuse différente à chaque groupe pour <strong>éviter les interférences</strong> entre projets émettant simultanément dans la même bande ISM.</div>
+    <div class="callout warn"><span class="tag">Pourquoi 14 dBm ?</span>
+      C'est la <strong>puissance maximale autorisée</strong> dans la bande ISM 868 MHz en Europe (≈ 25 mW). On la garde au max pour maximiser la portée tout en restant réglementaire.</div>
+
+    <h3>Logique du code d'émission (séance préparatoire)</h3>
+    <p>Le code de la séance non encadrée balaie les fréquences : <code>freq_start = 863e6</code>, <code>freq_stop = 870e6</code>, <code>freq_step = 1e6</code>. À chaque <code>loop()</code>, il change de fréquence, envoie un paquet contenant la valeur de fréquence, fait clignoter la LED (pin 13), puis incrémente — et reboucle au début une fois <code>freq_stop</code> atteinte.</p>
+  </section>
+
+  <!-- ============ MESURES ============ -->
+  <section class="view" id="mesures">
+    <span class="eyebrow">09 · Projet LoRa</span>
+    <h1 class="title">Mesures de transmission &amp; SDRangel</h1>
+    <p class="lead">Deux types de mesures : la <strong>portée réelle</strong> (RSSI vs distance, indoor/outdoor) et la <strong>visualisation des trames</strong> au SDR (Adalm Pluto + SDRangel).</p>
+
+    <h2>Mesures outdoor / indoor</h2>
+    <ul>
+      <li>Émetteur fixe, paramètres LoRa imposés (SF 7, BW 125 kHz, 14 dBm…). Vérifier l'identité des réglages Rx/Tx.</li>
+      <li>Relever le <strong>RSSI moyen</strong> à ≥ 8 distances ; calculer la distance exacte Tx-Rx.</li>
+      <li><strong>Outdoor</strong> : refaire à 0 dBm → conclure sur l'influence de la puissance sur la portée.</li>
+      <li><strong>Indoor</strong> : évaluer la perte (dB) par interface (portes, cloisons, dalles) ; refaire à SF élevé → impact du SF sur portée et durée.</li>
+      <li>Tracer les atténuations sur <strong>papier semi-log</strong> dans chaque cas.</li>
+    </ul>
+    <div class="callout"><span class="tag">Validation projet</span>
+      Mesures ≤ 100 m pour chaque couple SF/BW envisagé → tableau → choix de la <strong>configuration optimale</strong>. Si aucune ne convient : revoir le cahier des charges ou conclure sur la non-viabilité.</div>
+
+    <h2>Visualisation au SDR (Adalm Pluto + SDRangel)</h2>
+    <p>Le SDR sert de récepteur logiciel : on observe le <strong>spectrogramme « waterfall »</strong> (défile dans le temps) pour voir passer les trames LoRa.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Réglage SDRangel</th><th>But</th></tr>
+      <tr><td>Fréquence centrale = porteuse allouée</td><td>Se caler sur l'émission</td></tr>
+      <tr><td><b>DC</b> (software, SW)</td><td>Supprimer la composante continue</td></tr>
+      <tr><td>Filtre <b>Low Pass</b> ≈ 2 × BW d'émission</td><td>Isoler le canal utile</td></tr>
+      <tr><td>Filtre anti-repliement <b>FIR</b> ≥ 126 kHz</td><td>Éviter le repliement (aliasing)</td></tr>
+      <tr><td>Vitesse de défilement <b>2 FPS</b></td><td>Avoir le temps de voir les trames</td></tr>
+      <tr><td>Taille de <b>FFT</b> ↑</td><td>Durée de visualisation suffisante à l'écran</td></tr>
+    </table></div>
+    <p>En bas à droite : <strong>RSSI</strong> (puissance reçue) et température du SDR. On mesure la <strong>longueur de la trame</strong> pour chaque couple SF/BW, on en déduit le temps de silence (duty cycle 1 %) puis l'énergie par trame.</p>
+    <div class="callout warn"><span class="tag">Constats attendus</span>
+      Faire varier la <strong>BW</strong> change la largeur du signal à l'écran ; faire varier le <strong>SF</strong> change la durée / l'allure des chirps de la trame.</div>
+  </section>
+
+  <!-- ============ TNT ============ -->
+  <section class="view" id="tnt">
+    <span class="eyebrow">10 · Mesureurs de champ</span>
+    <h1 class="title">Caractériser un signal TNT</h1>
+    <p class="lead">La TNT est diffusée par voie <strong>hertzienne terrestre</strong>, reçue par une antenne <strong>râteau</strong> orientée vers l'émetteur. On l'analyse au mesureur <strong>Televes H30FLEX</strong> (mode DVB-T).</p>
+
+    <div class="grid3">
+      <div class="card stat"><div class="v">UHF</div><div class="l">470 – 694 MHz</div></div>
+      <div class="card stat"><div class="v">8 MHz</div><div class="l">Largeur d'un canal</div></div>
+      <div class="card stat"><div class="v">dBµV</div><div class="l">Unité de niveau</div></div>
+    </div>
+
+    <h2>Notions clés</h2>
+    <ul>
+      <li>Chaque canal occupe <strong>8 MHz</strong> et transporte un <strong>multiplex</strong> (= un ensemble de chaînes).</li>
+      <li><strong>Pas de conversion de fréquence</strong> : le signal reçu est directement exploitable (différence majeure avec le satellite).</li>
+      <li>Au mesureur, les canaux apparaissent comme des <strong>blocs</strong> dans le spectre.</li>
+    </ul>
+
+    <h2>Niveaux de réception (dBµV)</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Niveau</th><th>Qualité</th><th>Code</th></tr>
+      <tr><td>&lt; 45 dBµV</td><td>Réception difficile</td><td>3</td></tr>
+      <tr><td>45 – 70 dBµV</td><td>Réception correcte</td><td>2</td></tr>
+      <tr><td>&gt; 75 dBµV</td><td>Niveau élevé</td><td>1</td></tr>
+    </table></div>
+    <div class="callout"><span class="tag">Définition dBµV</span>
+      Niveau de tension référencé à 1 µV : <strong>U(dBµV) = 20·log(U / 1 µV)</strong>. 0 dBµV = 1 µV.</div>
+
+    <h2>Questions de préparation (réponses)</h2>
+    <ul>
+      <li><strong>Bande</strong> : UHF (470–694 MHz).</li>
+      <li><strong>Largeur canal</strong> : 8 MHz.</li>
+      <li><strong>Pourquoi même largeur</strong> : standardisation → tous les canaux se juxtaposent proprement sans recouvrement.</li>
+      <li><strong>Si deux canaux se chevauchaient</strong> : interférences / brouillage entre multiplex → dégradation de la réception.</li>
+    </ul>
+
+    <h2>Manipulation (Televes H30FLEX)</h2>
+    <ol>
+      <li>Câble coaxial → entrée <strong>RF IN</strong> ; config <strong>DVB-T, Digital</strong>.</li>
+      <li>Mode <strong>SPECTRE</strong>, régler le <strong>SPAN</strong> pour voir toute la bande UHF, compter les multiplex.</li>
+      <li>Zoomer sur un multiplex, mesurer sa largeur, comparer aux 8 MHz théoriques.</li>
+      <li>Remplir le tableau : fréquence centrale, niveau (dBµV), largeur (MHz), code 1/2/3 — pour 4 canaux valides + 1 non valide.</li>
+    </ol>
+  </section>
+
+  <!-- ============ SAT ============ -->
+  <section class="view" id="sat">
+    <span class="eyebrow">11 · Mesureurs de champ</span>
+    <h1 class="title">Caractériser un signal TV satellite</h1>
+    <p class="lead">Réception par satellite <strong>géostationnaire</strong> (≈ 36 000 km, ici ASTRA), via une <strong>parabole</strong> à pointer. Mesureur <strong>UNAOHM AP01</strong> en mode DVB-S.</p>
+
+    <div class="grid3">
+      <div class="card stat"><div class="v">Ku</div><div class="l">10,7 – 12,75 GHz</div></div>
+      <div class="card stat"><div class="v">FI</div><div class="l">950 – 2150 MHz</div></div>
+      <div class="card stat"><div class="v">36 000 km</div><div class="l">Altitude géostationnaire</div></div>
+    </div>
+
+    <h2>Le rôle clé du LNB</h2>
+    <p>Les signaux satellite (micro-ondes, <strong>bande Ku 10,7–12,75 GHz</strong>) sont trop hauts en fréquence pour un câble coaxial. Le <strong>LNB</strong> (Low Noise Block), placé sur la parabole :</p>
+    <ul>
+      <li><strong>amplifie</strong> le signal (faible bruit) ;</li>
+      <li le convertit vers une <strong>fréquence intermédiaire (FI)</strong> : 950 – 2150 MHz, transportable par coaxial.</li>
+    </ul>
+    <div class="callout"><span class="tag">Satellite vs FI</span>
+      Au mesureur on n'observe pas la fréquence satellite réelle mais sa version <strong>convertie en FI</strong>, sous forme de <strong>pics</strong> dans le spectre.</div>
+
+    <h2>Notions clés</h2>
+    <ul>
+      <li><strong>Satellite géostationnaire</strong> : période orbitale = 24 h → paraît fixe dans le ciel → réception par antenne fixe.</li>
+      <li><strong>Transpondeur</strong> : un canal satellite qui regroupe plusieurs chaînes (équivalent du multiplex).</li>
+      <li><strong>Pas de niveau de réception standard</strong> (contrairement à la TNT).</li>
+    </ul>
+
+    <h2>Manipulation (UNAOHM AP01)</h2>
+    <ol>
+      <li>Pointer la parabole, coaxial → <strong>RF IN</strong>, config <strong>DVB-S, Digital</strong>.</li>
+      <li><strong>Alimenter le LNB</strong> (touche LNB, choisir la tension, valider via EXPAN, vérifier la LED).</li>
+      <li>Mode <strong>SPECTRE</strong>, régler le span pour voir la bande Ku, compter les transpondeurs.</li>
+      <li>Pour chaque canal : fréquence porteuse, puissance (dBm), f<sub>min</sub>, f<sub>max</sub>, et <strong>largeur de bande à −3 dB</strong>.</li>
+    </ol>
+
+    <h2>TNT vs Satellite — tableau de différenciation</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>TNT</th><th>TV Satellite</th></tr>
+      <tr><td>Source</td><td>Émetteur terrestre</td><td>Satellite géostationnaire (ASTRA)</td></tr>
+      <tr><td>Bande émise</td><td>UHF 470–694 MHz</td><td>Ku 10,7–12,75 GHz</td></tr>
+      <tr><td>Conversion ?</td><td><b>Non</b> (direct)</td><td><b>Oui</b> (LNB → FI 950–2150 MHz)</td></tr>
+      <tr><td>Antenne</td><td>Râteau</td><td>Parabole + LNB</td></tr>
+      <tr><td>Canal</td><td>Multiplex, 8 MHz</td><td>Transpondeur</td></tr>
+      <tr><td>Unité / niveau</td><td>dBµV, seuils standard</td><td>dBm, pas de standard</td></tr>
+      <tr><td>Norme · mesureur</td><td>DVB-T · Televes H30FLEX</td><td>DVB-S · UNAOHM AP01</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ FORMULAIRE ============ -->
+  <section class="view" id="formulaire">
+    <span class="eyebrow">∑ · Aide-mémoire</span>
+    <h1 class="title">Formulaire récapitulatif</h1>
+    <p class="lead">Toutes les formules de la SAÉ rassemblées. À recopier sur la fiche autorisée le cas échéant.</p>
+
+    <div class="formula"><span class="lbl">Bilan de liaison</span>
+      <div class="eq">P<sub>reçue</sub> = P<sub>émise</sub> + G<sub>e</sub> + G<sub>r</sub> − Pertes &nbsp;≥&nbsp; Sensibilité</div>
+      <div class="eq">Pertes<sub>max</sub> = P<sub>émise</sub> − Sensibilité</div>
+    </div>
+    <div class="formula"><span class="lbl">Okumura-Hata simplifié (R en km)</span>
+      <div class="eq">Pertes = 146,4 + 44,9·log(R) + C &nbsp;·&nbsp; C = 0 / −9,85 / −28,35</div>
+      <div class="eq">R = 10<sup>(Pertes − 146,4 − C)/44,9</sup></div>
+    </div>
+    <div class="formula"><span class="lbl">Friis — espace libre (vue directe)</span>
+      <div class="eq">L<sub>fs</sub> = 32,44 + 20·log(d<sub>km</sub>) + 20·log(f<sub>MHz</sub>)</div>
+    </div>
+    <div class="formula"><span class="lbl">Débit &amp; durée LoRa</span>
+      <div class="eq">T<sub>b</sub> = 2<sup>SF</sup> / (BW·SF) &nbsp;·&nbsp; R<sub>b</sub> = SF·BW / 2<sup>SF</sup></div>
+      <div class="eq">T<sub>trame</sub> = N<sub>bits</sub> × T<sub>b</sub></div>
+    </div>
+    <div class="formula"><span class="lbl">Trame &amp; coding rate</span>
+      <div class="eq">N<sub>bits</sub> = préambule+synchro (≈100) + payload×(dénom/4)</div>
+    </div>
+    <div class="formula"><span class="lbl">Énergie &amp; batterie</span>
+      <div class="eq">P = U·I &nbsp;·&nbsp; E = P·t &nbsp;·&nbsp; E<sub>batt</sub> = U·Q (Wh = V·Ah)</div>
+    </div>
+    <div class="formula"><span class="lbl">Duty cycle</span>
+      <div class="eq">T<sub>silence</sub> = T<sub>trame</sub> × (1/DC − 1) &nbsp;·&nbsp; DC=1% → ×99</div>
+    </div>
+    <div class="formula"><span class="lbl">Unités logarithmiques</span>
+      <div class="eq">P(dBm)=10·log(P<sub>mW</sub>) &nbsp;·&nbsp; U(dBµV)=20·log(U<sub>µV</sub>)</div>
+      <div class="eq">14 dBm ≈ 25 mW &nbsp;·&nbsp; 0 dBm = 1 mW</div>
+    </div>
+
+    <h2>Chiffres à mémoriser</h2>
+    <div class="grid3">
+      <div class="card stat"><div class="v">868 MHz</div><div class="l">LoRa Europe (ISM)</div></div>
+      <div class="card stat"><div class="v">14 dBm</div><div class="l">P max ISM 868</div></div>
+      <div class="card stat"><div class="v">7–12</div><div class="l">Plage SF</div></div>
+      <div class="card stat"><div class="v">125 kHz</div><div class="l">BW par défaut</div></div>
+      <div class="card stat"><div class="v">8 MHz</div><div class="l">Canal TNT (UHF)</div></div>
+      <div class="card stat"><div class="v">10,7–12,75 GHz</div><div class="l">Bande Ku satellite</div></div>
+    </div>
+  </section>
+
+  <!-- ============ QCM ============ -->
+  <section class="view" id="qcm">
+    <span class="eyebrow">? · Entraînement</span>
+    <h1 class="title">QCM &amp; Examen blanc</h1>
+    <p class="lead">Choisis un thème, ou lance l'<strong>examen blanc</strong> (20 questions tirées au hasard dans tout le programme). Chaque réponse est expliquée.</p>
+
+    <div id="qcmMenu">
+      <div class="qcm-head" id="themeBtns"></div>
+    </div>
+
+    <div class="quiz-stage hidden" id="quizStage">
+      <div class="qbar">
+        <button class="btn ghost" id="quitQuiz">← Thèmes</button>
+        <div class="prog"><i id="progFill"></i></div>
+        <span class="count" id="qCount"></span>
+        <span class="score" id="qScore"></span>
+      </div>
+      <div id="qContainer"></div>
+    </div>
+  </section>
+
+  <div class="footer">SAÉ 22 · Mesurer et caractériser un signal · Fiche de révision générée à partir des 7 documents du cours · données en mémoire de session</div>
+  </main>
+</div>
+
+<script>
+/* ---------------- spectrum trace animation ---------------- */
+(function(){
+  var pl=document.getElementById('trace1'); if(!pl)return;
+  function build(t){
+    var pts=[],n=90;
+    for(var i=0;i<=n;i++){
+      var x=i/n*900;
+      var base=78;
+      // two peaks near center to mimic a channel
+      var p1=Math.exp(-Math.pow((i-44)/6,2))*52;
+      var p2=Math.exp(-Math.pow((i-58)/4,2))*30;
+      var noise=(Math.sin(i*0.9+t)+Math.sin(i*0.37+t*1.7))*2.2;
+      var y=base-p1-p2-noise-Math.random()*1.5;
+      pts.push(x.toFixed(1)+','+y.toFixed(1));
+    }
+    pl.setAttribute('points',pts.join(' '));
+  }
+  var t=0; build(0);
+  if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    setInterval(function(){t+=0.25;build(t);},140);
+  }
+})();
+
+/* ---------------- navigation ---------------- */
+var links=document.querySelectorAll('.nav-link');
+var views=document.querySelectorAll('section.view');
+var roSection=document.getElementById('roSection');
+var side=document.getElementById('side'), scrim=document.getElementById('scrim');
+function show(id,label){
+  views.forEach(function(v){v.classList.toggle('on',v.id===id)});
+  links.forEach(function(l){l.classList.toggle('active',l.dataset.v===id)});
+  roSection.textContent=label||id;
+  window.scrollTo({top:0,behavior:'smooth'});
+  side.classList.remove('open');scrim.classList.remove('open');
+}
+links.forEach(function(l){l.addEventListener('click',function(){show(l.dataset.v,l.textContent.trim().replace(/^[0-9∑?]+\s*/,''));});});
+document.getElementById('menuBtn').addEventListener('click',function(){side.classList.toggle('open');scrim.classList.toggle('open');});
+scrim.addEventListener('click',function(){side.classList.remove('open');scrim.classList.remove('open');});
+
+/* ---------------- QCM data ---------------- */
+var THEMES=[
+ {id:'t1',name:'Généralités & chaîne',},
+ {id:'t2',name:'Spectre & ISM'},
+ {id:'t3',name:'Modulation LoRa'},
+ {id:'t4',name:'Débit & trame'},
+ {id:'t5',name:'Portée & bilan'},
+ {id:'t6',name:'Consommation'},
+ {id:'t7',name:'Matériel & Arduino'},
+ {id:'t8',name:'Mesures & SDR'},
+ {id:'t9',name:'TNT'},
+ {id:'t10',name:'TV Satellite'}
+];
+
+var Q={
+t1:[
+ {q:"Dans la chaîne de transmission numérique, quel bloc rend le signal numérique (binaire) ?",o:["L'échantillonneur-bloqueur","Le CAN (convertisseur analogique-numérique)","Le microphone","Le haut-parleur"],a:1,e:"Le CAN convertit l'analogique en numérique binaire. L'échantillonneur-bloqueur ne fait que discrétiser le temps : son signal reste analogique."},
+ {q:"Que produit l'échantillonneur-bloqueur ?",o:["Un signal numérique binaire","Une onde acoustique","Un signal analogique à temps discret (marche d'escalier)","Un signal démodulé"],a:2,e:"Il discrétise le temps mais pas l'amplitude → le signal est analogique à temps discret, en marche d'escalier."},
+ {q:"Quel est l'ordre correct côté émission ?",o:["Micro → CAN → Éch.-bloqueur → Émetteur","Micro → Éch.-bloqueur → CAN → Émetteur numérique","Micro → Émetteur → CAN → Éch.-bloqueur","CAN → Micro → Émetteur → Éch.-bloqueur"],a:1,e:"Micro → Échantillonneur-bloqueur → CAN → Émetteur numérique (codage + modulation)."},
+ {q:"Lequel n'est PAS un support de transmission cité dans le cours ?",o:["Espace libre de propagation","Fibre optique","Paires torsadées / câble coaxial","Le condensateur de découplage"],a:3,e:"Les supports sont : espace libre (hyperfréquences), fibres optiques, câbles coaxiaux et paires torsadées."},
+ {q:"Le CNA (convertisseur numérique-analogique) se trouve…",o:["Côté émission, avant l'antenne","Côté réception, avant le haut-parleur","Dans le support de transmission","Dans le microphone"],a:1,e:"Côté réception : récepteur numérique (démodulation/décodage) → CNA → haut-parleur."},
+ {q:"Quels sont les 3 objectifs généraux de la SAÉ 22 ?",o:["Souder, programmer, vendre","Analyser un signal (temps/fréquence), caractériser un système, présenter les résultats","Router, switcher, sécuriser","Compiler, déboguer, déployer"],a:1,e:"Analyser des signaux en temps et fréquence, caractériser une chaîne de transmission, présenter/critiquer les résultats."},
+ {q:"Quels sont les livrables de la SAÉ ?",o:["Uniquement une soutenance orale","Un rapport écrit + CR de projet + CR des TP encadrés","Un poster seulement","Un dépôt GitHub"],a:1,e:"Rapport écrit, compte rendu des heures de projet, compte rendu des TP encadrés."},
+ {q:"Dans le groupe projet, les 3 responsables techniques couvrent…",o:["Portée, Débit, Consommation","Réseau, Web, Sécurité","Hardware, Software, Firmware","Antenne, Batterie, Boîtier"],a:0,e:"Chef·fe de projet + 3 responsables : Portée, Débit, Consommation."},
+ {q:"Le volet simulation Python de la SAÉ porte notamment sur…",o:["Le routage IP","La quantification/échantillonnage et le débruitage d'un signal audio","La configuration d'un firewall","Le pointage d'une parabole"],a:1,e:"Caractérisation black-box, influence de la numérisation (quantification/échantillonnage), débruitage audio."},
+ {q:"Combien de notes chaque étudiant reçoit-il ?",o:["Une seule note de groupe","Deux : une sur sa partie + une de groupe","Trois notes","Une note par TP"],a:1,e:"Une note individuelle (sa partie) et une note de groupe."}
+],
+t2:[
+ {q:"La bande de fréquence utilisée influence…",o:["Uniquement la taille des antennes","Uniquement le bilan de liaison","Les deux : bilan de liaison ET taille des antennes","Aucun des deux"],a:2,e:"Réponse clicker du cours : la fréquence influence à la fois le bilan de liaison (portée) et la taille des antennes."},
+ {q:"Que signifie ISM ?",o:["Internet Service Management","Industrial, Scientific and Medical","Integrated Signal Modulation","International Spectrum Management"],a:1,e:"ISM = Industrial, Scientific and Medical : bandes libres, sans licence."},
+ {q:"Sur quelle bande LoRaWAN fonctionne-t-il en Europe ?",o:["2,4 GHz","433 MHz uniquement","868 MHz","5 GHz"],a:2,e:"LoRaWAN Europe : bande ISM 868 MHz."},
+ {q:"Quelle règle s'applique dans la bande ISM 868 MHz ?",o:["Puissance illimitée","Duty cycle (0,1 % / 1 % / 10 %) limitant l'occupation du canal","Obligation d'une licence","Chiffrement obligatoire"],a:1,e:"Temps d'occupation du canal limité par un duty cycle de 0,1 / 1 / 10 %."},
+ {q:"Lequel utilise une bande ISM (sans licence) ?",o:["TV satellite","GSM","Le Wi-Fi et le four micro-ondes","LTE (4G)"],a:2,e:"Wi-Fi, four micro-ondes et LoRa sont ISM ; TV sat, GSM, TNT et LTE sont sous licence."},
+ {q:"Plus la fréquence augmente, en général…",o:["La portée augmente et les antennes grossissent","La portée diminue et les antennes rapetissent","Rien ne change","Le débit diminue toujours"],a:1,e:"Haute fréquence → courte portée, petites antennes (et plus de BP disponible)."},
+ {q:"Inconvénient principal des bandes sous le GHz (868 MHz) ?",o:["Très courte portée","Bandes non uniformisées, duty cycle, bande passante limitée","Antennes énormes obligatoires","Interdiction mondiale"],a:1,e:"Sous le GHz : bandes non uniformisées dans le monde, restriction de duty cycle, BP limitée."},
+ {q:"Caractéristique de la bande 2,4–2,48 GHz ?",o:["Très longue portée","Sans licence presque partout, grande BP, mais courte portée","Réservée au satellite","Antennes de très grande dimension"],a:1,e:"2,4 GHz : sans licence dans la plupart des pays, grande BP / gros débits, courte portée."},
+ {q:"Dans quelle catégorie du spectre se situe la 'sweetspot' télécom (GSM, 3G, DAB) ?",o:["VLF","HF","Autour de l'UHF","EHF"],a:2,e:"La zone sweetspot des télécoms grand public est autour de l'UHF."},
+ {q:"Une basse fréquence est associée à…",o:["Courte portée, petites antennes","Longue portée, antennes de grande dimension","Aucune portée","Débit maximal"],a:1,e:"Basse fréquence → longue portée + antennes de grande dimension."}
+],
+t3:[
+ {q:"Que représente le Spreading Factor (SF) en LoRa ?",o:["La puissance d'émission","Le nombre de bits d'information par symbole","La fréquence porteuse","La largeur du préambule"],a:1,e:"Le SF indique combien de bits d'information contient chaque symbole de la modulation LoRa."},
+ {q:"Quelle est la plage usuelle du SF en LoRa ?",o:["0 à 6","7 à 12","1 à 4","20 à 30"],a:1,e:"SF de 7 à 12 (valeur par défaut du code : 12)."},
+ {q:"Si on AUGMENTE le SF, le débit…",o:["Augmente","Diminue","Reste constant","Devient nul"],a:1,e:"SF↑ → débit↓ (mais meilleure sensibilité/portée et trame plus longue)."},
+ {q:"Augmenter la bande passante (BW) a pour effet…",o:["↑ débit, ↓ portée, trame plus courte","↓ débit, ↑ portée","Aucun effet sur le débit","↑ portée uniquement"],a:0,e:"BW↑ → débit↑, sensibilité dégradée (portée↓), durée de trame↓, conso↓."},
+ {q:"Pour MAXIMISER la portée à débit suffisant, on choisit…",o:["SF faible + BW élevée","SF élevé + BW faible","SF élevé + BW élevée","SF faible + BW faible"],a:1,e:"SF élevé + BW faible → sensibilité la meilleure → portée maximale."},
+ {q:"Quelle est la structure d'une trame LoRa ?",o:["Payload uniquement","Préambule + synchro + payload + CRC","En-tête IP + données","Préambule + checksum MD5"],a:1,e:"Préambule (2–20 symboles) + synchro (4 symboles) + données (payload) + CRC."},
+ {q:"La synchro d'une trame LoRa compte combien de symboles ?",o:["2","4","8","20"],a:1,e:"La synchro = 4 symboles ; le préambule va de 2 à 20 symboles."},
+ {q:"Le coding rate (CRC) sert à…",o:["Augmenter la fréquence","Ajouter des bits correcteurs d'erreur (robustesse)","Réduire la portée","Changer d'antenne"],a:1,e:"Le CR ajoute des bits de correction d'erreur selon le niveau de sûreté désiré (4/5 à 4/8)."},
+ {q:"Allonger le préambule…",o:["Augmente le débit utile","Améliore la robustesse mais réduit le débit utile et augmente la conso","N'a aucun effet","Diminue la portée"],a:1,e:"Préambule plus long = plus robuste mais moins de bits utiles par trame et plus de consommation → on cherche à l'optimiser (raccourcir)."},
+ {q:"La bande passante LoRa correspond à…",o:["La distance émetteur-récepteur","La largeur de bande de fréquence autour de la porteuse (f_high − f_low)","Le nombre de canaux","La puissance reçue"],a:1,e:"BW = largeur de la bande de fréquence (f_high − f_low) utilisée pour la transmission."}
+],
+t4:[
+ {q:"Comment estime-t-on le payload d'une donnée non documentée ?",o:["En octets fixes de 64","Via le nombre de chiffres significatifs codés en ASCII 8 bits","Toujours 1 bit","Impossible à estimer"],a:1,e:"On code chaque chiffre/caractère significatif en ASCII sur 8 bits pour estimer les bits utiles."},
+ {q:"En coding rate 4/8, le payload est multiplié par…",o:["1","1,5","2","4"],a:2,e:"Facteur = dénominateur/4 = 8/4 = 2 → payload doublé."},
+ {q:"En CR 4/6, un payload de 60 bits devient…",o:["60 bits","75 bits","90 bits","120 bits"],a:2,e:"Facteur 6/4 = 1,5 → 60 × 1,5 = 90 bits."},
+ {q:"Pour la SAÉ, préambule + synchro sont évalués à environ…",o:["10 bits","100 bits","1000 bits","1 bit"],a:1,e:"On évalue l'ensemble préambule + synchro à ≈ 100 bits pour les calculs."},
+ {q:"Le débit binaire nécessaire à l'application se calcule par…",o:["bits par trame × nombre de transmissions par unité de temps","bits par trame ÷ SF","payload × portée","BW × SF uniquement"],a:0,e:"Débit nécessaire = (bits de la trame) × (nombre de transmissions par seconde/minute/heure)."},
+ {q:"Le débit binaire LoRa est maximal pour…",o:["SF 12 et BW 7,8 kHz","SF 7 et BW 500 kHz","SF 12 et BW 500 kHz","SF 7 et BW 7,8 kHz"],a:1,e:"Débit max = SF faible (7) + BW élevée (500 kHz) → ~25-30 kb/s."},
+ {q:"Formule du débit binaire LoRa ?",o:["Rb = 2^SF / BW","Rb = SF·BW / 2^SF","Rb = BW − SF","Rb = SF + BW"],a:1,e:"Rb = SF·BW / 2^SF = 1/Tb."},
+ {q:"Quand le SF passe de 7 à 12 à BW constante, le débit…",o:["Augmente fortement","Chute fortement","Reste constant","Double"],a:1,e:"Le débit chute fortement quand le SF augmente (courbes du sujet)."},
+ {q:"Pourquoi conserver 2-3 valeurs de BW et de SF en préparation ?",o:["Par obligation administrative","Pour les départager ensuite par la mesure selon le cahier des charges","Parce que LoRa change tout seul","Pour augmenter la puissance"],a:1,e:"On retient plusieurs couples SF/BW candidats, départagés au fil des mesures encadrées."},
+ {q:"Un débit plus élevé tend à dégrader…",o:["La consommation","La portée (sensibilité du récepteur)","La fréquence","Le préambule"],a:1,e:"À puissance donnée, augmenter le débit (BW↑ ou SF↓) dégrade la sensibilité donc la portée."}
+],
+t5:[
+ {q:"Condition pour qu'une liaison LoRa fonctionne ?",o:["P_reçue ≥ Sensibilité du récepteur","P_reçue ≤ 0 dBm","P_émise = P_reçue","Pertes = 0"],a:0,e:"Il faut que la puissance reçue reste supérieure ou égale à la sensibilité du récepteur."},
+ {q:"Pertes maximales tolérables (version simplifiée) ?",o:["P_émise + Sensibilité","P_émise − Sensibilité","Sensibilité − P_émise","2 × P_émise"],a:1,e:"Pertes_max = P_émise − Sensibilité (P_émise = 14 dBm)."},
+ {q:"Une sensibilité de −137 dBm comparée à −120 dBm est…",o:["Moins bonne","Meilleure (capte des signaux plus faibles)","Identique","Invalide"],a:1,e:"Plus la sensibilité est basse (négative), meilleure elle est : le récepteur détecte des signaux plus faibles."},
+ {q:"Modèle Okumura-Hata simplifié de la SAÉ ?",o:["Pertes = 146,4 + 44,9·log(R) + C","Pertes = 20·log(d) + 20·log(f)","Pertes = SF·BW","Pertes = U·I"],a:0,e:"Pertes = 146,4 + 44,9·log(R) + C, avec R en km."},
+ {q:"Quelle valeur de C correspond au milieu rural ?",o:["0","−9,85","−28,35","+28,35"],a:2,e:"Urbain C=0, suburbain C=−9,85, rural C=−28,35."},
+ {q:"Pour une même distance, quel milieu donne la meilleure portée ?",o:["Urbain","Suburbain","Rural","Identique partout"],a:2,e:"Le rural (C=−28,35) a les pertes les plus faibles → meilleure portée. L'urbain (C=0) est le plus pénalisant."},
+ {q:"Quand utilise-t-on la formule de Friis plutôt qu'Okumura-Hata ?",o:["En milieu urbain dense","En vue directe (line of sight) entre émetteur et récepteur","Toujours","Jamais en LoRa"],a:1,e:"Friis (espace libre, R205) s'applique en vue directe entre Tx et Rx."},
+ {q:"Que mesure le RSSI ?",o:["La température","La puissance du signal reçu (dBm)","La fréquence","Le SF"],a:1,e:"RSSI = Received Signal Strength Indicator = puissance reçue, en dBm."},
+ {q:"Combien de points de mesure minimum pour une courbe d'atténuation ?",o:["2","4","8","20"],a:2,e:"Au moins 8 points entre la distance min et la distance de décrochage."},
+ {q:"Comment estimer une portée > 100 m (impossible à mesurer) ?",o:["On l'invente","On extrapole la loi d'atténuation mesurée jusqu'à 100 m (régression sur échelle log)","On double simplement la valeur à 100 m","On utilise un autre récepteur"],a:1,e:"On détermine la pente de la loi de propagation sur ≤100 m puis on extrapole à la distance visée."},
+ {q:"La perte due à un bâtiment se déduit…",o:["De la fréquence seule","De l'écart de RSSI (dB) avec et sans l'obstacle","Du SF","De la tension batterie"],a:1,e:"On compare le niveau reçu avec et sans l'obstacle ; la différence en dB = la perte introduite."}
+],
+t6:[
+ {q:"Relation puissance / tension / courant ?",o:["P = U + I","P = U · I","P = U / I","P = I / U"],a:1,e:"P = U·I (W = V × A)."},
+ {q:"Énergie consommée sur une durée t ?",o:["E = P / t","E = P · t","E = U · I²","E = t / P"],a:1,e:"E = P·t (Wh si t en heures, J si t en secondes)."},
+ {q:"Sous 3,3 V, une émission à 82 mA consomme une puissance d'environ…",o:["0,027 W","0,27 W","2,7 W","27 W"],a:1,e:"P = 3,3 × 0,082 ≈ 0,27 W."},
+ {q:"Quel mode consomme le plus de courant ?",o:["Veille","Mode normal","Réception","Émission"],a:3,e:"L'émission (≈82 mA) consomme le plus, à cause de l'amplificateur de puissance."},
+ {q:"Énergie d'une pile AA Li 2,6 Ah sous 3,7 V ?",o:["≈ 0,96 Wh","≈ 9,62 Wh","≈ 96 Wh","≈ 2,6 Wh"],a:1,e:"E = U·Q = 3,7 × 2,6 ≈ 9,62 Wh."},
+ {q:"Durée de transmission d'un bit en LoRa ?",o:["Tb = 2^SF/(BW·SF)","Tb = BW·SF/2^SF","Tb = SF/BW","Tb = 2^BW/SF"],a:0,e:"Tb = 2^SF / (BW·SF) ; la durée de trame = N_bits × Tb."},
+ {q:"Pour DC = 1 %, le temps de silence après une trame vaut…",o:["1 × Ttrame","9 × Ttrame","99 × Ttrame","0,01 × Ttrame"],a:2,e:"Tsilence = Ttrame × (1/DC − 1) = Ttrame × (100 − 1) = 99 × Ttrame."},
+ {q:"Pour calculer le nombre de trames sur une batterie, on fait…",o:["E_batt × E_trame","E_batt / E_trame","E_trame / E_batt","U × I"],a:1,e:"Nbre de trames = E_batt / E_trame, d'où la durée de vie."},
+ {q:"Un SF élevé ou une BW faible influencent la consommation par trame en…",o:["La réduisant","L'augmentant (trame plus longue)","Ne changeant rien","La rendant nulle"],a:1,e:"SF↑ / BW↓ → trame plus longue → plus d'énergie par trame."},
+ {q:"Convertir une durée de 2,1 ms en heures pour un calcul d'énergie ?",o:["× 1000","÷ 3 600 000","× 3600","÷ 60"],a:1,e:"1 ms = 1/3 600 000 h ; on divise les ms par 3,6 millions pour obtenir des heures (donc des Wh)."}
+],
+t7:[
+ {q:"Quel microcontrôleur équipe la carte UCA ?",o:["ESP32","ATMEGA 328P","STM32F4","Raspberry Pi 4"],a:1,e:"La carte UCA est basée sur un ATMEGA 328P."},
+ {q:"Quel module assure la communication LoRa ?",o:["RFM95W","nRF24L01","SX1280","ESP8266"],a:0,e:"Le module RFM95W (868 MHz) gère la liaison LoRa."},
+ {q:"Quel programmeur USB nécessite l'installation d'un driver ?",o:["FTDI FT232","CH340C","CP2102","PL2303"],a:1,e:"Le CH340C exige l'installation de son driver pour reconnaître la carte."},
+ {q:"À quelle fréquence travaille le module LoRa de la carte UCA ?",o:["433 MHz","868 MHz","2,4 GHz","915 MHz"],a:1,e:"RFM95W en bande 868 MHz (ISM Europe)."},
+ {q:"Dans le code, que définit BAND ?",o:["La largeur de bande","La fréquence porteuse (ex. 868E6)","Le spreading factor","La puissance"],a:1,e:"BAND fixe la fréquence porteuse, allouée par l'enseignant pour chaque projet."},
+ {q:"Quelle puissance d'émission fixe-t-on et pourquoi ?",o:["20 dBm car c'est le défaut","14 dBm car c'est le maximum autorisé en ISM 868 MHz","0 dBm pour économiser","30 dBm pour la portée max"],a:1,e:"14 dBm (≈25 mW) est la puissance maximale réglementaire dans la bande ISM 868 MHz."},
+ {q:"Pourquoi allouer une fréquence porteuse différente par projet ?",o:["Pour augmenter le débit","Pour éviter les interférences entre groupes émettant en même temps","Pour réduire la conso","Pour changer de norme"],a:1,e:"Chaque groupe a une porteuse distincte afin d'éviter les interférences mutuelles dans la même bande ISM."},
+ {q:"Quelle bibliothèque Arduino faut-il installer en cas d'erreur ?",o:["WiFi by Arduino","LoRa by Sandeep Mistry","Adafruit_Sensor","RadioHead"],a:1,e:"La bibliothèque 'LoRa by Sandeep Mistry'."},
+ {q:"Le define preambleLength par défaut vaut…",o:["2","4","8","20"],a:2,e:"Préambule par défaut = 8 symboles (plage 2 à 20)."},
+ {q:"Quel capteur de la carte mesure température, pression et humidité ?",o:["DHT11","BMP280","MPU6050","LDR"],a:1,e:"Le BMP280 (T°C, pression, humidité). La carte a aussi un accéléromètre 3 axes, des LEDs RGB, etc."},
+ {q:"Le connecteur I2C présent sur la carte est de type…",o:["Grove","JST-XH","Molex","RJ45"],a:0,e:"Connecteur Grove I2C."}
+],
+t8:[
+ {q:"Que relève-t-on pour caractériser l'atténuation en fonction de la distance ?",o:["La fréquence","Le RSSI moyen","La tension batterie","La température du PC"],a:1,e:"On relève le RSSI moyen à chaque distance (en attendant la fin du cycle d'acquisition)."},
+ {q:"Sur quel type de papier trace-t-on les courbes d'atténuation ?",o:["Millimétré linéaire","Semi-logarithmique","Log-log","Polaire"],a:1,e:"Papier semi-logarithmique : la distance suit une échelle log."},
+ {q:"Quel SDR est utilisé pour visualiser les trames LoRa ?",o:["RTL-SDR","Adalm Pluto","HackRF One","BladeRF"],a:1,e:"L'Adalm Pluto associé au logiciel SDRangel."},
+ {q:"Dans SDRangel, le spectrogramme défilant s'appelle…",o:["Constellation","Waterfall (cascade)","Eye diagram","Bode plot"],a:1,e:"La courbe de type waterfall (cascade) montre le spectre en fonction du temps."},
+ {q:"Pourquoi cliquer sur 'DC' (SW) dans SDRangel ?",o:["Pour augmenter le gain","Pour supprimer la composante continue par software","Pour changer de fréquence","Pour enregistrer"],a:1,e:"DC supprime la composante continue (raie centrale parasite)."},
+ {q:"À quelle valeur règle-t-on le filtre Low Pass ?",o:["À la moitié de la BW","À environ 2 × la bande passante d'émission","À 868 MHz","À 126 kHz fixe"],a:1,e:"LP ≈ 2 × BW d'émission de la carte UCA pour isoler le canal."},
+ {q:"Le filtre anti-repliement FIR est réglé au minimum à…",o:["12,6 kHz","126 kHz","1,26 MHz","2 MHz"],a:1,e:"FIR minimum ≈ 126 kHz pour éviter le repliement."},
+ {q:"Quelle vitesse de défilement permet de bien voir passer les trames ?",o:["60 FPS","30 FPS","2 FPS","0 FPS"],a:2,e:"2 FPS : assez lent pour visualiser le passage des trames."},
+ {q:"On augmente la taille de la FFT afin de…",o:["Réduire la résolution","Obtenir une durée de visualisation suffisante à l'écran","Augmenter la puissance émise","Changer de bande"],a:1,e:"Une FFT plus grande prolonge la durée affichée à l'écran."},
+ {q:"En faisant varier la BW de la modulation au SDR, on observe…",o:["Un changement de couleur d'écran","Un changement de largeur du signal","Rien","Une coupure totale"],a:1,e:"La BW change la largeur occupée par le signal ; le SF change la durée/allure des chirps."}
+],
+t9:[
+ {q:"Dans quelle bande est diffusée la TNT ?",o:["VHF 30–300 MHz","UHF, environ 470–694 MHz","Bande Ku 10,7–12,75 GHz","2,4 GHz"],a:1,e:"TNT en UHF, ~470 à 694 MHz."},
+ {q:"Quelle est la largeur d'un canal TNT ?",o:["6 MHz","7 MHz","8 MHz","20 MHz"],a:2,e:"Chaque canal TNT occupe 8 MHz et transporte un multiplex."},
+ {q:"Qu'est-ce qu'un multiplex TNT ?",o:["Un seul programme","Un ensemble de chaînes regroupées","Un type d'antenne","Un filtre"],a:1,e:"Un multiplex regroupe plusieurs chaînes dans un même canal."},
+ {q:"En quelle unité exprime-t-on le niveau de réception TNT ?",o:["dBm","dBµV","dBi","Watts"],a:1,e:"Niveau en dBµV (tension référencée à 1 µV)."},
+ {q:"Un niveau < 45 dBµV correspond à une réception…",o:["Élevée (1)","Correcte (2)","Difficile (3)","Parfaite"],a:2,e:"< 45 dBµV = réception difficile (code 3) ; 45–70 correcte (2) ; > 75 élevée (1)."},
+ {q:"Différence majeure entre TNT et satellite ?",o:["La TNT subit une conversion de fréquence","La TNT n'a PAS de conversion de fréquence (signal direct)","La TNT est en bande Ku","La TNT utilise un LNB"],a:1,e:"En TNT, pas de conversion : le signal reçu est directement exploitable, contrairement au satellite."},
+ {q:"Quelle antenne reçoit la TNT ?",o:["Une parabole","Une antenne râteau orientée vers l'émetteur","Une antenne omnidirectionnelle GPS","Un LNB"],a:1,e:"Antenne râteau pointée vers l'émetteur terrestre."},
+ {q:"Quel mesureur de champ est utilisé pour la TNT ?",o:["UNAOHM AP01","Televes H30FLEX","Adalm Pluto","Rohde & Schwarz FSV"],a:1,e:"Le Televes H30FLEX, configuré en DVB-T."},
+ {q:"Sur quel standard configure-t-on le mesureur pour la TNT ?",o:["DVB-S","DVB-T","DVB-C","DAB+"],a:1,e:"DVB-T (terrestre), réception Digital."},
+ {q:"Pourquoi tous les canaux TNT ont-ils la même largeur (8 MHz) ?",o:["Par hasard","Pour qu'ils se juxtaposent sans recouvrement (standardisation)","Pour réduire la puissance","Pour le satellite"],a:1,e:"Une largeur standardisée évite les chevauchements et le brouillage entre multiplex."},
+ {q:"Définition correcte du dBµV ?",o:["10·log(P/1mW)","20·log(U/1µV)","U·I","log(d)"],a:1,e:"dBµV = 20·log(U/1µV) ; 0 dBµV = 1 µV."}
+],
+t10:[
+ {q:"À quelle altitude se trouvent les satellites de TV (géostationnaires) ?",o:["≈ 2 000 km","≈ 36 000 km","≈ 100 km","≈ 400 km"],a:1,e:"Satellites géostationnaires à environ 36 000 km (ici ASTRA)."},
+ {q:"Dans quelle bande émettent les satellites TV (avant conversion) ?",o:["UHF 470–694 MHz","Bande Ku ≈ 10,7–12,75 GHz","868 MHz","2,4 GHz"],a:1,e:"Micro-ondes, bande Ku ~10,7 à 12,75 GHz."},
+ {q:"Quel est le rôle du LNB ?",o:["Émettre vers le satellite","Amplifier (faible bruit) et convertir le signal vers une fréquence intermédiaire (FI)","Stocker l'énergie","Filtrer le son"],a:1,e:"Le LNB amplifie et abaisse la fréquence vers la FI (950–2150 MHz), transportable en coaxial."},
+ {q:"Quelle est la plage de fréquence intermédiaire (FI) ?",o:["470–694 MHz","950–2150 MHz","10,7–12,75 GHz","0–100 MHz"],a:1,e:"FI comprise entre 950 et 2150 MHz."},
+ {q:"Pourquoi convertir le signal satellite en FI ?",o:["Pour économiser l'énergie","Parce que les fréquences Ku sont trop élevées pour un câble coaxial","Pour ajouter des chaînes","Par obligation légale"],a:1,e:"Les fréquences Ku ne se transportent pas efficacement en coaxial : le LNB descend en FI."},
+ {q:"Qu'est-ce qu'un transpondeur ?",o:["Une antenne","Un canal satellite regroupant plusieurs chaînes","Un type de câble","Un filtre passe-bas"],a:1,e:"Le transpondeur est l'équivalent satellite du multiplex : il regroupe plusieurs chaînes."},
+ {q:"Qu'est-ce qu'un satellite géostationnaire ?",o:["Un satellite qui tombe","Un satellite dont la période orbitale est de 24 h, paraissant fixe dans le ciel","Un satellite à basse orbite défilant","Un satellite météo polaire"],a:1,e:"Sa période = 24 h → il paraît immobile → réception par antenne fixe."},
+ {q:"Existe-t-il un niveau de réception standard comme en TNT ?",o:["Oui, identique à la TNT","Non, pas de niveau standard en satellite","Oui, en dBµV uniquement","Oui, fixé à 50 dBm"],a:1,e:"Contrairement à la TNT, il n'y a pas de niveau de réception standard en satellite."},
+ {q:"Quel mesureur et quel standard pour la réception satellite ?",o:["Televes H30FLEX, DVB-T","UNAOHM AP01, DVB-S","Adalm Pluto, DVB-C","UNAOHM, DAB"],a:1,e:"UNAOHM AP01 configuré en DVB-S (et il faut alimenter le LNB)."},
+ {q:"Que mesure-t-on à −3 dB sur un canal satellite ?",o:["La puissance d'émission","La largeur de bande du canal","La distance","Le gain d'antenne"],a:1,e:"On mesure la largeur de bande à −3 dB de la puissance maximale du canal."},
+ {q:"Avant les mesures satellite, quelle action est indispensable ?",o:["Couper l'alimentation","Alimenter le LNB (touche LNB + tension)","Mettre en DVB-T","Retirer le câble coaxial"],a:1,e:"Il faut alimenter le LNB (choisir la tension, valider, vérifier la LED) pour recevoir le signal."}
+]
+};
+
+/* ---------------- quiz engine ---------------- */
+var themeBtns=document.getElementById('themeBtns');
+var qcmMenu=document.getElementById('qcmMenu');
+var quizStage=document.getElementById('quizStage');
+var qContainer=document.getElementById('qContainer');
+var progFill=document.getElementById('progFill');
+var qCount=document.getElementById('qCount');
+var qScore=document.getElementById('qScore');
+var bestScores={};
+
+THEMES.forEach(function(t){
+  var b=document.createElement('button');
+  b.className='theme-btn';
+  b.innerHTML=t.name+' <span class="badge">'+Q[t.id].length+'</span>';
+  b.addEventListener('click',function(){startQuiz(t.id,t.name,Q[t.id]);});
+  themeBtns.appendChild(b);
+});
+// exam blanc
+var exam=document.createElement('button');
+exam.className='theme-btn exam';
+exam.innerHTML='🎯 Examen blanc <span class="badge">20</span>';
+exam.addEventListener('click',function(){
+  var pool=[];for(var k in Q){Q[k].forEach(function(item){pool.push(item)});}
+  var shuffled=pool.slice().sort(function(){return Math.random()-0.5}).slice(0,20);
+  startQuiz('exam','Examen blanc',shuffled);
+});
+themeBtns.appendChild(exam);
+
+var state=null;
+function startQuiz(id,name,list){
+  state={id:id,name:name,list:list,i:0,score:0,answered:false};
+  qcmMenu.classList.add('hidden');
+  quizStage.classList.remove('hidden');
+  renderQ();
+}
+function renderQ(){
+  var item=state.list[state.i];
+  state.answered=false;
+  var pct=(state.i)/state.list.length*100;
+  progFill.style.width=pct+'%';
+  qCount.textContent=(state.i+1)+' / '+state.list.length;
+  qScore.textContent='Score '+state.score;
+  var keys=['A','B','C','D','E'];
+  var html='<div class="qcard"><div class="qtheme">'+state.name+'</div>';
+  html+='<div class="qtext">'+item.q+'</div><div id="opts">';
+  item.o.forEach(function(opt,idx){
+    html+='<button class="opt" data-i="'+idx+'"><span class="key">'+keys[idx]+'</span><span>'+opt+'</span></button>';
+  });
+  html+='</div><div class="explain" id="exp"><b>Explication —</b> '+item.e+'</div>';
+  html+='<div class="qnav"><span></span><button class="btn primary" id="nextBtn" disabled>'+(state.i===state.list.length-1?'Voir le résultat':'Question suivante →')+'</button></div>';
+  html+='</div>';
+  qContainer.innerHTML=html;
+  qContainer.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click',function(){choose(parseInt(b.dataset.i),item);});
+  });
+  document.getElementById('nextBtn').addEventListener('click',next);
+}
+function choose(idx,item){
+  if(state.answered)return;
+  state.answered=true;
+  var opts=qContainer.querySelectorAll('.opt');
+  opts.forEach(function(b){
+    b.disabled=true;
+    var i=parseInt(b.dataset.i);
+    if(i===item.a)b.classList.add('correct');
+    if(i===idx&&idx!==item.a)b.classList.add('wrong');
+  });
+  if(idx===item.a)state.score++;
+  qScore.textContent='Score '+state.score;
+  document.getElementById('exp').classList.add('show');
+  document.getElementById('nextBtn').disabled=false;
+}
+function next(){
+  if(state.i<state.list.length-1){state.i++;renderQ();}
+  else{result();}
+}
+function result(){
+  progFill.style.width='100%';
+  var pct=Math.round(state.score/state.list.length*100);
+  var prev=bestScores[state.id]||0;
+  if(pct>prev)bestScores[state.id]=pct;
+  var msg = pct>=85?'Excellent — tu maîtrises ce thème.':pct>=60?'Bien — revois les questions ratées.':'À retravailler : relis la fiche correspondante.';
+  qCount.textContent='Terminé';
+  qScore.textContent='';
+  qContainer.innerHTML='<div class="qcard result"><div class="ring">'+pct+'%</div>'+
+    '<div class="msg">'+msg+'</div>'+
+    '<div class="mini">'+state.score+' / '+state.list.length+' bonnes réponses · meilleur score : '+bestScores[state.id]+'%</div>'+
+    '<div class="qnav" style="justify-content:center;gap:12px;margin-top:22px">'+
+    '<button class="btn ghost" id="againBtn">↻ Refaire</button>'+
+    '<button class="btn primary" id="menuBtn2">Autres thèmes</button></div></div>';
+  document.getElementById('againBtn').addEventListener('click',function(){startQuiz(state.id,state.name,state.list);});
+  document.getElementById('menuBtn2').addEventListener('click',backToMenu);
+}
+function backToMenu(){
+  quizStage.classList.add('hidden');
+  qcmMenu.classList.remove('hidden');
+  state=null;
+}
+document.getElementById('quitQuiz').addEventListener('click',backToMenu);
+</script>
+</body>
+</html>
