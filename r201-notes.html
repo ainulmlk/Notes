@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R201 – Cahier de Révisions Interactif</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3345;
+    --accent: #3b82f6;
+    --accent2: #10b981;
+    --accent3: #f59e0b;
+    --accent4: #ef4444;
+    --accent5: #8b5cf6;
+    --accent6: #06b6d4;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 8px;
+    height: 52px; overflow-x: auto;
+  }
+  .tab-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-family: var(--sans); font-size: 13px;
+    padding: 6px 14px; border-radius: 6px;
+    white-space: nowrap; transition: all .2s;
+    border: 1px solid transparent;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--card); }
+  .tab-btn.active {
+    color: #fff; background: var(--accent);
+    border-color: var(--accent);
+  }
+  .tab-label { font-size: 11px; color: var(--muted); margin-right: 4px; }
+
+  /* ── LAYOUT ── */
+  .page { display: none; padding: 72px 20px 60px; max-width: 860px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── SECTION BLOCKS ── */
+  h1 { font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+  h2 {
+    font-size: 17px; font-weight: 600; margin: 32px 0 12px;
+    color: var(--text); display: flex; align-items: center; gap: 10px;
+  }
+  h2 .badge {
+    font-size: 11px; font-family: var(--mono);
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-weight: 400;
+  }
+  h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin: 20px 0 8px; }
+
+  /* ── Q&A ACCORDION ── */
+  .qa-block { margin-bottom: 8px; }
+  .qa-q {
+    width: 100%; text-align: left; background: var(--card);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 16px; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center;
+    color: var(--text); font-family: var(--sans); font-size: 14px;
+    transition: border-color .2s;
+  }
+  .qa-q:hover { border-color: var(--accent); }
+  .qa-q .arrow { color: var(--muted); transition: transform .25s; font-size: 12px; }
+  .qa-q.open .arrow { transform: rotate(90deg); }
+  .qa-q.open { border-color: var(--accent); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .qa-a {
+    display: none; background: var(--surface);
+    border: 1px solid var(--accent); border-top: none;
+    border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+    padding: 16px 18px; font-size: 14px; line-height: 1.7;
+  }
+  .qa-a.open { display: block; }
+
+  /* ── CODE BLOCKS ── */
+  pre, code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  pre {
+    background: #0a0d14; border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    overflow-x: auto; margin: 10px 0;
+    line-height: 1.6;
+  }
+  code {
+    background: rgba(59,130,246,.15);
+    color: #93c5fd; padding: 1px 6px; border-radius: 4px;
+  }
+  pre code { background: none; color: #a3e635; padding: 0; }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th {
+    background: var(--card); padding: 9px 12px;
+    text-align: left; font-weight: 600; color: var(--accent);
+    border: 1px solid var(--border); white-space: nowrap;
+  }
+  td {
+    padding: 8px 12px; border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  td code { font-size: 12px; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-left: 3px solid; border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 12px 0; font-size: 14px;
+  }
+  .callout.tip  { border-color: var(--accent2); background: rgba(16,185,129,.08); }
+  .callout.warn { border-color: var(--accent3); background: rgba(245,158,11,.08); }
+  .callout.info { border-color: var(--accent);  background: rgba(59,130,246,.08); }
+  .callout.danger { border-color: var(--accent4); background: rgba(239,68,68,.08); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .callout.tip strong    { color: var(--accent2); }
+  .callout.warn strong   { color: var(--accent3); }
+  .callout.info strong   { color: var(--accent); }
+  .callout.danger strong { color: var(--accent4); }
+
+  /* ── FORMULA BOXES ── */
+  .formula {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; margin: 12px 0;
+    font-family: var(--mono); font-size: 13px; color: #fbbf24;
+  }
+  .formula .label { font-family: var(--sans); font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+
+  /* ── STEP LIST ── */
+  .steps { list-style: none; margin: 10px 0; }
+  .steps li {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 10px; font-size: 14px;
+  }
+  .steps li .num {
+    min-width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; margin-top: 1px;
+  }
+
+  /* ── SUBNET CALCULATOR ── */
+  .tool-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin: 20px 0;
+  }
+  .tool-box h3 { margin-top: 0; }
+  .input-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .input-row input, .input-row select {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--mono); font-size: 13px;
+    padding: 8px 12px; border-radius: 6px; flex: 1; min-width: 140px;
+    outline: none;
+  }
+  .input-row input:focus, .input-row select:focus { border-color: var(--accent); }
+  .btn {
+    background: var(--accent); color: #fff; border: none;
+    padding: 8px 18px; border-radius: 6px; cursor: pointer;
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    transition: opacity .2s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn.green { background: var(--accent2); }
+  .result-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; font-family: var(--mono);
+    font-size: 13px; min-height: 40px; color: #a3e635;
+    white-space: pre-wrap; word-break: break-all;
+  }
+
+  /* ── ACL BUILDER ── */
+  .acl-output {
+    background: #0a0d14; border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px; font-family: var(--mono);
+    font-size: 13px; color: #a3e635; min-height: 36px; margin-top: 10px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    height: 3px; background: var(--border); border-radius: 2px; margin: 16px 0;
+  }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s; }
+
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 20px; }
+  li { margin-bottom: 4px; }
+  .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; margin: 2px;
+  }
+  .tag.blue { background: rgba(59,130,246,.2); color: #93c5fd; }
+  .tag.green { background: rgba(16,185,129,.2); color: #6ee7b7; }
+  .tag.yellow { background: rgba(245,158,11,.2); color: #fcd34d; }
+  .tag.red { background: rgba(239,68,68,.2); color: #fca5a5; }
+  .tag.purple { background: rgba(139,92,246,.2); color: #c4b5fd; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* quizz */
+  .quiz-q { font-weight: 600; margin-bottom: 10px; font-size: 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .quiz-opt {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 9px 14px; cursor: pointer;
+    font-size: 13px; text-align: left; color: var(--text);
+    font-family: var(--sans); transition: all .2s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct { border-color: var(--accent2); background: rgba(16,185,129,.12); color: #6ee7b7; }
+  .quiz-opt.wrong   { border-color: var(--accent4); background: rgba(239,68,68,.12); color: #fca5a5; }
+  .quiz-feedback { font-size: 13px; margin-top: 6px; padding: 8px 12px; border-radius: 6px; }
+  .quiz-feedback.ok  { background: rgba(16,185,129,.1); color: #6ee7b7; }
+  .quiz-feedback.bad { background: rgba(239,68,68,.1); color: #fca5a5; }
+
+  .nav-mini { display: flex; gap: 8px; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div id="topbar">
+  <span class="tab-label">R201</span>
+  <button class="tab-btn active" onclick="showPage('td1')">TD1 – IPv4 / Subnetting</button>
+  <button class="tab-btn" onclick="showPage('td2')">TD2 – NAT / PAT</button>
+  <button class="tab-btn" onclick="showPage('td3')">TD3 – ACL</button>
+  <button class="tab-btn" onclick="showPage('td4')">TD4 – Routage dynamique</button>
+  <button class="tab-btn" onclick="showPage('td5')">TD5 – IPv6</button>
+  <button class="tab-btn" onclick="showPage('td6')">TD6 – Config IPv6</button>
+  <button class="tab-btn" onclick="showPage('tools')" style="margin-left:auto;">🔧 Outils</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD1 ══ -->
+<div id="td1" class="page active">
+  <h1>TD1 — Adresses IPv4, Subnetting, VLSM</h1>
+  <p class="subtitle">Classes d'adresses · Masques · Découpage en sous-réseaux · Supernetting</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-1 — Les différentes classes d'adresses et comment les reconnaître ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Classe</th><th>1er octet</th><th>Bits début</th><th>Partie réseau</th><th>Partie hôte</th><th>Plage</th></tr>
+        <tr><td><span class="tag blue">A</span></td><td>1 – 126</td><td>0xxxxxxx</td><td>1 octet</td><td>3 octets</td><td>/8</td></tr>
+        <tr><td><span class="tag green">B</span></td><td>128 – 191</td><td>10xxxxxx</td><td>2 octets</td><td>2 octets</td><td>/16</td></tr>
+        <tr><td><span class="tag yellow">C</span></td><td>192 – 223</td><td>110xxxxx</td><td>3 octets</td><td>1 octet</td><td>/24</td></tr>
+        <tr><td><span class="tag red">D</span></td><td>224 – 239</td><td>1110xxxx</td><td colspan="2">Multicast (pas de partie hôte)</td><td>—</td></tr>
+        <tr><td><span class="tag purple">E</span></td><td>240 – 255</td><td>1111xxxx</td><td colspan="2">Réservée (expérimentation)</td><td>—</td></tr>
+      </table></div>
+      <div class="callout tip"><strong>Astuce</strong>Règle rapide : 1er octet &lt; 128 → A ; 128–191 → B ; 192–223 → C ; 224+ → D/E.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-2 — Adresses réservées et comment les trouver ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <ul>
+        <li><strong>Adresse réseau</strong> : tous les bits hôte à 0 (ex. 192.168.1.<strong>0</strong>). Identifie le réseau.</li>
+        <li><strong>Adresse de diffusion (broadcast)</strong> : tous les bits hôte à 1 (ex. 192.168.1.<strong>255</strong>). Envoie à tous les hôtes.</li>
+        <li><strong>Loopback</strong> : 127.0.0.0/8 (typiquement 127.0.0.1) — ne quitte jamais la machine.</li>
+        <li><strong>APIPA</strong> : 169.254.0.0/16 — auto-configuration quand le DHCP échoue.</li>
+        <li><strong>Broadcast limité</strong> : 255.255.255.255</li>
+      </ul>
+      <div class="formula"><div class="label">Calcul adresse réseau</div>IP AND Masque → adresse réseau<br>IP OR NOT(Masque) → adresse broadcast</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-3 — Adresses privées et leur rôle ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Plage privée</th><th>CIDR</th><th>Classe d'origine</th></tr>
+        <tr><td>10.0.0.0 – 10.255.255.255</td><td>/8</td><td>A</td></tr>
+        <tr><td>172.16.0.0 – 172.31.255.255</td><td>/12</td><td>B</td></tr>
+        <tr><td>192.168.0.0 – 192.168.255.255</td><td>/16</td><td>C</td></tr>
+      </table></div>
+      <p>Ces adresses <strong>ne sont pas routées sur Internet</strong>. Elles sont utilisées en interne avec le NAT pour économiser les adresses IPv4 publiques (RFC 1918).</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-4 — Qu'est-ce que le subnetting ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>subnetting</strong> consiste à <em>emprunter des bits hôtes</em> pour créer des <em>sous-réseaux</em> à partir d'un réseau plus grand. On allonge le masque (ex. /24 → /26) pour diviser l'espace d'adressage.</p>
+      <div class="formula">
+        <div class="label">Formules clés</div>
+        Nombre de sous-réseaux = 2ˢ  (s = bits empruntés)<br>
+        Hôtes utilisables / sous-réseau = 2ʰ − 2  (h = bits hôtes restants)<br>
+        Incrément = 256 − valeur octet masque
+      </div>
+      <div class="callout tip"><strong>Exemple /26</strong>Masque 255.255.255.192 → 2² = 4 sous-réseaux, 2⁶−2 = 62 hôtes chacun, incrément 64.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-5 — Qu'est-ce que le supernetting ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>supernetting</strong> (ou agrégation / summarization) consiste à <em>regrouper plusieurs réseaux contigus</em> en un réseau plus grand en <em>raccourcissant</em> le masque. Utilisé dans BGP et OSPF pour réduire la taille des tables de routage.</p>
+      <div class="callout info"><strong>Exemple</strong>192.168.0.0/24 + 192.168.1.0/24 + 192.168.2.0/24 + 192.168.3.0/24 → 192.168.0.0/22</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-6 — Particularité des protocoles de routage avec VLSM ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>VLSM</strong> (Variable Length Subnet Mask) permet d'utiliser des masques de longueurs différentes dans le même réseau. Les protocoles de routage doivent être <strong>classless</strong> (sans classe), c'est-à-dire qu'ils transportent le masque dans leurs mises à jour :</p>
+      <ul>
+        <li><span class="tag green">Compatibles VLSM</span> : RIPv2, OSPF, EIGRP, BGP, IS-IS</li>
+        <li><span class="tag red">Incompatibles</span> : RIPv1, IGRP (classful, n'envoient pas le masque)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-7 — Préfixe d'une adresse réseau pour une liaison série ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Une liaison point-à-point (WAN série) n'a besoin que de <strong>2 adresses hôtes</strong>, donc le préfixe optimal est <code>/30</code> (masque 255.255.255.252).</p>
+      <div class="formula"><div class="label">/30 – liaison point à point</div>2⁸⁻³⁰ − 2 = 2³² − ³⁰ = 2² − 2 = 2 hôtes utilisables ✓</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>I-c – Exercices de calcul <span class="badge">Sans calculatrice</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-1 — Binaire : 156.78.221.87 et 192.168.77.23 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="formula">
+156.78.221.87<br>
+156 = 10011100<br>
+ 78 = 01001110<br>
+221 = 11011101<br>
+ 87 = 01010111<br>
+→ <strong>10011100.01001110.11011101.01010111</strong>
+      </div>
+      <div class="formula">
+192.168.77.23<br>
+192 = 11000000<br>
+168 = 10101000<br>
+ 77 = 01001101<br>
+ 23 = 00010111<br>
+→ <strong>11000000.10101000.01001101.00010111</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-2 — Décimal : 11001101.10101010.01100111.11000111 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="formula">
+11001101 = 128+64+8+4+1 = <strong>205</strong><br>
+10101010 = 128+32+8+2   = <strong>170</strong><br>
+01100111 = 64+32+4+2+1  = <strong>103</strong><br>
+11000111 = 128+64+4+2+1 = <strong>199</strong><br>
+→ <strong>205.170.103.199</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-3 — Classe, réseau, broadcast, plage unicast <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Adresse</th><th>Classe</th><th>Masque naturel</th><th>Réseau</th><th>Broadcast</th><th>Plage unicast</th></tr>
+        <tr><td>200.67.80.45</td><td>C</td><td>/24 – 255.255.255.0</td><td>200.67.80.0</td><td>200.67.80.255</td><td>.1 → .254</td></tr>
+        <tr><td>56.98.78.67</td><td>A</td><td>/8 – 255.0.0.0</td><td>56.0.0.0</td><td>56.255.255.255</td><td>56.0.0.1 → 56.255.255.254</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-4 — Découpez 150.37.0.0/20 en 8 sous-réseaux <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>On part d'un /20. Pour 8 sous-réseaux : 2³ = 8, donc on emprunte 3 bits → <strong>/23</strong>.</p>
+      <div class="formula">
+Masque /23 = 255.255.254.0<br>
+Incrément sur 3ème octet = 256 − 254 = <strong>2</strong><br>
+Hôtes / sous-réseau = 2⁹ − 2 = <strong>510</strong>
+      </div>
+      <div class="tbl-wrap"><table>
+        <tr><th>#</th><th>Réseau</th><th>Première IP</th><th>Dernière IP</th><th>Broadcast</th></tr>
+        <tr><td>1</td><td>150.37.0.0/23</td><td>150.37.0.1</td><td>150.37.1.254</td><td>150.37.1.255</td></tr>
+        <tr><td>2</td><td>150.37.2.0/23</td><td>150.37.2.1</td><td>150.37.3.254</td><td>150.37.3.255</td></tr>
+        <tr><td>3</td><td>150.37.4.0/23</td><td>150.37.4.1</td><td>150.37.5.254</td><td>150.37.5.255</td></tr>
+        <tr><td>4</td><td>150.37.6.0/23</td><td>150.37.6.1</td><td>150.37.7.254</td><td>150.37.7.255</td></tr>
+        <tr><td>5</td><td>150.37.8.0/23</td><td>150.37.8.1</td><td>150.37.9.254</td><td>150.37.9.255</td></tr>
+        <tr><td>6</td><td>150.37.10.0/23</td><td>150.37.10.1</td><td>150.37.11.254</td><td>150.37.11.255</td></tr>
+        <tr><td>7</td><td>150.37.12.0/23</td><td>150.37.12.1</td><td>150.37.13.254</td><td>150.37.13.255</td></tr>
+        <tr><td>8</td><td>150.37.14.0/23</td><td>150.37.14.1</td><td>150.37.15.254</td><td>150.37.15.255</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-5 — Redécoupez le 3ème sous-réseau (150.37.4.0/23) en 8 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>On part de 150.37.4.0/<strong>23</strong>. Pour 8 sous-réseaux : 2³ → emprunter 3 bits → <strong>/26</strong>. Incrément = 256−192 = 64 sur 4ème octet.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>#</th><th>Réseau /26</th><th>Première IP</th><th>Dernière IP</th><th>Broadcast</th></tr>
+        <tr><td>1</td><td>150.37.4.0/26</td><td>150.37.4.1</td><td>150.37.4.62</td><td>150.37.4.63</td></tr>
+        <tr><td>2</td><td>150.37.4.64/26</td><td>150.37.4.65</td><td>150.37.4.126</td><td>150.37.4.127</td></tr>
+        <tr><td>3</td><td>150.37.4.128/26</td><td>150.37.4.129</td><td>150.37.4.190</td><td>150.37.4.191</td></tr>
+        <tr><td>4</td><td>150.37.4.192/26</td><td>150.37.4.193</td><td>150.37.4.254</td><td>150.37.4.255</td></tr>
+        <tr><td>5</td><td>150.37.5.0/26</td><td>150.37.5.1</td><td>150.37.5.62</td><td>150.37.5.63</td></tr>
+        <tr><td>6</td><td>150.37.5.64/26</td><td>150.37.5.65</td><td>150.37.5.126</td><td>150.37.5.127</td></tr>
+        <tr><td>7</td><td>150.37.5.128/26</td><td>150.37.5.129</td><td>150.37.5.190</td><td>150.37.5.191</td></tr>
+        <tr><td>8</td><td>150.37.5.192/26</td><td>150.37.5.193</td><td>150.37.5.254</td><td>150.37.5.255</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>Exercices de séance <span class="badge">TD</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Exercice 2 — Tableau classes, masques, réseau, broadcast <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>IP</th><th>Classe</th><th>Masque binaire</th><th>CIDR</th><th>Réseau</th><th>Broadcast</th></tr>
+        <tr><td>216.14.55.137</td><td>C</td><td>11111111.11111111.11111111.00000000</td><td>/24</td><td>216.14.55.0</td><td>216.14.55.255</td></tr>
+        <tr><td>123.1.1.15</td><td>A</td><td>11111111.00000000.00000000.00000000</td><td>/8</td><td>123.0.0.0</td><td>123.255.255.255</td></tr>
+        <tr><td>150.127.221.244</td><td>B</td><td>11111111.11111111.00000000.00000000</td><td>/16</td><td>150.127.0.0</td><td>150.127.255.255</td></tr>
+        <tr><td>194.125.35.199</td><td>C</td><td>11111111.11111111.11111111.00000000</td><td>/24</td><td>194.125.35.0</td><td>194.125.35.255</td></tr>
+        <tr><td>175.12.239.244</td><td>B</td><td>11111111.11111111.00000000.00000000</td><td>/16</td><td>175.12.0.0</td><td>175.12.255.255</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Exercice 3 — Adresses attribuables à un équipement ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Adresse</th><th>OUI/NON</th><th>Justification</th></tr>
+        <tr><td>150.100.255.255</td><td><span class="tag red">NON</span></td><td>Adresse de broadcast du réseau 150.100.0.0/16</td></tr>
+        <tr><td>175.100.255.18</td><td><span class="tag green">OUI</span></td><td>Adresse hôte valide de classe B</td></tr>
+        <tr><td>195.234.253.0</td><td><span class="tag red">NON</span></td><td>Adresse réseau (dernier octet = 0) de classe C</td></tr>
+        <tr><td>100.0.0.23</td><td><span class="tag green">OUI</span></td><td>Adresse hôte valide de classe A</td></tr>
+        <tr><td>188.258.221.176</td><td><span class="tag red">NON</span></td><td>Invalide : 258 > 255, dépasse la valeur max d'un octet</td></tr>
+        <tr><td>127.34.25.189</td><td><span class="tag red">NON</span></td><td>Plage loopback 127.x.x.x, réservée</td></tr>
+        <tr><td>224.156.217.73</td><td><span class="tag red">NON</span></td><td>Classe D (multicast), non attribuable à un hôte</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Exercice 5 — VLSM WAN 221.168.10.0/24 (ANTIBES, VALBONNE, BIOT, VALLAURIS) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Sous-réseaux nécessaires : 4 LANs + 3 liaisons série = <strong>7</strong>. On utilise VLSM (du plus grand au plus petit) :</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Segment</th><th>Hôtes requis</th><th>Préfixe</th><th>Hôtes dispo</th><th>Réseau</th><th>Broadcast</th><th>Plage</th></tr>
+        <tr><td>VALBONNE</td><td>60</td><td>/26</td><td>62</td><td>221.168.10.0</td><td>221.168.10.63</td><td>.1 – .62</td></tr>
+        <tr><td>ANTIBES</td><td>28</td><td>/27</td><td>30</td><td>221.168.10.64</td><td>221.168.10.95</td><td>.65 – .94</td></tr>
+        <tr><td>BIOT</td><td>12</td><td>/28</td><td>14</td><td>221.168.10.96</td><td>221.168.10.111</td><td>.97 – .110</td></tr>
+        <tr><td>VALLAURIS</td><td>12</td><td>/28</td><td>14</td><td>221.168.10.112</td><td>221.168.10.127</td><td>.113 – .126</td></tr>
+        <tr><td>Lien ANTIBES–VALBONNE</td><td>2</td><td>/30</td><td>2</td><td>221.168.10.128</td><td>221.168.10.131</td><td>.129 – .130</td></tr>
+        <tr><td>Lien ANTIBES–BIOT</td><td>2</td><td>/30</td><td>2</td><td>221.168.10.132</td><td>221.168.10.135</td><td>.133 – .134</td></tr>
+        <tr><td>Lien ANTIBES–VALLAURIS</td><td>2</td><td>/30</td><td>2</td><td>221.168.10.136</td><td>221.168.10.139</td><td>.137 – .138</td></tr>
+      </table></div>
+      <div class="callout tip"><strong>Évolution</strong>Il reste 221.168.10.140 → 221.168.10.255, soit encore 116 adresses pour les futures extensions.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Exercice 6 — Quelle utilisation optimale des masques ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Masque</th><th>Proposition correcte</th><th>Pourquoi</th></tr>
+        <tr><td>255.255.255.252 (/30)</td><td><span class="tag blue">A</span></td><td>2 hôtes → parfait pour liaison WAN point-à-point</td></tr>
+        <tr><td>255.255.255.240 (/28)</td><td><span class="tag blue">C</span></td><td>14 hôtes → petits sous-réseaux</td></tr>
+        <tr><td>255.255.255.192 (/26)</td><td><span class="tag blue">D</span></td><td>62 hôtes → grands sous-réseaux</td></tr>
+      </table></div>
+      <div class="callout warn"><strong>Pièges des fausses propositions</strong>B dit "/30 pour 4 hôtes ou plus" — faux, /30 ne donne que 2 hôtes. E dit "/25 pour 30 hôtes" — faux, /25 donne 126 hôtes. F dit "/24 pour liaisons point-à-point" — très gaspilleur.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD2 ══ -->
+<div id="td2" class="page">
+  <h1>TD2 — Traduction d'adresse NAT / PAT</h1>
+  <p class="subtitle">NAT statique · NAT dynamique · PAT · Masquerading</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-1 — Pourquoi a-t-on développé le NAT ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le NAT (Network Address Translation) a été développé pour <strong>pallier l'épuisement des adresses IPv4 publiques</strong>. Il permet à plusieurs hôtes utilisant des adresses privées (RFC 1918) de partager une ou plusieurs adresses publiques pour accéder à Internet. Il apporte aussi un bénéfice secondaire de <strong>sécurité</strong> en cachant la topologie interne.</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-2 — NAT statique (SNAT) ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>NAT statique</strong> établit une correspondance <em>permanente et bijective</em> entre une adresse privée et une adresse publique. La table de traduction est configurée manuellement.</p>
+      <pre>ip nat inside source static 192.168.1.10 200.1.1.10</pre>
+      <p>Usage typique : rendre un <strong>serveur interne</strong> (web, FTP) accessible depuis Internet.</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-3 — Définir les interfaces NAT sur le routeur ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>interface Fa0/0
+  ip nat inside    ← réseau privé (LAN)
+
+interface Serial0/0
+  ip nat outside   ← réseau public (Internet)</pre>
+      <div class="callout info"><strong>Règle mnémotechnique</strong>"inside" = côté LAN privé / "outside" = côté Internet public.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-4 — Noms d'adresses dans la table NAT ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Terme</th><th>Description</th></tr>
+        <tr><td><strong>Inside Local</strong></td><td>Adresse privée réelle de l'hôte interne (ex. 192.168.1.5)</td></tr>
+        <tr><td><strong>Inside Global</strong></td><td>Adresse publique qui représente l'hôte interne vu depuis Internet</td></tr>
+        <tr><td><strong>Outside Local</strong></td><td>Adresse du serveur externe vue depuis le réseau interne</td></tr>
+        <tr><td><strong>Outside Global</strong></td><td>Adresse réelle du serveur externe (même chose en général)</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-5 — PAT, port mapping ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>PAT</strong> (Port Address Translation) ou <em>NAT Overload</em> permet à <strong>plusieurs hôtes de partager une seule adresse publique</strong> en distinguant les sessions grâce aux numéros de port TCP/UDP.</p>
+      <p>Le <strong>port mapping</strong> (ou port forwarding) est l'opération inverse : rediriger un port entrant (ex. port 80 de l'IP publique) vers un serveur interne.</p>
+      <pre>ip nat inside source list 1 interface Serial0/0 overload</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-6 — Problèmes du NAT statique ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <ul>
+        <li>Consomme 1 adresse publique par serveur interne exposé → peu scalable.</li>
+        <li>Certains protocoles qui intègrent l'adresse IP dans leur payload (FTP actif, H.323, SIP) peuvent être cassés par le NAT.</li>
+        <li>Difficulté de tracer les connexions (débogage).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-7 — NAT dynamique ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le NAT dynamique utilise un <strong>pool (groupe) d'adresses publiques</strong> attribuées temporairement aux hôtes internes. La correspondance est créée à la demande et supprimée après timeout.</p>
+      <pre>ip nat pool MON_POOL 201.200.200.17 201.200.200.18 netmask 255.255.255.252
+access-list 1 permit 192.168.3.0 0.0.0.255
+ip nat inside source list 1 pool MON_POOL</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-8 — NAT Masquerading ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>NAT Masquerading</strong> est un PAT qui utilise <em>l'adresse IP de l'interface WAN du routeur</em> automatiquement, sans pool fixe. Idéal quand l'IP publique est attribuée dynamiquement par le FAI (DHCP).</p>
+      <pre>ip nat inside source list 1 interface Serial0/0 overload</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-9 — Quand est-on obligé d'implémenter du port forwarding ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Lorsqu'un <strong>serveur interne doit être accessible depuis Internet</strong> alors que seul le masquerading est en place. Le routeur ne peut pas deviner quel serveur interne correspond à une connexion entrante → il faut lui indiquer explicitement vers quel port/IP interne rediriger.</p>
+      <pre>ip nat inside source static tcp 10.0.0.1 21 200.20.2.5 21</pre>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>I-c – Exercices NAT <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-1 — Table NAT dynamique (hôte A = .1, hôte B = .2) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Pool FAI = 201.200.200.17 et .18 | Serveur WEB = 181.180.180.15/24</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Inside Local</th><th>Inside Global</th><th>Outside Global</th></tr>
+        <tr><td>192.168.3.1</td><td>201.200.200.17</td><td>181.180.180.15</td></tr>
+        <tr><td>192.168.3.2</td><td>201.200.200.18</td><td>181.180.180.15</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-2 — Table NAT masquerading avec ports <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>IP interface série Ra = 201.200.200.5 (dans le /30 201.200.200.4/30)</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Inside Local</th><th>Inside Global</th><th>Outside Global</th></tr>
+        <tr><td>192.168.3.1:1125</td><td>201.200.200.5:1125</td><td>181.180.180.15:80</td></tr>
+        <tr><td>192.168.3.2:1126</td><td>201.200.200.5:1126</td><td>181.180.180.15:80</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-3 — Quelles IP sont privées ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Adresse</th><th>Privée ?</th><th>Raison</th></tr>
+        <tr><td>10.0.0.214</td><td><span class="tag green">OUI</span></td><td>Plage 10.0.0.0/8</td></tr>
+        <tr><td>172.5.23.45</td><td><span class="tag red">NON</span></td><td>172.5.x.x hors plage privée (172.16–31)</td></tr>
+        <tr><td>172.16.5.66</td><td><span class="tag green">OUI</span></td><td>Plage 172.16.0.0/12</td></tr>
+        <tr><td>192.168.115.15</td><td><span class="tag green">OUI</span></td><td>Plage 192.168.0.0/16</td></tr>
+        <tr><td>192.175.23.56</td><td><span class="tag red">NON</span></td><td>192.175.x.x hors plage 192.168.x.x</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-4 / 5 / 6 — QCM NAT <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p><strong>I-c-4</strong> : Interface Fa0/0 côté LAN (10.10.3.x) → <code>ip nat inside</code></p>
+      <p><strong>I-c-5</strong> : Pool de 6 adresses 171.11.10.9 → .14. Masque /29 = 255.255.255.248 ✓<br>→ <code>ip nat pool NET 171.11.10.9 171.11.10.14 netmask 255.255.255.248</code></p>
+      <p><strong>I-c-6</strong> : Pour qu'Internet accède au serveur WEB interne → <span class="tag green">NAT Statique</span> (correspondance permanente).</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>Phase exercice séance <span class="badge">Packet Tracer</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 2 — Adresse réseau globale interne 200.20.2.8/29 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="formula">/29 → 2³ − 2 = <strong>6 hôtes</strong> utilisables simultanément<br>Plage : 200.20.2.9 → 200.20.2.14</div>
+      <p>Type NAT : <strong>dynamique avec NAT statique</strong> pour le serveur FTP (accessible depuis Internet).</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 4 — FTP et NAT masquerading + port forwarding <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>FTP utilise les ports <strong>20</strong> (données) et <strong>21</strong> (contrôle).</p>
+      <p>Pour rendre le FTP accessible avec masquerading :</p>
+      <pre>ip nat inside source static tcp 10.0.0.1 21 200.20.2.5 21
+ip nat inside source list 1 interface Serial0/0 overload
+ip classless</pre>
+      <div class="callout warn"><strong>Attention</strong>Les hôtes d'Internet ne peuvent pas pinger les réseaux privés internes (les paquets ICMP ne trouvent pas de route de retour sans NAT inverse). Le serveur FTP, lui, peut pinger Internet car le masquerading traduit les paquets sortants.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD3 ══ -->
+<div id="td3" class="page">
+  <h1>TD3 — Sécurisation par filtrage ACL</h1>
+  <p class="subtitle">ACL standard · étendue · nommée · wildcard mask</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-1 — Raisons d'utiliser les ACL ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <ul>
+        <li>Contrôler le trafic réseau entrant/sortant sur une interface</li>
+        <li>Sécuriser l'accès aux ressources (serveurs, zones DMZ)</li>
+        <li>Filtrer selon IP source/destination, protocole, ports</li>
+        <li>Classifier le trafic pour QoS</li>
+        <li>Restreindre l'accès au routeur lui-même (lignes VTY)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-4 — Le masque générique (wildcard) ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>masque générique</strong> est l'inverse du masque réseau :</p>
+      <div class="formula">Wildcard = 255.255.255.255 − Masque réseau<br><br>Exemple : /24 → 255.255.255.0 → wildcard = 0.0.0.255<br>Exemple : /26 → 255.255.255.192 → wildcard = 0.0.0.63</div>
+      <ul>
+        <li><strong>Bit 0</strong> → ce bit DOIT correspondre (bit "contrôlé")</li>
+        <li><strong>Bit 1</strong> → ce bit est ignoré ("don't care")</li>
+        <li><code>host 10.1.1.1</code> = <code>10.1.1.1 0.0.0.0</code></li>
+        <li><code>any</code> = <code>0.0.0.0 255.255.255.255</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-5/6 — ACL Standard : filtrage et syntaxe ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Les ACL standard filtrent <strong>uniquement sur l'IP source</strong>. Elles doivent être placées <strong>le plus proche possible de la destination</strong> (pour ne pas bloquer du trafic légitime vers d'autres destinations).</p>
+      <pre>access-list [1-99] {permit|deny} source [wildcard]
+! Exemples :
+access-list 1 deny 192.168.3.0 0.0.0.255
+access-list 1 permit any
+
+interface Fa0/1
+  ip access-group 1 out</pre>
+      <div class="callout warn"><strong>Implicit deny</strong>Toute ACL se termine par un "deny any" implicite. Toujours ajouter <code>permit any</code> si nécessaire.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-7/8 — ACL Étendue : filtrage et syntaxe ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Les ACL étendues filtrent sur <strong>IP source, IP destination, protocole, ports TCP/UDP</strong>. Elles doivent être placées <strong>le plus proche possible de la source</strong> (pour éviter trafic inutile sur le réseau).</p>
+      <pre>access-list [100-199] {permit|deny} protocole source s_wild dest d_wild [eq port]
+
+! Exemples :
+access-list 110 deny tcp 10.10.10.0 0.0.0.255 host 10.1.1.10 eq 80
+access-list 110 deny tcp 10.10.10.0 0.0.0.255 host 10.1.1.10 eq 443
+access-list 110 permit ip any any
+
+interface Fa0/0
+  ip access-group 110 in</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-9/10 — ACL Nommées : avantages et modification ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <ul>
+        <li>Nom descriptif plutôt qu'un numéro → meilleure lisibilité</li>
+        <li>Possibilité de <strong>supprimer une règle précise</strong> (impossible avec ACL numérotées en IOS classique)</li>
+        <li>Ajout de règles dans un ordre précis avec les numéros de séquence</li>
+      </ul>
+      <pre>ip access-list extended FILTRE_WEB
+  10 deny tcp 10.10.10.0 0.0.0.255 host 10.1.1.10 eq 80
+  20 permit ip any any
+  no 10              ← supprime la règle 10
+  15 deny udp ...    ← insère entre 10 et 20</pre>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>I-c – Exercices ACL <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-4 — ACL interdire trafic hôte3 (192.168.3.2) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Hôte3 = 192.168.3.2. On veut interdire tout le trafic venant de cet hôte uniquement.</p>
+      <pre>access-list 1 deny host 192.168.3.2
+access-list 1 permit any
+
+! Placer sur Routeur2, interface vers réseau 192.168.3.x, direction IN
+interface Fa0/0
+  ip access-group 1 in</pre>
+      <div class="callout tip"><strong>Choix de placement</strong>ACL standard → la mettre proche de la destination (interface de sortie vers le réseau cible) ou en entrée du routeur le plus proche de la source si possible.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-5 — Hôtes impairs → WEB, hôtes pairs → DNS <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Le <strong>wildcard 0.0.0.1</strong> (bit 0 du dernier octet = don't care) sélectionne les adresses paires. <br>Le <strong>wildcard 0.0.0.0</strong> avec .1 donne les impaires avec un masque astucieux.</p>
+      <div class="formula">
+Impaires : source .4 wildcard 0.0.0.2 → ne match que .5, .7 etc.<br>
+En réalité : permit tcp 192.168.1.0 0.0.0.254 host serveurWEB eq 80<br>
+           (0.0.0.254 = ignorer tous bits sauf bit0 → sélectionne pairs et impairs...)<br><br>
+Approche correcte :<br>
+  Impair  = 0x01 dans le bit 0 → source wildcard 0.0.0.254 avec adresse .1<br>
+  Pair    = 0x00 dans le bit 0 → source wildcard 0.0.0.254 avec adresse .0
+      </div>
+      <pre>! ACL 1 : hôtes impairs → accès WEB seulement
+access-list 101 permit tcp 192.168.1.1 0.0.0.254 host 192.168.3.1 eq 80
+access-list 101 deny ip any any
+
+! ACL 2 : hôtes pairs → accès DNS seulement
+access-list 102 permit udp 192.168.1.0 0.0.0.254 host 192.168.3.7 eq 53
+access-list 102 deny ip any any</pre>
+      <div class="callout info"><strong>Placement</strong>ACL étendues → au plus près de la source → sur l'interface Fa0/0 ou Fa0/1 de Routeur1 en direction IN.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-6 — ACL standard vs étendue, configuration cohérente ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p><strong>1. Reconnaître une ACL standard :</strong> numéro 1 (plage 1–99). Elle filtre uniquement sur l'IP source. Elle autorise ici le réseau 172.16.0.0/16.</p>
+      <p><strong>2. ACL étendue équivalente (n'autoriser que le trafic inter-LAN) :</strong></p>
+      <pre>access-list 100 permit ip 172.16.3.0 0.0.0.255 172.16.4.0 0.0.0.255
+access-list 100 permit ip 172.16.4.0 0.0.0.255 172.16.3.0 0.0.0.255
+access-list 100 deny ip any any</pre>
+      <p><strong>3. Placement :</strong> ACL étendue → sur les interfaces Fa0/0 (IN) et Fa0/1 (IN) du routeur.</p>
+      <p><strong>4. Avantage :</strong> Contrôle bidirectionnel précis ; la source standard permettrait du trafic parasite (172.16.x.x vers n'importe quelle destination).</p>
+      <p><strong>Cohérence de la dernière config (deny 172.16.4.13) :</strong> NON. L'ACL est placée sur Fa0/0 OUT vers le réseau 172.16.4.x — mais pour bloquer l'accès à .13 depuis 172.16.3.x, il faudrait :<br>
+      → La placer en OUT sur l'interface vers 172.16.4.0 pour les paquets venant de 172.16.3.0, ou filtrer en IN sur l'interface 172.16.3.x.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>Exercice séance – DMZ avec ACL <span class="badge">TD</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 1 – Protéger le réseau entreprise (ACL110 out + ACL1 in) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! ACL110 out – trafic autorisé à SORTIR de l'entreprise
+access-list 110 permit ip 10.10.10.0 0.0.0.255 any
+access-list 110 permit icmp 10.10.10.0 0.0.0.255 any
+access-list 110 deny ip any any
+
+! ACL1 in – trafic autorisé à ENTRER dans l'entreprise
+! (réponses aux connexions initiées depuis l'entreprise uniquement)
+access-list 140 permit tcp any 10.10.10.0 0.0.0.255 established
+access-list 140 deny ip any any</pre>
+      <p>Placer ACL110 sur Fa0/0 OUT (sortie vers Internet/DMZ) et ACL140 sur Fa0/0 IN (entrée vers entreprise).</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 3 – Protéger la DMZ <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Autoriser entrée WEB depuis Internet ET entreprise, bloquer ICMP depuis Internet
+access-list 130 permit tcp any host 10.1.1.10 eq 80
+access-list 130 permit icmp 10.10.10.0 0.0.0.255 host 10.1.1.10  ← entreprise peut pinger
+access-list 130 deny icmp any host 10.1.1.10               ← Internet ne peut pas
+access-list 130 deny ip any any
+
+! ACL sortie DMZ : autoriser réponses
+access-list 131 permit tcp host 10.1.1.10 any established
+access-list 131 deny ip any any</pre>
+      <p>Placer ACL130 sur Fa0/1 IN (entrée vers DMZ) et ACL131 sur Fa0/1 OUT.</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 4 – Anti-spoofing <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Interdire qu'un paquet entrant depuis l'extérieur prétende avoir une IP interne :</p>
+      <pre>! Sur l'interface WAN (entrée depuis Internet) :
+access-list 150 deny ip 10.10.10.0 0.0.0.255 any   ← spoof réseau entreprise
+access-list 150 deny ip 127.0.0.0 0.255.255.255 any ← spoof loopback
+access-list 150 deny ip 224.0.0.0 15.255.255.255 any ← spoof multicast
+access-list 150 permit ip any any</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD4 ══ -->
+<div id="td4" class="page">
+  <h1>TD4 — Routage dynamique : RIPv1, RIPv2, OSPF</h1>
+  <p class="subtitle">Algorithmes de routage · Belman-Ford · Dijkstra SPF</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-1 — Protocole routé vs protocole de routage ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Type</th><th>Définition</th><th>Exemples</th></tr>
+        <tr><td><strong>Protocole routé</strong></td><td>Protocole transportant les données utilisateur (couche 3)</td><td>IP, IPX, AppleTalk</td></tr>
+        <tr><td><strong>Protocole de routage</strong></td><td>Protocole permettant aux routeurs d'échanger les informations de routage</td><td>RIP, OSPF, EIGRP, BGP</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-1/2/3 — Tableaux de classification des protocoles <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Protocole</th><th>Routé / Routage</th><th>IGP / EGP</th><th>Vecteur / État</th></tr>
+        <tr><td>IP</td><td>Routé</td><td>—</td><td>—</td></tr>
+        <tr><td>IPX</td><td>Routé</td><td>—</td><td>—</td></tr>
+        <tr><td>XNS</td><td>Routé</td><td>—</td><td>—</td></tr>
+        <tr><td>AppleTalk</td><td>Routé</td><td>—</td><td>—</td></tr>
+        <tr><td>RIP</td><td>Routage</td><td>IGP</td><td>Vecteur de distance</td></tr>
+        <tr><td>IGRP</td><td>Routage</td><td>IGP</td><td>Vecteur de distance</td></tr>
+        <tr><td>OSPF</td><td>Routage</td><td>IGP</td><td>État des liens</td></tr>
+        <tr><td>EIGRP</td><td>Routage</td><td>IGP</td><td>Hybride (vecteur avancé)</td></tr>
+        <tr><td>BGP</td><td>Routage</td><td>EGP</td><td>Vecteur de chemin</td></tr>
+        <tr><td>DECNet</td><td>Routé</td><td>—</td><td>—</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-8 — Différences Vecteur de distance vs État des liens ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th></th><th>Vecteur de distance</th><th>État des liens</th></tr>
+        <tr><td>Algorithme</td><td>Bellman-Ford</td><td>Dijkstra (SPF)</td></tr>
+        <tr><td>Connaissance</td><td>Uniquement les voisins</td><td>Carte complète du réseau (LSDB)</td></tr>
+        <tr><td>Mise à jour</td><td>Envoi table complète périodiquement</td><td>LSA (Link State Advertisements) ciblés</td></tr>
+        <tr><td>Convergence</td><td>Lente (risque de boucles)</td><td>Rapide</td></tr>
+        <tr><td>Charge réseau</td><td>Élevée (tables complètes)</td><td>Faible (seulement changements)</td></tr>
+        <tr><td>Exemples</td><td>RIPv1, RIPv2, IGRP</td><td>OSPF, IS-IS</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-5 — Algorithme de Bellman-Ford sur 5 routeurs <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Réseau : RA – RB – RC – RD – RE avec coûts IEEE (Ethernet=100, FastEthernet=19, Gigabit=4).</p>
+      <div class="callout info"><strong>Principe</strong>Chaque routeur informe ses voisins par diffusion. Un routeur met à jour sa table si une route reçue est MEILLEURE (coût inférieur) ou NOUVELLE. L'algorithme converge quand aucune table ne change plus.</div>
+      <p><strong>Itération 0 – Tables initiales :</strong> chaque routeur ne connaît que ses réseaux directement connectés.</p>
+      <p><strong>Itération 1 :</strong> chaque routeur reçoit les tables de ses voisins directs et ajoute leurs routes avec son coût de liaison.</p>
+      <p><strong>Itération 2 :</strong> propagation à 2 sauts → convergence sur ce réseau à 5 nœuds.</p>
+      <div class="formula">Coût vers destination = coût interface locale + coût annoncé par le voisin</div>
+      <div class="callout warn"><strong>Problème RIPv1</strong>RIPv1 envoie toute la table toutes les 30 secondes à 255.255.255.255. Risque de "count to infinity" en cas de panne. Solutions : split horizon, poison reverse, hold-down timers.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-6 — Algorithme SPF Dijkstra (OSPF) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="formula">Coût OSPF = 10⁸ / bande_passante (en bps)<br><br>Ethernet (10M)   → 100/1  = 10  ← coût IEEE<br>FastEthernet     → 100/10 ≈ 10 (ou 19 en IEEE)<br>Gigabit (1G)     → 100/1000 = 0.1 → arrondi à 1<br>10 Gigabit       → arrondi à 1</div>
+      <p><strong>Processus SPF :</strong></p>
+      <ol>
+        <li>Construction de la <strong>base topologique</strong> (LSDB) commune à tous les routeurs</li>
+        <li>Chaque routeur calcule l'<strong>arbre des plus courts chemins</strong> depuis lui-même (SPF tree)</li>
+        <li>Les routes sont déduites de cet arbre → table de routage</li>
+      </ol>
+      <div class="callout tip"><strong>Cumul des coûts</strong>On additionne les coûts des interfaces <em>émettrices</em> (celles par lesquelles le paquet PART). Le coût d'arrivée sur une interface n'est pas compté.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>Exercice séance – RIPv1, RIPv2, OSPF cohabitation <span class="badge">Packet Tracer</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 1 – Routes statiques Ra → Rc et Rd <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Sur Ra :
+ip route 134.59.3.0 255.255.255.0 192.168.6.x  ← via Re ou Rb selon topologie
+ip route 134.59.4.0 255.255.255.0 192.168.6.x
+
+! Risque : sans route retour sur Rc et Rd, les pings n'ont pas de chemin retour.
+! Il faut des routes statiques aussi sur les routeurs intermédiaires.</pre>
+      <div class="callout warn"><strong>Traceroute Ra → Rd</strong>Montre tous les sauts intermédiaires. Attention aux boucles si on utilise des routes par défaut mal configurées.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 2 – RIPv1 puis RIPv2 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Activer RIPv1 sur Ra, Rb, Re :
+router rip
+  network 192.168.1.0
+  network 192.168.5.0
+  network 192.168.6.0
+  passive-interface Fa0/1  ← ne pas diffuser sur le réseau local</pre>
+      <p><strong>Problème RIPv1 avec VLSM :</strong> RIPv1 est classful, il n'envoie pas les masques. Il résume automatiquement à la frontière de classe → les routes 134.59.x.0/24 sont résumées en 134.59.0.0/16 ce qui cause des problèmes.</p>
+      <pre>! RIPv2 – résout le problème VLSM :
+router rip
+  version 2
+  no auto-summary   ← ESSENTIEL ! désactive le résumé automatique
+  network 192.168.1.0
+  ...</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">Phase 3 – OSPF cohabite avec RIPv2 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Activer OSPF aire 0 sur Rb, Rc, Rd :
+router ospf 1
+  network 192.168.2.0 0.0.0.255 area 0
+  network 192.168.3.0 0.0.0.255 area 0
+  network 192.168.4.0 0.0.0.255 area 0
+  passive-interface Fa0/0   ← ne pas envoyer d'OSPF sur réseau local</pre>
+      <p><strong>Redistribution OSPF → RIP sur Rb :</strong></p>
+      <pre>router rip
+  redistribute ospf 1 metric 5   ← injecter routes OSPF dans RIP avec métrique 5</pre>
+      <div class="callout warn"><strong>Problème</strong>La redistribution OSPF → RIP peut créer des boucles si RIP redistribue aussi vers OSPF. La table de Rb peut avoir des routes en double avec des métriques incohérentes. Solution : filtrer avec des route-maps ou des distribute-lists.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD5 ══ -->
+<div id="td5" class="page">
+  <h1>TD5 — Système d'adressage IPv6</h1>
+  <p class="subtitle">Format · Types d'adresses · EUI-64 · Plan d'adressage</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-4 — Règles d'écriture et simplification IPv6 ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Une adresse IPv6 = <strong>128 bits</strong> = 8 groupes de 16 bits (hextets) séparés par <code>:</code></p>
+      <p><strong>Règle 1 :</strong> Supprimer les zéros non significatifs dans chaque hextet<br>
+      <code>0db8</code> → <code>db8</code> | <code>0000</code> → <code>0</code></p>
+      <p><strong>Règle 2 :</strong> Remplacer UNE seule séquence consécutive de hextets nuls par <code>::</code></p>
+      <div class="callout warn"><strong>:: ne peut apparaître qu'une seule fois</strong>Sinon l'adresse devient ambiguë.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-5 — Trois types d'adresses IPv6 ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Type</th><th>Description</th><th>Préfixe</th></tr>
+        <tr><td><strong>Unicast</strong></td><td>Un seul destinataire</td><td>GUA 2000::/3, LLA fe80::/10, ULA fc00::/7</td></tr>
+        <tr><td><strong>Multicast</strong></td><td>Groupe de destinataires</td><td>ff00::/8</td></tr>
+        <tr><td><strong>Anycast</strong></td><td>Le plus proche d'un groupe</td><td>(même format unicast, marqué anycast)</td></tr>
+      </table></div>
+      <div class="callout info"><strong>Pas de broadcast en IPv6 !</strong>Remplacé par le multicast solicited-node ff02::1:ffxx:xxxx.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-6 — Adresse Link-Local (LLA) ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Préfixe : <code>fe80::/10</code>. Générée <strong>automatiquement</strong> sur chaque interface IPv6 à partir de l'adresse MAC (EUI-64).</p>
+      <ul>
+        <li>Valable <strong>uniquement sur le lien local</strong> (non routable)</li>
+        <li>Utilisée pour : découverte de voisins (NDP), adresse de passerelle par défaut, protocoles de routage (RIPng, OSPFv3)</li>
+        <li>Chaque interface en a une automatiquement sans configuration</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-8 — Construction adresse EUI-64 ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="formula">
+MAC = AA:BB:CC:DD:EE:FF (48 bits)<br><br>
+1. Insérer FF:FE au milieu :<br>
+   AA:BB:CC:FF:FE:DD:EE:FF<br><br>
+2. Inverser le bit U/L (7ème bit du 1er octet) :<br>
+   AA → A8 (si bit7=0, mettre à 1 ; si =1, mettre à 0)<br><br>
+3. Convertir en hextets IPv6 :<br>
+   A8BB:CCFF:FEDD:EEFF<br><br>
+LLA résultante : fe80::A8BB:CCFF:FEDD:EEFF
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>I-c – Exercices IPv6 <span class="badge">Application</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-1 — Simplification des adresses IPv6 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Adresse complète</th><th>Simplifiée</th></tr>
+        <tr><td>2001:0db8:0000:00a3:ab00:0ab0:00ab:1234</td><td>2001:db8:0:a3:ab00:ab0:ab:1234</td></tr>
+        <tr><td>2001:0db8:000a:0001:c012:90ff:fe90:0001</td><td>2001:db8:a:1:c012:90ff:fe90:1</td></tr>
+        <tr><td>2001:0db8:aaaa:0001:0000:0000:0000:0000</td><td>2001:db8:aaaa:1::</td></tr>
+        <tr><td>fe80:0000:0000:0000:0123:4567:89ab:cdef</td><td>fe80::123:4567:89ab:cdef</td></tr>
+        <tr><td>fe80:0000:0000:0000:0000:0000:0000:0001</td><td>fe80::1</td></tr>
+        <tr><td>0000:0000:0000:0000:0000:0000:0000:0001</td><td>::1</td></tr>
+        <tr><td>0000:0000:0000:0000:0000:0000:0000:0000</td><td>::</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-2 — Type des adresses IPv6 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Adresse</th><th>Type</th></tr>
+        <tr><td>2001:0db8:1:acad::fe55:6789:b210</td><td>Unicast globale (GUA) – 2000::/3</td></tr>
+        <tr><td>::1</td><td>Loopback</td></tr>
+        <tr><td>fc00:22:a:2::cd4:23e4:76fa</td><td>Locale unique (ULA) – fc00::/7</td></tr>
+        <tr><td>2033:db8:1:22:a33d:259a:21fe</td><td>Unicast globale (GUA)</td></tr>
+        <tr><td>fe80::3201:cc01:65b1</td><td>Lien local (LLA) – fe80::/10</td></tr>
+        <tr><td>ff00::</td><td>Multicast – ff00::/8</td></tr>
+        <tr><td>ff00::db7:4322:a231:67c</td><td>Multicast</td></tr>
+        <tr><td>ff02::2</td><td>Multicast – All routers (lien local)</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-5 — Plan d'adressage IPv6 Université Sophia 2001:660:acad:200::/56 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>4 sites × 8 bâtiments × 5 niveaux = <strong>160 réseaux</strong> maximum.</p>
+      <div class="formula">
+Préfixe alloué : 2001:660:acad:200::/56<br>
+Bits disponibles pour le découpage : 128 − 56 = 72 bits hôtes<br>
+Mais on découpe le préfixe de réseau → utiliser les bits 57 à 64<br><br>
+Structure choisie (bits 57–64 = 8 bits = 2 octets en hexa) :<br>
+  Bits 57–58 : Site (4 sites = 2 bits)<br>
+  Bits 59–61 : Bâtiment (8 bâtiments = 3 bits)<br>
+  Bits 62–64 : Niveau (5 niveaux → 3 bits = 8 valeurs, on utilise 1–5)<br><br>
+Chaque réseau = /64 (64 bits hôtes pour EUI-64 des hôtes)
+      </div>
+      <div class="tbl-wrap"><table>
+        <tr><th>Site</th><th>Bâtiment</th><th>Niveau</th><th>Préfixe /64</th></tr>
+        <tr><td>S1 TEMPLIERS</td><td>B1</td><td>N1</td><td>2001:660:acad:200::/64</td></tr>
+        <tr><td>S1 TEMPLIERS</td><td>B1</td><td>N2</td><td>2001:660:acad:201::/64</td></tr>
+        <tr><td>S1 TEMPLIERS</td><td>B2</td><td>N1</td><td>2001:660:acad:208::/64</td></tr>
+        <tr><td>S2 LUCIOLES</td><td>B1</td><td>N1</td><td>2001:660:acad:240::/64</td></tr>
+        <tr><td>S3 BOULLIDES</td><td>B1</td><td>N1</td><td>2001:660:acad:280::/64</td></tr>
+        <tr><td>S4 TROIS MOULINS</td><td>B1</td><td>N1</td><td>2001:660:acad:2c0::/64</td></tr>
+      </table></div>
+      <div class="callout tip"><strong>Logique</strong>Avec /56, on a 8 bits libres (de 0x00 à 0xFF = 256 sous-réseaux /64). On les découpe : 2 bits site + 3 bits bâtiment + 3 bits niveau = 8 bits ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ TD6 ══ -->
+<div id="td6" class="page">
+  <h1>TD6 — Configuration IPv6 sur Cisco</h1>
+  <p class="subtitle">SLAAC · Routage statique IPv6 · RIPng · OSPFv3 · Tunnels</p>
+
+  <h2>I-b – Questions de cours <span class="badge">Préparation</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-1 — Configurer une GUA IPv6 sur une interface Cisco ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Activer IPv6 en général :
+ipv6 unicast-routing
+
+! Sur l'interface :
+interface Fa0/0
+  ipv6 address 2001:DB8:1::FF/64
+  ipv6 enable   ← génère la LLA automatiquement
+  no shutdown</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-3 — Adresse de gateway GUA ou LLA ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <p>Sur les hôtes, la passerelle par défaut IPv6 doit être configurée avec l'<strong>adresse LLA</strong> du routeur (fe80::...). La GUA peut aussi être utilisée mais la LLA est préférée car elle est stable et toujours présente, même si on change les GUA.</p>
+      <div class="callout info"><strong>Particularité</strong>Les protocoles de routage comme RIPng et OSPFv3 utilisent aussi les LLA comme adresses de prochain saut.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-5 — Différences OSPFv2 vs OSPFv3 ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th></th><th>OSPFv2 (IPv4)</th><th>OSPFv3 (IPv6)</th></tr>
+        <tr><td>Configuration</td><td>Dans le process OSPF : <code>network x.x.x.x area 0</code></td><td>Sur chaque interface : <code>ipv6 ospf 1 area 0</code></td></tr>
+        <tr><td>Router-ID</td><td>IP la plus haute ou loopback</td><td>Doit être défini manuellement (format IPv4)</td></tr>
+        <tr><td>Adresses LSA</td><td>IPv4</td><td>IPv6 (LLA pour voisinage)</td></tr>
+        <tr><td>Commande globale</td><td><code>router ospf 1</code></td><td><code>ipv6 router ospf 1</code></td></tr>
+      </table></div>
+      <pre>! OSPFv3 – exemple Cisco :
+ipv6 router ospf 1
+  router-id 1.1.1.1
+  passive-interface Fa0/0
+
+interface Fa0/1
+  ipv6 ospf 1 area 0</pre>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-b-6 — Méthodes de cohabitation IPv4/IPv6 ? <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <div class="tbl-wrap"><table>
+        <tr><th>Méthode</th><th>Description</th></tr>
+        <tr><td><strong>Double pile</strong></td><td>L'équipement utilise IPv4 ET IPv6 simultanément</td></tr>
+        <tr><td><strong>Tunnel 6to4</strong></td><td>Paquets IPv6 encapsulés dans IPv4 entre deux ilots IPv6</td></tr>
+        <tr><td><strong>Tunnel MCT</strong> (manually configured)</td><td>Tunnel point-à-point configuré manuellement</td></tr>
+        <tr><td><strong>NAT64</strong></td><td>Traduction d'adresses IPv6 ↔ IPv4</td></tr>
+      </table></div>
+      <div class="callout info"><strong>MCT vs 6to4</strong>MCT : tunnel manuel, adresses IPv4 de source/destination fixées. 6to4 : automatique, l'adresse IPv6 encode l'IPv4 (2002:IPv4::/48).</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>I-c – Exercices configuration IPv6 <span class="badge">Application</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-1 — LAN 192.168.10.0/24 avec IPv6 : questions <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <ul>
+        <li><strong>Pourquoi ont-ils déjà une IPv6 ?</strong> Les interfaces génèrent automatiquement une LLA (fe80::) à partir de leur MAC via EUI-64 dès qu'IPv6 est activé dans l'OS.</li>
+        <li><strong>Quel type ?</strong> LLA (Link-Local Address), cohérent avec la MAC via EUI-64.</li>
+        <li><strong>Connectivité IPv6 entre hôtes du même LAN ?</strong> OUI — la LLA suffit pour communiquer sur le même lien.</li>
+        <li><strong>Sans IPv4 ?</strong> La LLA fonctionne toujours pour le trafic local.</li>
+        <li><strong>En DHCPv4 uniquement ?</strong> Les hôtes obtiennent 169.254.x.x (APIPA) en IPv4 → pas de connectivité IPv4. IPv6 LLA toujours active.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-2 — Configuration routeur Ra avec 2001:DB8:1::/64 et 2001:DB8:2::/64 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Sur Ra :
+ipv6 unicast-routing
+
+interface Fa0/0
+  ipv6 address 2001:DB8:10::FF/64
+  ipv6 enable
+  no shutdown
+
+interface Fa0/1
+  ipv6 address 2001:DB8:20::FF/64
+  ipv6 enable
+  no shutdown</pre>
+      <p><strong>Mode automatique sur les hôtes (SLAAC) :</strong> Les hôtes reçoivent les <em>Router Advertisements</em> du routeur et construisent leur GUA en combinant le préfixe annoncé + EUI-64 de leur MAC.</p>
+      <p><strong>Gateway = LLA du routeur</strong> → le test de connectivité entre les deux réseaux locaux FONCTIONNE avec la GUA grâce au routage IPv6.</p>
+      <div class="callout warn"><strong>Si gateway = GUA</strong>Fonctionne aussi mais moins robuste. Si gateway = LLA, le paquet sort toujours par la bonne interface.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">I-c-3 — Routage statique IPv6 (5 déclarations max) <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Syntaxe route statique IPv6 :
+ipv6 route prefixe/longueur {next-hop-LLA [interface] | interface}
+
+! Exemple sur RT :
+ipv6 route 2001:DB8:1::/64 2001:DB8:2::1   ← via Ra
+ipv6 route ::/0 Serial0/0                   ← route par défaut
+
+! Route par défaut (supernet de tout) :
+ipv6 route ::/0 {next-hop}</pre>
+      <div class="callout tip"><strong>Avec LLA comme next-hop</strong>Il faut spécifier l'interface : <code>ipv6 route 2001:db8::/64 Fa0/0 fe80::1</code></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <h2>II – RIPng et OSPFv3 <span class="badge">TD</span></h2>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">II-b — Configuration RIPng <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Sur chaque routeur :
+ipv6 router rip RIPng
+
+! Sur chaque interface à annoncer :
+interface Fa0/1
+  ipv6 rip RIPng enable
+
+! Passive interface (ne pas envoyer d'annonces sur le LAN) :
+ipv6 router rip RIPng
+  passive-interface Fa0/0</pre>
+      <p>RIPng utilise le multicast <code>ff02::9</code> pour envoyer ses mises à jour.</p>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">II-c — Configuration OSPFv3 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Global :
+ipv6 router ospf 1
+  router-id 3.3.3.3   ← obligatoire ! format IPv4
+
+! Sur chaque interface :
+interface Fa0/1
+  ipv6 ospf 1 area 0
+
+! Passive interface :
+ipv6 router ospf 1
+  passive-interface Fa0/0</pre>
+      <div class="callout warn"><strong>Sans router-id</strong>OSPFv3 ne peut pas démarrer s'il n'y a pas d'adresse IPv4 sur le routeur. Toujours définir le router-id manuellement.</div>
+    </div>
+  </div>
+
+  <div class="qa-block">
+    <button class="qa-q" onclick="toggleQA(this)">II-d — Redistribution entre RIPng et OSPFv3 <span class="arrow">▶</span></button>
+    <div class="qa-a">
+      <pre>! Sur Rb (qui tourne les deux protocoles) :
+
+! Redistribuer OSPF dans RIP :
+ipv6 router rip RIPng
+  redistribute ospf 1 metric 5
+
+! Redistribuer RIP dans OSPF :
+ipv6 router ospf 1
+  redistribute rip RIPng</pre>
+      <p>La redistribution bidirectionnelle risque de créer des <strong>boucles de routage</strong>. Utiliser des <em>route-maps</em> ou des métriques appropriées pour l'éviter.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ OUTILS ══ -->
+<div id="tools" class="page">
+  <h1>🔧 Outils interactifs</h1>
+  <p class="subtitle">Calculateurs et constructeurs pour réviser activement</p>
+
+  <!-- SUBNET CALCULATOR -->
+  <div class="tool-box">
+    <h3>📐 Calculateur de sous-réseau IPv4</h3>
+    <div class="input-row">
+      <input type="text" id="subnetIP" placeholder="Ex: 192.168.1.0" />
+      <input type="number" id="subnetPrefix" placeholder="Préfixe (ex: 24)" min="1" max="32" />
+      <button class="btn" onclick="calcSubnet()">Calculer</button>
+    </div>
+    <div class="result-box" id="subnetResult">Entrez une adresse IP et un préfixe...</div>
+  </div>
+
+  <!-- VLSM TOOL -->
+  <div class="tool-box">
+    <h3>🏗️ Calculateur VLSM</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Entrez le réseau de base et les besoins en hôtes (séparés par des virgules). Les sous-réseaux seront attribués du plus grand au plus petit.</p>
+    <div class="input-row">
+      <input type="text" id="vlsmNet" placeholder="Réseau: 192.168.1.0/24" />
+      <input type="text" id="vlsmHosts" placeholder="Hôtes: 60,30,14,2" />
+      <button class="btn green" onclick="calcVLSM()">Calculer VLSM</button>
+    </div>
+    <div class="result-box" id="vlsmResult">Ex: réseau 221.168.10.0/24, hôtes 60,28,12,12,2,2,2</div>
+  </div>
+
+  <!-- WILDCARD CALCULATOR -->
+  <div class="tool-box">
+    <h3>🎭 Convertisseur Masque ↔ Wildcard</h3>
+    <div class="input-row">
+      <input type="text" id="maskIn" placeholder="Masque ou CIDR (ex: 255.255.255.192 ou 26)" />
+      <button class="btn" onclick="calcWildcard()">Convertir</button>
+    </div>
+    <div class="result-box" id="wildcardResult">...</div>
+  </div>
+
+  <!-- ACL BUILDER -->
+  <div class="tool-box">
+    <h3>🔒 Constructeur de règle ACL</h3>
+    <div class="input-row">
+      <select id="aclType">
+        <option value="std">Standard (1-99)</option>
+        <option value="ext">Étendue (100-199)</option>
+      </select>
+      <input type="number" id="aclNum" placeholder="Numéro" value="101" min="1" max="199" />
+      <select id="aclAction">
+        <option value="permit">permit</option>
+        <option value="deny">deny</option>
+      </select>
+    </div>
+    <div class="input-row" id="extFields">
+      <select id="aclProto">
+        <option value="ip">ip</option>
+        <option value="tcp">tcp</option>
+        <option value="udp">udp</option>
+        <option value="icmp">icmp</option>
+      </select>
+      <input type="text" id="aclSrc" placeholder="Source (ex: 192.168.1.0)" />
+      <input type="text" id="aclSrcWild" placeholder="Wildcard src (ex: 0.0.0.255)" />
+    </div>
+    <div class="input-row" id="extDest">
+      <input type="text" id="aclDst" placeholder="Dest (ex: host 10.1.1.10)" />
+      <input type="text" id="aclPort" placeholder="Port (ex: eq 80)" />
+    </div>
+    <button class="btn" onclick="buildACL()">Générer la commande</button>
+    <div class="acl-output" id="aclOutput">→ La commande apparaîtra ici</div>
+  </div>
+
+  <!-- MINI QUIZ -->
+  <div class="tool-box">
+    <h3>⚡ Quiz rapide – R201</h3>
+    <div id="quizBox"></div>
+    <div class="nav-mini">
+      <button class="btn" onclick="prevQ()">← Précédent</button>
+      <button class="btn green" onclick="nextQ()">Suivant →</button>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted);" id="quizScore"></div>
+  </div>
+
+  <!-- EUI-64 CALCULATOR -->
+  <div class="tool-box">
+    <h3>🔢 Calculateur EUI-64 → LLA IPv6</h3>
+    <div class="input-row">
+      <input type="text" id="macInput" placeholder="Adresse MAC (ex: 00:50:0F:50:E9:D4)" />
+      <button class="btn" onclick="calcEUI64()">Calculer LLA</button>
+    </div>
+    <div class="result-box" id="eui64Result">...</div>
+  </div>
+</div>
+
+<script>
+// ── TAB NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── Q&A ACCORDION ──
+function toggleQA(btn) {
+  const ans = btn.nextElementSibling;
+  btn.classList.toggle('open');
+  ans.classList.toggle('open');
+}
+
+// ── SUBNET CALCULATOR ──
+function calcSubnet() {
+  const ipStr = document.getElementById('subnetIP').value.trim();
+  const prefix = parseInt(document.getElementById('subnetPrefix').value);
+  const out = document.getElementById('subnetResult');
+  
+  if (!ipStr || isNaN(prefix) || prefix < 1 || prefix > 32) {
+    out.textContent = 'Erreur : saisissez une IP valide et un préfixe entre 1 et 32.'; return;
+  }
+  
+  const parts = ipStr.split('.').map(Number);
+  if (parts.length !== 4 || parts.some(p => isNaN(p) || p < 0 || p > 255)) {
+    out.textContent = 'Adresse IP invalide.'; return;
+  }
+  
+  const ipNum = (parts[0]<<24)|(parts[1]<<16)|(parts[2]<<8)|parts[3];
+  const maskNum = prefix === 0 ? 0 : (0xFFFFFFFF << (32-prefix)) >>> 0;
+  const netNum = (ipNum & maskNum) >>> 0;
+  const bcastNum = (netNum | (~maskNum >>> 0)) >>> 0;
+  const hosts = prefix >= 31 ? (prefix === 31 ? 2 : 1) : Math.pow(2, 32-prefix) - 2;
+  
+  const toIP = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+  const toMask = m => [(m>>>24)&255,(m>>>16)&255,(m>>>8)&255,m&255].join('.');
+  const toBin = n => n.toString(2).padStart(8,'0');
+  const maskParts = [(maskNum>>>24)&255,(maskNum>>>16)&255,(maskNum>>>8)&255,maskNum&255];
+  
+  out.textContent = [
+    `Adresse réseau   : ${toIP(netNum)} / ${prefix}`,
+    `Masque           : ${toMask(maskNum)}`,
+    `Masque binaire   : ${maskParts.map(toBin).join('.')}`,
+    `Wildcard         : ${toMask(~maskNum >>> 0)}`,
+    `Broadcast        : ${toIP(bcastNum)}`,
+    `Première IP hôte : ${toIP(netNum+1)}`,
+    `Dernière IP hôte : ${toIP(bcastNum-1)}`,
+    `Hôtes utilisables: ${hosts.toLocaleString()}`,
+    `Incrément        : ${256 - maskParts[3] || (256 - maskParts[2]) * 256 || '...'}`
+  ].join('\n');
+}
+
+// ── VLSM CALCULATOR ──
+function calcVLSM() {
+  const netStr = document.getElementById('vlsmNet').value.trim();
+  const hostsStr = document.getElementById('vlsmHosts').value.trim();
+  const out = document.getElementById('vlsmResult');
+  
+  const [ipStr, prefStr] = netStr.split('/');
+  const basePrefix = parseInt(prefStr);
+  if (!ipStr || isNaN(basePrefix)) { out.textContent = 'Format: 192.168.1.0/24'; return; }
+  
+  const parts = ipStr.split('.').map(Number);
+  let baseNet = (parts[0]<<24)|(parts[1]<<16)|(parts[2]<<8)|parts[3];
+  baseNet = baseNet >>> 0;
+  
+  const demands = hostsStr.split(',').map(h => parseInt(h.trim())).filter(h => !isNaN(h));
+  if (!demands.length) { out.textContent = 'Entrez des besoins en hôtes (séparés par virgule)'; return; }
+  
+  demands.sort((a,b) => b-a);
+  
+  const toIP = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+  let lines = [];
+  let current = baseNet;
+  
+  for (const need of demands) {
+    let bits = 1;
+    while (Math.pow(2, bits) - 2 < need) bits++;
+    const prefix = 32 - bits;
+    const size = Math.pow(2, bits) >>> 0;
+    const maskNum = prefix === 0 ? 0 : (0xFFFFFFFF << bits) >>> 0;
+    const netNum = current >>> 0;
+    const bcastNum = (netNum + size - 1) >>> 0;
+    
+    lines.push(`/${prefix} (${Math.pow(2,bits)-2} hôtes)  ${toIP(netNum)} – réseau | .${((netNum)+1)&255} → .${((bcastNum)-1)&255} | broadcast ${toIP(bcastNum)}  ← besoin: ${need}`);
+    current = (bcastNum + 1) >>> 0;
+  }
+  
+  out.textContent = lines.join('\n');
+}
+
+// ── WILDCARD CALCULATOR ──
+function calcWildcard() {
+  const inp = document.getElementById('maskIn').value.trim();
+  const out = document.getElementById('wildcardResult');
+  
+  let prefix;
+  if (inp.includes('.')) {
+    const parts = inp.split('.').map(Number);
+    const maskNum = (parts[0]<<24)|(parts[1]<<16)|(parts[2]<<8)|parts[3];
+    prefix = (maskNum >>> 0).toString(2).split('').filter(b => b==='1').length;
+  } else {
+    prefix = parseInt(inp);
+  }
+  
+  if (isNaN(prefix) || prefix < 0 || prefix > 32) { out.textContent = 'Invalide'; return; }
+  
+  const maskNum = prefix === 0 ? 0 : (0xFFFFFFFF << (32-prefix)) >>> 0;
+  const wildNum = (~maskNum) >>> 0;
+  const toIP = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+  
+  out.textContent = `CIDR     : /${prefix}\nMasque   : ${toIP(maskNum)}\nWildcard : ${toIP(wildNum)}`;
+}
+
+// ── ACL BUILDER ──
+function buildACL() {
+  const type = document.getElementById('aclType').value;
+  const num = document.getElementById('aclNum').value;
+  const action = document.getElementById('aclAction').value;
+  const out = document.getElementById('aclOutput');
+  
+  if (type === 'std') {
+    const src = document.getElementById('aclSrc').value.trim() || 'any';
+    const srcW = document.getElementById('aclSrcWild').value.trim();
+    const wild = srcW ? ` ${srcW}` : (src === 'any' ? '' : ' 0.0.0.0');
+    out.textContent = `access-list ${num} ${action} ${src}${wild}`;
+  } else {
+    const proto = document.getElementById('aclProto').value;
+    const src = document.getElementById('aclSrc').value.trim() || 'any';
+    const srcW = document.getElementById('aclSrcWild').value.trim();
+    const dst = document.getElementById('aclDst').value.trim() || 'any';
+    const port = document.getElementById('aclPort').value.trim();
+    const srcPart = src === 'any' ? 'any' : `${src} ${srcW || '0.0.0.0'}`;
+    out.textContent = `access-list ${num} ${action} ${proto} ${srcPart} ${dst}${port ? ' '+port : ''}`;
+  }
+}
+
+// ── EUI-64 CALCULATOR ──
+function calcEUI64() {
+  const mac = document.getElementById('macInput').value.trim();
+  const out = document.getElementById('eui64Result');
+  
+  const bytes = mac.split(/[:\-]/).map(h => parseInt(h, 16));
+  if (bytes.length !== 6 || bytes.some(isNaN)) { out.textContent = 'MAC invalide (format: AA:BB:CC:DD:EE:FF)'; return; }
+  
+  // Insert FF:FE in the middle
+  const eui = [bytes[0], bytes[1], bytes[2], 0xFF, 0xFE, bytes[3], bytes[4], bytes[5]];
+  // Flip U/L bit (bit 6 of first byte)
+  eui[0] = eui[0] ^ 0x02;
+  
+  const hex = b => b.toString(16).padStart(2,'0');
+  const hextets = [];
+  for (let i = 0; i < 8; i += 2) hextets.push(hex(eui[i]) + hex(eui[i+1]));
+  
+  const lla = `fe80::${hextets.slice(2).join(':')}`;
+  out.textContent = `MAC originale : ${bytes.map(hex).join(':').toUpperCase()}\nEUI-64 (64b)  : ${eui.map(hex).join(':').toUpperCase()}\nLLA résultante: ${lla}`;
+}
+
+// ── QUIZ ──
+const questions = [
+  { q: "Quel est le nombre d'hôtes utilisables dans un /27 ?", opts: ["30", "32", "28", "62"], ans: 0, exp: "2⁵ − 2 = 32 − 2 = 30" },
+  { q: "Quelle commande configure une ACL standard pour refuser 192.168.1.0/24 ?", opts: ["access-list 1 deny 192.168.1.0 0.0.0.255","access-list 100 deny ip 192.168.1.0 255.255.255.0 any","access-list 1 deny 192.168.1.0 255.255.255.0","access-list 10 permit 192.168.1.0 0.0.0.255"], ans: 0, exp: "ACL standard numéro 1-99, syntaxe: deny + réseau + wildcard" },
+  { q: "Où placer une ACL standard pour filtrer la source ?", opts: ["Le plus proche de la destination","Le plus proche de la source","Sur le routeur FAI","N'importe où"], ans: 0, exp: "ACL standard filtre uniquement la source → placer proche de la destination pour ne pas bloquer trop large" },
+  { q: "Quel protocole de routage est classless et supporte le VLSM ?", opts: ["RIPv1","RIPv2","IGRP","Tous les trois"], ans: 1, exp: "RIPv2 envoie le masque dans ses mises à jour (classless). RIPv1 et IGRP sont classful." },
+  { q: "Quel préfixe est utilisé pour les adresses Link-Local IPv6 ?", opts: ["fc00::/7","ff00::/8","fe80::/10","2000::/3"], ans: 2, exp: "fe80::/10 est le préfixe des adresses Link-Local (LLA). Elles ne sont pas routables hors du lien." },
+  { q: "Dans NAT masquerading, quelle IP est utilisée pour la traduction ?", opts: ["Une IP du pool FAI","L'IP de l'interface WAN du routeur","L'IP source de l'hôte","L'IP broadcast"], ans: 1, exp: "Le masquerading utilise automatiquement l'IP de l'interface outside (WAN). Idéal quand l'IP est dynamique." },
+  { q: "Quelle est la wildcard pour le masque /28 (255.255.255.240) ?", opts: ["0.0.0.255","0.0.0.15","0.0.0.31","0.0.0.63"], ans: 1, exp: "255.255.255.255 − 255.255.255.240 = 0.0.0.15" },
+  { q: "Quel algorithme utilise OSPF pour calculer les routes ?", opts: ["Bellman-Ford","Dijkstra SPF","Distance Vector","Count to Infinity"], ans: 1, exp: "OSPF utilise l'algorithme de Dijkstra (Shortest Path First). RIP utilise Bellman-Ford." },
+  { q: "Combien d'hôtes peuvent accéder simultanément à Internet avec 200.20.2.8/29 (NAT dynamique) ?", opts: ["2","4","6","8"], ans: 2, exp: "2³ − 2 = 6 hôtes. /29 laisse 3 bits pour les hôtes → 8 − 2 = 6 adresses utilisables." },
+  { q: "Quelle commande active le routage IPv6 sur un routeur Cisco ?", opts: ["ip routing ipv6","ipv6 unicast-routing","ipv6 enable","ip ipv6 forward"], ans: 1, exp: "La commande 'ipv6 unicast-routing' active le routage IPv6 en mode global sur un routeur Cisco IOS." },
+];
+
+let qIndex = 0, score = 0, answered = [];
+
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  const q = questions[qIndex];
+  const isAnswered = answered[qIndex] !== undefined;
+  
+  box.innerHTML = `
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Question ${qIndex+1} / ${questions.length}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((qIndex+1)/questions.length)*100}%"></div></div>
+    <p class="quiz-q">${q.q}</p>
+    <div class="quiz-options">
+      ${q.opts.map((o,i) => `
+        <button class="quiz-opt ${isAnswered ? (i===q.ans?'correct':(i===answered[qIndex]?'wrong':'')) : ''}"
+          onclick="${isAnswered?'':'selectAnswer('+i+')'}">${o}</button>
+      `).join('')}
+    </div>
+    ${isAnswered ? `<div class="quiz-feedback ${answered[qIndex]===q.ans?'ok':'bad'}">
+      ${answered[qIndex]===q.ans?'✅ Correct !':'❌ Incorrect.'} ${q.exp}
+    </div>` : ''}
+  `;
+  document.getElementById('quizScore').textContent = `Score: ${score} / ${questions.filter((_,i) => answered[i]===questions[i].ans).length} bonnes réponses`;
+}
+
+function selectAnswer(i) {
+  answered[qIndex] = i;
+  if (i === questions[qIndex].ans) score++;
+  renderQuiz();
+}
+function nextQ() { if (qIndex < questions.length-1) { qIndex++; renderQuiz(); } }
+function prevQ() { if (qIndex > 0) { qIndex--; renderQuiz(); } }
+
+renderQuiz();
+</script>
+</body>
+</html>
