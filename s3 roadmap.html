@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S3 // BUT RT Cyber — Feuille de route</title>
+<style>
+  :root{
+    --bg: #0a0e14;
+    --surface: #0f1620;
+    --surface-2: #141d2b;
+    --line: #22303f;
+    --text: #d5dde5;
+    --muted: #6b7d8f;
+    --cyan: #4fd1c5;
+    --amber: #f2b134;
+    --red-soft: #e2726b;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height:1.55;
+    padding-bottom: 6rem;
+  }
+  ::selection{ background: var(--cyan); color: #04120f; }
+
+  a{ color: var(--cyan); }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 0 1.25rem; }
+
+  /* ---------- BOOT / HERO ---------- */
+  .boot{
+    min-height: 62vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    border-bottom: 1px solid var(--line);
+    padding: 3rem 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .boot::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/28px 100%;
+    opacity:.06;
+    pointer-events:none;
+  }
+  #bootlog{
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    white-space: pre-wrap;
+    min-height: 9.5em;
+  }
+  #bootlog .ok{ color: var(--cyan); }
+  #bootlog .warn{ color: var(--amber); }
+  .cursor{ display:inline-block; width:.55em; background:var(--cyan); animation: blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-title{
+    font-family: var(--mono);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height:1.05;
+    margin-top: 1.4rem;
+    color: #fff;
+    letter-spacing: -0.01em;
+    opacity:0;
+    transform: translateY(8px);
+    animation: rise .6s ease forwards;
+  }
+  .hero-title span{ color: var(--cyan); }
+  .hero-sub{
+    margin-top: .9rem;
+    max-width: 56ch;
+    color: var(--muted);
+    font-size: 1rem;
+    opacity:0;
+    animation: rise .6s ease forwards;
+    animation-delay: .15s;
+  }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{ padding: 3.4rem 0; border-bottom: 1px solid var(--line); }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: .6rem;
+  }
+  h2{
+    font-family: var(--mono);
+    font-size: clamp(1.35rem, 3.4vw, 1.9rem);
+    color: #fff;
+    margin-bottom: .5rem;
+    font-weight: 600;
+  }
+  .lede{ color: var(--muted); max-width: 62ch; margin-bottom: 2rem; }
+
+  /* ---------- COMPETENCY MAP ---------- */
+  .comp-grid{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .comp-cell{
+    background: var(--surface);
+    padding: 1.1rem .8rem;
+    text-align:center;
+  }
+  .comp-cell .ue{ font-family: var(--mono); font-size:.7rem; color: var(--cyan); }
+  .comp-cell .verb{ font-weight:600; margin-top:.4rem; font-size:.92rem; color:#fff; }
+  .comp-cell .coef{ margin-top:.5rem; font-family: var(--mono); font-size:.72rem; color: var(--muted); }
+  @media (max-width: 720px){
+    .comp-grid{ grid-template-columns: repeat(2,1fr); }
+  }
+
+  /* ---------- CLUSTERS ---------- */
+  .cluster{
+    border: 1px solid var(--line);
+    background: var(--surface);
+    margin-bottom: 1rem;
+  }
+  .cluster-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 1rem 1.2rem;
+    cursor:pointer;
+    user-select:none;
+  }
+  .cluster-head:hover{ background: var(--surface-2); }
+  .cluster-head h3{
+    font-family: var(--mono);
+    font-size: 1rem;
+    color:#fff;
+    display:flex; align-items:center; gap:.6rem;
+  }
+  .dot{ width:.55rem; height:.55rem; border-radius:50%; display:inline-block; }
+  .dot.reseaux{ background: var(--cyan); }
+  .dot.prog{ background: #8b9dfc; }
+  .dot.cyber{ background: var(--red-soft); }
+  .dot.trans{ background: var(--amber); }
+  .cluster-total{ font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+  .chev{ font-family: var(--mono); color: var(--muted); transition: transform .2s; margin-left:.8rem; }
+  .cluster.open .chev{ transform: rotate(90deg); }
+
+  .cluster-body{ max-height:0; overflow:hidden; transition: max-height .3s ease; }
+  .cluster.open .cluster-body{ max-height: 900px; }
+
+  table{ width:100%; border-collapse: collapse; }
+  td{ padding: .65rem 1.2rem; border-top: 1px solid var(--line); font-size: .88rem; }
+  td.code{ font-family: var(--mono); color: var(--muted); width: 8.5em; white-space:nowrap; }
+  td.coef{ font-family: var(--mono); text-align:right; color: var(--cyan); width:3em; }
+
+  /* ---------- TOOLS ---------- */
+  .tool-grid{
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    gap: .8rem;
+  }
+  .tool{
+    border:1px solid var(--line); background:var(--surface);
+    padding: 1rem 1.1rem;
+  }
+  .tool .name{ font-family: var(--mono); color:#fff; font-size:.92rem; }
+  .tool .use{ color: var(--muted); font-size:.82rem; margin-top:.35rem; }
+
+  /* ---------- LANGUAGES ---------- */
+  .subhead{
+    font-family: var(--mono); font-size: .95rem; color: var(--cyan);
+    margin: 1.6rem 0 .9rem;
+  }
+  .lang-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    gap: .9rem;
+  }
+  .lang-card{
+    border:1px solid var(--line); background: var(--surface);
+    padding: 1.1rem 1.2rem;
+  }
+  .lang-card.priority{ border-color: var(--cyan); }
+  .lang-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem; }
+  .lang-name{ font-family: var(--mono); font-weight:600; color:#fff; font-size:1rem; }
+  .lang-badge{
+    font-family: var(--mono); font-size:.66rem; letter-spacing:.05em; text-transform:uppercase;
+    color: var(--muted); border:1px solid var(--line); padding:.15rem .5rem; border-radius: 3px;
+  }
+  .lang-card.priority .lang-badge{ color: var(--amber); border-color: var(--amber); }
+  .lang-why{ color: var(--muted); font-size: .85rem; margin-bottom:.6rem; }
+  .lang-start{ font-size: .85rem; color: var(--text); }
+  .lang-start strong{ color: var(--cyan); font-family: var(--mono); font-size:.78rem; font-weight:600; }
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{ position:relative; padding-left: 1.6rem; }
+  .timeline::before{
+    content:""; position:absolute; left: .32rem; top:.4rem; bottom:.4rem; width:1px; background: var(--line);
+  }
+  .tl-item{ position:relative; padding-bottom: 1.7rem; }
+  .tl-item::before{
+    content:""; position:absolute; left:-1.6rem; top:.28rem; width:.6rem; height:.6rem; border-radius:50%;
+    background: var(--bg); border: 2px solid var(--cyan);
+  }
+  .tl-item h4{ font-family: var(--mono); font-size:.85rem; color: var(--cyan); margin-bottom:.3rem; }
+  .tl-item p{ color: var(--muted); font-size: .88rem; max-width: 58ch; }
+  .tl-note{ margin-top: 1.2rem; font-size:.78rem; color: var(--muted); font-style: italic; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-card{ border:1px solid var(--line); background: var(--surface); padding: 1.3rem; margin-bottom: 1rem; }
+  .quiz-q{ font-weight:600; color:#fff; margin-bottom: .8rem; font-size: .95rem; }
+  .quiz-opts{ display:flex; flex-direction:column; gap: .5rem; }
+  .quiz-opt{
+    text-align:left;
+    background: var(--surface-2); border:1px solid var(--line); color: var(--text);
+    padding:.6rem .8rem; border-radius: 4px; cursor:pointer; font-size:.88rem;
+    font-family: var(--sans);
+  }
+  .quiz-opt:hover{ border-color: var(--cyan); }
+  .quiz-opt.correct{ border-color: var(--cyan); background: rgba(79,209,197,.12); color: var(--cyan); }
+  .quiz-opt.wrong{ border-color: var(--red-soft); background: rgba(226,114,107,.1); color: var(--red-soft); }
+  .quiz-score{ font-family: var(--mono); font-size:.85rem; color: var(--muted); margin-top: .5rem; }
+
+  footer{ text-align:center; padding-top: 3rem; color: var(--muted); font-size:.78rem; font-family: var(--mono); }
+
+  :focus-visible{ outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="boot">
+  <div class="wrap">
+    <div id="bootlog"></div>
+    <h1 class="hero-title">Semestre 3 <span>// Cyber</span></h1>
+    <p class="hero-sub">Vue d'ensemble avant le démarrage : ce que tu vas étudier, les outils que tu vas ouvrir chaque semaine, et l'ordre logique dans lequel ça s'enchaîne.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="competences">
+    <div class="eyebrow">01 — La structure</div>
+    <h2>5 UE = 5 compétences</h2>
+    <p class="lede">Chaque UE du semestre correspond à une compétence du référentiel officiel. C'est la grille de lecture qui explique pourquoi les mêmes ressources (réseaux, prog, maths) réapparaissent sous des UE différentes selon l'angle.</p>
+    <div class="comp-grid">
+      <div class="comp-cell"><div class="ue">UE31</div><div class="verb">Administrer</div><div class="coef">66 pts</div></div>
+      <div class="comp-cell"><div class="ue">UE32</div><div class="verb">Connecter</div><div class="coef">120 pts</div></div>
+      <div class="comp-cell"><div class="ue">UE33</div><div class="verb">Programmer</div><div class="coef">48 pts</div></div>
+      <div class="comp-cell"><div class="ue">UE34</div><div class="verb">Sécuriser</div><div class="coef">34 pts</div></div>
+      <div class="comp-cell"><div class="ue">UE35</div><div class="verb">Surveiller</div><div class="coef">32 pts</div></div>
+    </div>
+  </section>
+
+  <section id="clusters">
+    <div class="eyebrow">02 — Le contenu</div>
+    <h2>Ce que tu vas étudier, par famille</h2>
+    <p class="lede">Regroupé par thème plutôt que par UE — c'est comme ça que tu vas le vivre en cours. Clique pour dérouler chaque bloc.</p>
+
+    <div class="cluster" data-cluster>
+      <div class="cluster-head" data-toggle>
+        <h3><span class="dot reseaux"></span>Réseaux & transmission</h3>
+        <div style="display:flex;align-items:center;">
+          <span class="cluster-total">nouveau : opérateurs, fibre, accès</span>
+          <span class="chev">›</span>
+        </div>
+      </div>
+      <div class="cluster-body">
+        <table>
+          <tr><td class="code">R3.01</td><td>Réseaux de campus <span style="color:var(--muted)">— approfondit ce que tu connais déjà (VLAN, routage)</span></td><td class="coef">8</td></tr>
+          <tr><td class="code">R3.02</td><td>Réseaux opérateurs <span style="color:var(--muted)">— nouveau : le monde WAN/FAI</span></td><td class="coef">8</td></tr>
+          <tr><td class="code">R3.03</td><td>Services réseaux avancés</td><td class="coef">8</td></tr>
+          <tr><td class="code">R3.04</td><td>Services d'annuaires <span style="color:var(--muted)">— nouveau : LDAP/AD</span></td><td class="coef">4</td></tr>
+          <tr><td class="code">R3.05</td><td>Chaînes de transmissions numériques <span style="color:var(--muted)">— gros morceau, très mathématique</span></td><td class="coef">16</td></tr>
+          <tr><td class="code">R3.06</td><td>Fibres optiques et propagation <span style="color:var(--muted)">— nouveau, physique appliquée</span></td><td class="coef">12</td></tr>
+          <tr><td class="code">R3.07</td><td>Réseaux d'accès</td><td class="coef">8</td></tr>
+          <tr><td class="code">SAE3.01</td><td>Mettre en œuvre un système de transmission <span style="color:var(--muted)">— le plus gros coefficient du semestre</span></td><td class="coef">25</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="cluster" data-cluster>
+      <div class="cluster-head" data-toggle>
+        <h3><span class="dot prog"></span>Programmation & données</h3>
+        <div style="display:flex;align-items:center;">
+          <span class="cluster-total">nouveau : événementiel, BDD</span>
+          <span class="chev">›</span>
+        </div>
+      </div>
+      <div class="cluster-body">
+        <table>
+          <tr><td class="code">R3.08</td><td>Consolidation de la programmation</td><td class="coef">8</td></tr>
+          <tr><td class="code">R3.09</td><td>Programmation événementielle <span style="color:var(--muted)">— nouveau, s'appuie sur l'OOP</span></td><td class="coef">6</td></tr>
+          <tr><td class="code">R3.10</td><td>Gestion d'un système de bases de données <span style="color:var(--muted)">— nouveau, administration réelle</span></td><td class="coef">3</td></tr>
+          <tr><td class="code">SAE3.02</td><td>Développer des applications communicantes</td><td class="coef">22</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="cluster" data-cluster>
+      <div class="cluster-head" data-toggle>
+        <h3><span class="dot cyber"></span>Cybersécurité (spécialité)</h3>
+        <div style="display:flex;align-items:center;">
+          <span class="cluster-total">tout nouveau — ta spécialisation démarre ici</span>
+          <span class="chev">›</span>
+        </div>
+      </div>
+      <div class="cluster-body">
+        <table>
+          <tr><td class="code">R3.Cyber.16</td><td>Méthodologie du pentesting</td><td class="coef">30</td></tr>
+          <tr><td class="code">SAE3.Cyber.03</td><td>Concevoir un réseau informatique sécurisé multi-sites <span style="color:var(--muted)">— le plus gros coefficient de tout S3</span></td><td class="coef">47</td></tr>
+          <tr><td class="code">SAE3.Cyber.04</td><td>Découvrir le pentesting</td><td class="coef">26</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="cluster" data-cluster>
+      <div class="cluster-head" data-toggle>
+        <h3><span class="dot trans"></span>Transversal & modules locaux</h3>
+        <div style="display:flex;align-items:center;">
+          <span class="cluster-total">anglais, gestion de projet, maths, IUT Nice</span>
+          <span class="chev">›</span>
+        </div>
+      </div>
+      <div class="cluster-body">
+        <table>
+          <tr><td class="code">R3.11</td><td>Anglais professionnel 1</td><td class="coef">11</td></tr>
+          <tr><td class="code">R3.12</td><td>ECCP — Savoir collaborer</td><td class="coef">11</td></tr>
+          <tr><td class="code">R3.13</td><td>Projet Personnel et Professionnel</td><td class="coef">4</td></tr>
+          <tr><td class="code">R3.14</td><td>Analyse de Fourier <span style="color:var(--muted)">— condition pour bien suivre R3.05</span></td><td class="coef">7</td></tr>
+          <tr><td class="code">R3.15</td><td>Gestion de projet 2</td><td class="coef">6</td></tr>
+          <tr><td class="code">R3.Local</td><td>DevCloud — virtualisation avancée</td><td class="coef">6</td></tr>
+          <tr><td class="code">R3.Local</td><td>Probabilités et statistiques <span style="color:var(--muted)">— nouveau domaine</span></td><td class="coef">7</td></tr>
+          <tr><td class="code">R3.Local</td><td>DevCloud — écosystème et cloud</td><td class="coef">2</td></tr>
+          <tr><td class="code">R3.Local</td><td>IOM — collecte et traitement de données</td><td class="coef">5</td></tr>
+          <tr><td class="code">R3.Local</td><td>IOM — introduction à l'IoT</td><td class="coef">1</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="outils">
+    <div class="eyebrow">03 — L'établi</div>
+    <h2>Les outils que tu vas ouvrir souvent</h2>
+    <p class="lede">Pas exhaustif, mais ce sont ceux qui reviennent le plus selon le contenu des ressources ci-dessus.</p>
+    <div class="tool-grid">
+      <div class="tool"><div class="name">Kali Linux + Nmap</div><div class="use">Reconnaissance réseau, base du pentesting (R3.Cyber.16, SAE Cyber)</div></div>
+      <div class="tool"><div class="name">Metasploit / Wireshark</div><div class="use">Exploitation et analyse de trafic (pentesting, R3.03)</div></div>
+      <div class="tool"><div class="name">Cisco Packet Tracer / GNS3</div><div class="use">Simulation réseaux campus & opérateurs (R3.01, R3.02, R3.07)</div></div>
+      <div class="tool"><div class="name">VirtualBox / VMware</div><div class="use">Labs isolés, virtualisation (DevCloud, Cyber)</div></div>
+      <div class="tool"><div class="name">MySQL / PostgreSQL</div><div class="use">Administration de bases de données (R3.10)</div></div>
+      <div class="tool"><div class="name">Java (IDE : IntelliJ/Eclipse)</div><div class="use">Programmation événementielle (R3.09)</div></div>
+      <div class="tool"><div class="name">Docker</div><div class="use">Écosystème cloud, conteneurisation (R3.Local DevCloud)</div></div>
+      <div class="tool"><div class="name">Analyseur de spectre / soudeuse fibre</div><div class="use">TP fibre optique et chaînes de transmission (R3.05, R3.06)</div></div>
+    </div>
+  </section>
+
+  <section id="langages">
+    <div class="eyebrow">04 — Langages & outils, en détail</div>
+    <h2>Ce que tu vas vraiment taper au clavier</h2>
+    <p class="lede">Avec, pour chacun, une première marche concrète si tu veux commencer pendant le mois libre.</p>
+
+    <div class="lang-grid">
+      <div class="lang-card priority">
+        <div class="lang-top">
+          <span class="lang-name">Java</span>
+          <span class="lang-badge">terrain inconnu</span>
+        </div>
+        <p class="lang-why">Langage porté par R3.09 (programmation événementielle), qui s'appuie sur l'OOP de R3.08. C'est le langage le plus probable pour ces deux ressources.</p>
+        <p class="lang-start"><strong>Première marche →</strong> classes/objets, héritage, interfaces (2–3 jours), puis un mini projet avec des écouteurs d'événements (un bouton qui réagit à un clic suffit pour comprendre le principe).</p>
+      </div>
+
+      <div class="lang-card">
+        <div class="lang-top">
+          <span class="lang-name">Python</span>
+          <span class="lang-badge">transférable</span>
+        </div>
+        <p class="lang-why">Langage de scripting le plus courant pour l'automatisation système et pour les outils de pentesting (souvent en appui de Nmap/Metasploit).</p>
+        <p class="lang-start"><strong>Première marche →</strong> si tu as déjà des bases, entraîne-toi surtout sur les scripts systèmes simples (fichiers, arguments, appels réseau basiques).</p>
+      </div>
+
+      <div class="lang-card">
+        <div class="lang-top">
+          <span class="lang-name">Bash</span>
+          <span class="lang-badge">quotidien</span>
+        </div>
+        <p class="lang-why">Compétence explicite du référentiel (AC23.01 : automatiser l'administration système avec des scripts). Tu vas t'en servir constamment, pas juste en cours dédié.</p>
+        <p class="lang-start"><strong>Première marche →</strong> boucles, conditions, variables d'environnement, et enchaîner 2–3 commandes système dans un script.</p>
+      </div>
+
+      <div class="lang-card">
+        <div class="lang-top">
+          <span class="lang-name">SQL</span>
+          <span class="lang-badge">nouveau</span>
+        </div>
+        <p class="lang-why">Pour R3.10 — mais cette fois côté administration (création de schéma, droits utilisateurs), pas juste requêtage.</p>
+        <p class="lang-start"><strong>Première marche →</strong> installe MySQL ou PostgreSQL en local, crée une base, une table, un utilisateur avec des droits limités.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">Et côté environnements / plateformes</h3>
+    <div class="lang-grid">
+      <div class="lang-card">
+        <div class="lang-top"><span class="lang-name">Docker</span><span class="lang-badge">déjà démarré</span></div>
+        <p class="lang-why">Pas un langage, mais tu vas t'en servir pour isoler des services (DevCloud écosystème, labs cyber). Tu as déjà une base là-dessus.</p>
+        <p class="lang-start"><strong>Pour aller plus loin →</strong> passer d'un conteneur unique à un petit docker-compose avec deux services qui communiquent.</p>
+      </div>
+      <div class="lang-card">
+        <div class="lang-top"><span class="lang-name">Kali Linux</span><span class="lang-badge">tout nouveau</span></div>
+        <p class="lang-why">L'environnement de travail du pentesting — pas un langage, mais une distribution entière à apprivoiser (Nmap, Metasploit préinstallés).</p>
+        <p class="lang-start"><strong>Première marche →</strong> l'installer en VM et se contenter de naviguer dedans avant même de lancer un scan.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <div class="eyebrow">05 — Dans quel ordre</div>
+    <h2>Enchaînement logique probable</h2>
+    <p class="lede">Basé sur les dépendances entre modules (pas le calendrier officiel de l'IUT, que je n'ai pas — à confirmer avec ton planning réel).</p>
+    <div class="timeline">
+      <div class="tl-item">
+        <h4>Début de semestre</h4>
+        <p>Consolidation de la programmation, réseaux de campus (terrain connu), remise à niveau probabilités/Fourier — ce sont les bases dont dépendent les modules suivants.</p>
+      </div>
+      <div class="tl-item">
+        <h4>Milieu de semestre</h4>
+        <p>Réseaux opérateurs, fibre optique, chaînes de transmission numériques montent en intensité. En parallèle : programmation événementielle et démarrage du pentesting (R3.Cyber.16).</p>
+      </div>
+      <div class="tl-item">
+        <h4>Fin de semestre</h4>
+        <p>Les SAE Cyber (conception réseau sécurisé multi-sites, pentesting) prennent le relais et mobilisent tout ce qui précède. Gestion BDD, services d'annuaires et modules locaux (DevCloud, IOM) s'intègrent au fil de l'eau.</p>
+      </div>
+      <div class="tl-item">
+        <h4>En continu</h4>
+        <p>Anglais, ECCP, gestion de projet, PPP — un rythme régulier tout le semestre, pas concentré à un moment précis.</p>
+      </div>
+    </div>
+    <p class="tl-note">⚠ Ordre déduit de la logique pédagogique et des coefficients, pas du planning réel de l'IUT Nice — vérifie avec ton emploi du temps dès qu'il sort.</p>
+  </section>
+
+  <section id="quiz">
+    <div class="eyebrow">06 — Check rapide</div>
+    <h2>Ça s'est bien enregistré ?</h2>
+    <div id="quizzes"></div>
+    <div class="quiz-score" id="score"></div>
+  </section>
+
+</div>
+
+<footer>S3 · BUT RT parcours Cyber · IUT Nice — feuille de route générée pour préparer le mois libre</footer>
+
+<script>
+  // ---- boot log animation ----
+  const lines = [
+    ["[ OK ]", "R3.01..R3.15 chargés depuis le référentiel PPN", "ok"],
+    ["[ OK ]", "Cluster Réseaux & transmission monté (UE31/UE32)", "ok"],
+    ["[ OK ]", "Cluster Programmation monté (UE33)", "ok"],
+    ["[WARN]", "Cluster Cybersécurité : aucune connaissance préalable détectée", "warn"],
+    ["[ OK ]", "Prérequis S1/S2 validés : VLAN, routage, ACL, NAT", "ok"],
+    ["[ .. ]", "Démarrage du semestre 3", ""]
+  ];
+  const el = document.getElementById('bootlog');
+  let out = "";
+  function typeLine(i, cb){
+    if(i >= lines.length){ cb(); return; }
+    const [tag, text, cls] = lines[i];
+    const span = cls ? `<span class="${cls}">${tag}</span>` : tag;
+    out += span + " " + text + "\n";
+    el.innerHTML = out + '<span class="cursor">&nbsp;</span>';
+    setTimeout(()=>typeLine(i+1, cb), 260);
+  }
+  typeLine(0, ()=>{ el.innerHTML = out; });
+
+  // ---- accordion ----
+  document.querySelectorAll('[data-toggle]').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      head.parentElement.classList.toggle('open');
+    });
+  });
+  // open first cluster by default
+  document.querySelector('[data-cluster]').classList.add('open');
+
+  // ---- quiz ----
+  const questions = [
+    {
+      q: "Quelle SAE a le coefficient le plus élevé de tout le semestre 3 ?",
+      opts: ["SAE3.01 — Mettre en œuvre un système de transmission", "SAE3.Cyber.03 — Concevoir un réseau sécurisé multi-sites", "SAE3.Cyber.04 — Découvrir le pentesting"],
+      correct: 1
+    },
+    {
+      q: "R3.14 (Analyse de Fourier) est surtout un prérequis pour quel module ?",
+      opts: ["R3.10 — Gestion de bases de données", "R3.05 — Chaînes de transmissions numériques", "R3.12 — Savoir collaborer"],
+      correct: 1
+    },
+    {
+      q: "Quelle UE correspond à la compétence \"Sécuriser\" ?",
+      opts: ["UE32", "UE34", "UE35"],
+      correct: 1
+    },
+    {
+      q: "Quel outil est le plus directement lié au pentesting ?",
+      opts: ["MySQL", "Kali Linux + Nmap", "Cisco Packet Tracer"],
+      correct: 1
+    }
+  ];
+  const container = document.getElementById('quizzes');
+  let score = 0, answered = 0;
+  const scoreEl = document.getElementById('score');
+
+  questions.forEach((item, qi)=>{
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    const qEl = document.createElement('div');
+    qEl.className = 'quiz-q';
+    qEl.textContent = (qi+1) + ". " + item.q;
+    card.appendChild(qEl);
+    const optsEl = document.createElement('div');
+    optsEl.className = 'quiz-opts';
+    item.opts.forEach((opt, oi)=>{
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', ()=>{
+        if(btn.dataset.locked) return;
+        [...optsEl.children].forEach(b=>b.dataset.locked = "1");
+        if(oi === item.correct){
+          btn.classList.add('correct');
+          score++;
+        } else {
+          btn.classList.add('wrong');
+          optsEl.children[item.correct].classList.add('correct');
+        }
+        answered++;
+        scoreEl.textContent = `Score : ${score} / ${questions.length}` + (answered === questions.length ? " — terminé." : "");
+      });
+      optsEl.appendChild(btn);
+    });
+    card.appendChild(optsEl);
+    container.appendChild(card);
+  });
+  scoreEl.textContent = `Score : 0 / ${questions.length}`;
+</script>
+
+</body>
+</html>
