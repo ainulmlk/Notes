@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenBoard — Routage &amp; Commutation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #0B1220;
+  --panel: #111a2c;
+  --panel-alt: #16213570;
+  --line: #24324a;
+  --line-soft: #1a2438;
+  --text: #e7ecf5;
+  --muted: #8a99b3;
+  --muted-dim: #5c6a83;
+  --amber: #f2b441;
+  --amber-dim: #7a5f27;
+  --teal: #4fd8c4;
+  --teal-dim: #245a52;
+  --red: #ef6f6f;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.55;
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+
+::selection{ background: var(--amber-dim); color:#fff; }
+
+a{color:var(--teal);}
+
+/* ---------- layout shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns: 250px 1fr;
+  min-height:100vh;
+}
+@media (max-width: 860px){
+  .shell{ grid-template-columns: 1fr; }
+  .sidebar{ position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); }
+}
+
+.sidebar{
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  border-right:1px solid var(--line);
+  padding:22px 18px 30px;
+  background:
+    linear-gradient(var(--panel), var(--panel)) padding-box,
+    radial-gradient(circle at 20% 0%, rgba(79,216,196,0.08), transparent 60%);
+}
+@media (max-width: 860px){ .sidebar{ position:static; height:auto; } }
+
+.brand{
+  display:flex; align-items:baseline; gap:8px;
+  font-family:var(--mono);
+  font-size:13px;
+  letter-spacing:0.02em;
+  color:var(--muted);
+  margin-bottom:2px;
+}
+.brand b{ color:var(--text); font-weight:600; }
+.brand .dot{ color:var(--amber); }
+.deck-sub{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted-dim);
+  margin-bottom:22px;
+}
+
+.langtoggle{
+  display:flex; border:1px solid var(--line); border-radius:7px; overflow:hidden;
+  margin-bottom:24px; width:fit-content;
+  font-family:var(--mono); font-size:12px;
+}
+.langtoggle button{
+  background:transparent; border:none; color:var(--muted); padding:7px 13px;
+  cursor:pointer; font-family:inherit; font-size:inherit; font-weight:600;
+  transition: background .15s, color .15s;
+}
+.langtoggle button.active{ background:var(--amber); color:#241a04; }
+.langtoggle button:focus-visible{ outline:2px solid var(--teal); outline-offset:-2px; }
+
+nav.toc{ display:flex; flex-direction:column; gap:2px; }
+nav.toc a{
+  text-decoration:none; color:var(--muted);
+  font-size:13.5px;
+  padding:8px 10px; border-radius:6px;
+  display:flex; gap:10px; align-items:baseline;
+  border-left:2px solid transparent;
+  transition: color .15s, background .15s, border-color .15s;
+}
+nav.toc a .n{ font-family:var(--mono); font-size:11px; color:var(--muted-dim); min-width:16px; }
+nav.toc a:hover{ background:var(--line-soft); color:var(--text); }
+nav.toc a.active{ color:var(--text); border-left-color:var(--amber); background:var(--line-soft); }
+nav.toc a.active .n{ color:var(--amber); }
+nav.toc a:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+
+.sidebar-foot{
+  margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+  font-family:var(--mono); font-size:11px; color:var(--muted-dim); line-height:1.6;
+}
+
+/* ---------- main content ---------- */
+main{ padding: 48px clamp(20px,5vw,72px) 100px; max-width:900px; }
+
+.hero{ margin-bottom:56px; }
+.hero .kicker{
+  font-family:var(--mono); font-size:12px; color:var(--teal); letter-spacing:0.03em;
+  margin-bottom:10px;
+}
+.hero h1{
+  font-size:clamp(30px,4.4vw,44px); line-height:1.1; margin:0 0 16px; font-weight:700;
+  max-width:14ch;
+}
+.hero p{ color:var(--muted); max-width:60ch; font-size:15.5px; }
+
+section{ padding-top:64px; margin-top:-16px; scroll-margin-top:22px; }
+section + section{ border-top:1px solid var(--line-soft); }
+
+.sec-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:22px; }
+.sec-head .idx{
+  font-family:var(--mono); font-size:14px; color:var(--amber);
+  border:1px solid var(--amber-dim); border-radius:5px; padding:3px 8px;
+}
+.sec-head h2{ font-size:24px; margin:0; font-weight:700; }
+
+p.lead{ color:var(--muted); font-size:15.5px; max-width:66ch; margin-bottom:22px;}
+p{ max-width:70ch; }
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:18px 0;
+}
+.card h3{ margin-top:0; font-size:15px; font-family:var(--mono); color:var(--teal); font-weight:600; }
+
+.note{
+  border-left:3px solid var(--amber);
+  background: rgba(242,180,65,0.06);
+  padding:14px 18px;
+  border-radius:0 8px 8px 0;
+  margin:20px 0;
+  font-size:14.5px;
+  color:var(--text);
+}
+.note b{ color:var(--amber); }
+
+/* data tables */
+table.datatable{
+  width:100%; border-collapse:collapse;
+  font-family:var(--mono); font-size:13.5px;
+  margin:16px 0;
+}
+table.datatable caption{
+  text-align:left; font-family:var(--sans); font-size:12.5px; color:var(--muted-dim);
+  margin-bottom:6px;
+}
+table.datatable th{
+  background:#173226; color:var(--teal);
+  text-align:left; padding:9px 12px; border:1px solid var(--line);
+  font-weight:600;
+}
+table.datatable td{
+  padding:9px 12px; border:1px solid var(--line); color:var(--text);
+}
+table.datatable tr:nth-child(even) td{ background:rgba(255,255,255,0.015); }
+.hl{ color:var(--amber); font-weight:600; }
+.hl-teal{ color:var(--teal); font-weight:600; }
+
+/* topology svg */
+.diagram-wrap{
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  padding:18px; margin:20px 0; overflow-x:auto;
+}
+.diagram-wrap svg{ display:block; margin:0 auto; min-width:560px; }
+.legend{ display:flex; flex-wrap:wrap; gap:16px; margin-top:14px; font-size:12.5px; color:var(--muted); font-family:var(--mono); }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+
+/* encapsulation stack */
+.stack{ display:flex; flex-direction:column; gap:6px; margin:20px 0; }
+.stack-row{
+  display:flex; align-items:stretch; border-radius:8px; overflow:hidden;
+  font-family:var(--mono); font-size:12.5px;
+}
+.stack-row .layer-tag{
+  width:150px; flex-shrink:0; padding:10px 12px; display:flex; align-items:center;
+  color:var(--muted); font-size:11.5px; background:var(--panel-alt); border-right:1px solid var(--line);
+}
+.stack-row .frame{ display:flex; flex:1; }
+.frame .seg{ padding:10px 12px; display:flex; align-items:center; justify-content:center; text-align:center; border-right:1px solid rgba(0,0,0,0.25); white-space:nowrap;}
+.seg.eth{ background:#3a2540; color:#e3b8ee; flex:0 0 90px; }
+.seg.ip{ background:#1c3a52; color:#8fd0f2; flex:0 0 140px; }
+.seg.tcp{ background:#173a2b; color:#8bdcae; flex:0 0 110px; }
+.seg.http{ background:#3a2c15; color:#f2c98f; flex:1; min-width:120px; }
+
+/* stepper */
+.stepper{ display:flex; flex-direction:column; gap:0; margin:22px 0; }
+.step{
+  display:grid; grid-template-columns:44px 1fr; gap:16px;
+  padding:18px 4px; border-bottom:1px solid var(--line-soft);
+  cursor:pointer;
+}
+.step:last-child{ border-bottom:none; }
+.step .num{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:14px; color:var(--muted);
+  transition: all .2s;
+}
+.step.active .num{ background:var(--amber); color:#241a04; border-color:var(--amber); font-weight:700; }
+.step h4{ margin:2px 0 6px; font-size:15px; }
+.step p{ margin:0; color:var(--muted); font-size:14px; max-width:64ch;}
+.step .detail{ display:none; margin-top:10px; }
+.step.active .detail{ display:block; }
+.step .detail{
+  background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px 16px;
+  font-size:13.5px; color:var(--text);
+}
+.step-controls{ display:flex; gap:10px; margin-top:18px; }
+.step-controls button{
+  font-family:var(--sans); font-size:13.5px; font-weight:600; cursor:pointer;
+  background:var(--panel); border:1px solid var(--line); color:var(--text);
+  padding:9px 16px; border-radius:7px; transition: all .15s;
+}
+.step-controls button:hover{ border-color:var(--teal); color:var(--teal); }
+.step-controls button:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+.step-controls button:disabled{ opacity:0.35; cursor:default; }
+.step-controls button:disabled:hover{ border-color:var(--line); color:var(--text); }
+
+/* subnet bits */
+.bitbar{ display:flex; gap:3px; margin:22px 0 8px; flex-wrap:wrap; }
+.bitgroup{ display:flex; gap:3px; padding:6px; border-radius:8px; }
+.bitgroup.net{ background:rgba(242,180,65,0.08); border:1px dashed var(--amber-dim); }
+.bitgroup.host{ background:rgba(79,216,196,0.06); border:1px dashed var(--teal-dim); }
+.bit{
+  width:20px; height:26px; border-radius:3px; background:var(--panel-alt); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; color:var(--muted);
+}
+.bitgroup.net .bit{ color:var(--amber); }
+.bitgroup.host .bit{ color:var(--teal); }
+.octet-labels{ display:flex; gap:3px; margin-bottom:4px; }
+.octet-labels div{ font-family:var(--mono); font-size:11px; color:var(--muted-dim); text-align:center; }
+
+/* quiz */
+.quiz-q{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:16px 0; }
+.quiz-q p.qtext{ font-weight:600; margin:0 0 12px; font-size:14.5px; }
+.quiz-opts{ display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{
+  text-align:left; padding:10px 14px; border-radius:7px; border:1px solid var(--line);
+  background:transparent; color:var(--text); cursor:pointer; font-family:var(--sans); font-size:14px;
+  transition: all .15s;
+}
+.quiz-opt:hover{ border-color:var(--muted); }
+.quiz-opt:focus-visible{ outline:2px solid var(--teal); outline-offset:1px; }
+.quiz-opt.correct{ border-color:var(--teal); background:rgba(79,216,196,0.1); color:var(--teal); }
+.quiz-opt.wrong{ border-color:var(--red); background:rgba(239,111,111,0.08); color:var(--red); }
+.quiz-fb{ margin-top:10px; font-size:13px; color:var(--muted); display:none; }
+.quiz-fb.show{ display:block; }
+.quiz-score{ font-family:var(--mono); font-size:14px; color:var(--amber); margin-top:18px; }
+
+.foot{
+  margin-top:70px; padding-top:24px; border-top:1px solid var(--line-soft);
+  color:var(--muted-dim); font-size:12.5px; font-family:var(--mono);
+}
+
+[data-i18n], [data-i18n-html]{ }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><b>OPEN</b><span class="dot">▮</span><b>BOARD</b></div>
+    <div class="deck-sub" data-i18n="course-code">R302 — Réseaux · fiche de révision</div>
+
+    <div class="langtoggle" role="group" aria-label="Language">
+      <button id="btn-fr" class="active" onclick="setLang('fr')">FR</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+
+    <nav class="toc">
+      <a href="#topology"><span class="n">01</span><span data-i18n="nav-1">Topologie &amp; adressage</span></a>
+      <a href="#tables"><span class="n">02</span><span data-i18n="nav-2">Tables MAC &amp; ARP</span></a>
+      <a href="#routing"><span class="n">03</span><span data-i18n="nav-3">Table de routage</span></a>
+      <a href="#encaps"><span class="n">04</span><span data-i18n="nav-4">Encapsulation</span></a>
+      <a href="#forwarding"><span class="n">05</span><span data-i18n="nav-5">Algorithme du routeur</span></a>
+      <a href="#subnet"><span class="n">06</span><span data-i18n="nav-6">Adressage IP &amp; /24</span></a>
+      <a href="#quiz"><span class="n">07</span><span data-i18n="nav-7">Auto-évaluation</span></a>
+    </nav>
+
+    <div class="sidebar-foot" data-i18n="sidebar-foot">D'après des notes de tableau blanc manuscrites.</div>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <div class="kicker" data-i18n="kicker">FICHE DE RÉVISION — COMMUTATION ET ROUTAGE IP</div>
+      <h1 data-i18n="hero-title">Comment un paquet trouve son chemin</h1>
+      <p data-i18n="hero-sub">De vos notes manuscrites à une version consultable : tables ARP et MAC, table de routage, encapsulation et algorithme de transfert d'un routeur, avec un exemple chiffré à chaque étape.</p>
+    </div>
+
+    <!-- 01 TOPOLOGY -->
+    <section id="topology">
+      <div class="sec-head"><span class="idx">01</span><h2 data-i18n="t1-h">Topologie &amp; adressage</h2></div>
+      <p class="lead" data-i18n="t1-lead">Le schéma d'origine montre un réseau local (téléphone, maison, immeuble) relié par deux routeurs à un cœur de réseau qui donne accès à d'autres réseaux.</p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Network topology diagram">
+          <!-- clouds -->
+          <ellipse cx="230" cy="55" rx="70" ry="38" fill="#3a3316" stroke="#7a6a2a"/>
+          <text x="230" y="59" text-anchor="middle" fill="#e8d189" font-family="IBM Plex Mono" font-size="12">Net A</text>
+
+          <ellipse cx="430" cy="45" rx="70" ry="38" fill="#3a1f3f" stroke="#7a3f82"/>
+          <text x="430" y="49" text-anchor="middle" fill="#e2a8ec" font-family="IBM Plex Mono" font-size="12">Net B</text>
+
+          <ellipse cx="540" cy="140" rx="65" ry="36" fill="#123a3a" stroke="#2f7a78"/>
+          <text x="540" y="144" text-anchor="middle" fill="#8fe8e2" font-family="IBM Plex Mono" font-size="12">T1</text>
+
+          <!-- local network blob -->
+          <ellipse cx="260" cy="200" rx="120" ry="60" fill="#1a2438" stroke="#2c3c5c"/>
+          <text x="260" y="266" text-anchor="middle" fill="#5c6a83" font-family="IBM Plex Mono" font-size="11" data-i18n="t1-localnet">réseau local</text>
+
+          <!-- links -->
+          <g stroke="#3a4a68" stroke-width="1.6" fill="none">
+            <line x1="252" y1="88" x2="285" y2="145"/>
+            <line x1="285" y1="145" x2="395" y2="70"/>
+            <line x1="285" y1="145" x2="475" y2="140"/>
+            <line x1="475" y1="140" x2="540" y2="140"/>
+            <line x1="285" y1="145" x2="215" y2="180"/>
+            <line x1="215" y1="180" x2="270" y2="195"/>
+            <line x1="215" y1="180" x2="130" y2="230"/>
+            <line x1="215" y1="180" x2="150" y2="270"/>
+            <line x1="270" y1="195" x2="200" y2="290"/>
+          </g>
+
+          <!-- nodes -->
+          <g font-family="IBM Plex Mono" font-size="12" fill="#c7d2e6">
+            <circle cx="252" cy="88" r="9" fill="#2c5aa0"/><text x="252" y="112">S1</text>
+            <circle cx="285" cy="145" r="9" fill="#2c5aa0"/><text x="292" y="140">R1</text>
+            <circle cx="475" cy="140" r="9" fill="#2c5aa0"/><text x="475" y="164">R2</text>
+            <circle cx="215" cy="180" r="9" fill="#2c5aa0"/><text x="188" y="176">R3</text>
+            <circle cx="270" cy="195" r="9" fill="#2c5aa0"/><text x="278" y="215">R4</text>
+          </g>
+
+          <!-- end devices -->
+          <g font-family="IBM Plex Mono" font-size="10.5" fill="#8a99b3">
+            <rect x="118" y="222" width="16" height="24" rx="3" fill="#2a3550" stroke="#44557a"/>
+            <text x="126" y="258" text-anchor="middle" data-i18n="t1-phone">phone</text>
+            <path d="M140 285 l14 -14 l14 14 v18 h-28 z" fill="#2a3550" stroke="#44557a"/>
+            <text x="154" y="316" text-anchor="middle" data-i18n="t1-home">home</text>
+            <rect x="185" y="278" width="24" height="30" fill="#2a3550" stroke="#44557a"/>
+            <text x="197" y="317" text-anchor="middle" data-i18n="t1-building">building</text>
+          </g>
+        </svg>
+
+        <div class="legend">
+          <span><i style="background:#7a6a2a"></i><span data-i18n="t1-leg1">External network (cloud)</span></span>
+          <span><i style="background:#2c5aa0"></i><span data-i18n="t1-leg2">Router / switch (S1, R1–R4)</span></span>
+          <span><i style="background:#2a3550"></i><span data-i18n="t1-leg3">End device</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t1-c1-h">@IP vs @MAC</h3>
+        <p data-i18n="t1-c1-p">Une <span class="hl">adresse IP</span> identifie un appareil de bout en bout, sur l'ensemble du chemin, quel que soit le nombre de routeurs traversés. Une <span class="hl-teal">adresse MAC</span> n'identifie une interface que sur le lien local : elle change à chaque saut, quand le paquet passe d'un réseau à un autre.</p>
+      </div>
+    </section>
+
+    <!-- 02 TABLES -->
+    <section id="tables">
+      <div class="sec-head"><span class="idx">02</span><h2 data-i18n="t2-h">Tables MAC &amp; ARP</h2></div>
+      <p class="lead" data-i18n="t2-lead">Deux tables différentes, deux rôles différents — c'est le piège classique de ce chapitre.</p>
+
+      <div class="card">
+        <h3 data-i18n="t2-mac-h">Table d'adresses MAC (sur un commutateur / switch)</h3>
+        <p data-i18n="t2-mac-p">Un switch apprend quelle machine se trouve derrière quel port en observant les adresses MAC source des trames reçues. Il s'en sert pour envoyer une trame uniquement vers le bon port, au lieu de la diffuser partout.</p>
+        <table class="datatable">
+          <caption data-i18n="t2-mac-cap">Table MAC — exemple</caption>
+          <thead><tr><th>@MAC</th><th data-i18n="t2-col-intf">Interface</th></tr></thead>
+          <tbody>
+            <tr><td>AA:14:2B:9C:00:01</td><td>Fa0/1</td></tr>
+            <tr><td>AA:14:2B:9C:00:07</td><td>Fa0/3</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t2-arp-h">Table ARP (sur un hôte ou un routeur)</h3>
+        <p data-i18n="t2-arp-p">Avant d'envoyer une trame sur le réseau local, un appareil doit connaître l'adresse MAC correspondant à l'adresse IP de destination. La table ARP (Address Resolution Protocol) mémorise cette correspondance IP → MAC pour éviter de la redemander à chaque paquet.</p>
+        <table class="datatable">
+          <caption data-i18n="t2-arp-cap">Table ARP — exemple</caption>
+          <thead><tr><th>@IP</th><th>@MAC</th></tr></thead>
+          <tbody>
+            <tr><td>20.0.0.1</td><td>AA:14:2B:9C:00:01</td></tr>
+            <tr><td>20.0.0.254</td><td>AA:14:2B:9C:00:0F</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note" data-i18n-html="t2-note">
+        <b>À retenir —</b> table MAC = « qui est branché sur quel port ? » (niveau 2, sur un switch). Table ARP = « quelle adresse MAC correspond à cette IP ? » (niveau 2↔3, sur un hôte ou un routeur).
+      </div>
+    </section>
+
+    <!-- 03 ROUTING TABLE -->
+    <section id="routing">
+      <div class="sec-head"><span class="idx">03</span><h2 data-i18n="t3-h">Table de routage</h2></div>
+      <p class="lead" data-i18n="t3-lead">Chaque routeur tient sa propre table de routage pour décider, réseau par réseau, où envoyer un paquet ensuite.</p>
+
+      <table class="datatable">
+        <caption data-i18n="t3-cap">Table de routage de R3 — une ligne</caption>
+        <thead>
+          <tr><th data-i18n="t3-col-net">Network</th><th data-i18n="t3-col-nh">Next hop</th><th data-i18n="t3-col-intf">Interface</th><th data-i18n="t3-col-hops">Nb hops</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="hl">20.0.0.0/24</td><td>R1</td><td>e0</td><td>2</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <h3 data-i18n="t3-read-h">Comment lire cette ligne</h3>
+        <p data-i18n="t3-read-p"><span class="hl">Network</span> : le réseau de destination visé. <span class="hl">Next hop</span> : le prochain routeur à qui confier le paquet. <span class="hl">Interface</span> : l'interface locale par laquelle on sort pour l'atteindre. <span class="hl">Nb hops</span> : le nombre de routeurs restants à traverser jusqu'à la destination.</p>
+      </div>
+
+      <div class="note" data-i18n-html="t3-note">
+        Autrement dit : « pour joindre <b>20.0.0.0/24</b>, j'envoie le paquet vers <b>R1</b>, en sortant par mon interface <b>e0</b> ; il reste encore <b>2</b> routeurs à traverser. »
+      </div>
+    </section>
+
+    <!-- 04 ENCAPSULATION -->
+    <section id="encaps">
+      <div class="sec-head"><span class="idx">04</span><h2 data-i18n="t4-h">Encapsulation</h2></div>
+      <p class="lead" data-i18n="t4-lead">Chaque couche ajoute son propre en-tête autour des données de la couche du dessus, comme des enveloppes imbriquées.</p>
+
+      <div class="stack">
+        <div class="stack-row">
+          <div class="layer-tag" data-i18n="t4-layer-app">Application</div>
+          <div class="frame"><div class="seg http" style="flex:1">HTTP <span style="opacity:.6;margin-left:6px" data-i18n="t4-data">data</span></div></div>
+        </div>
+        <div class="stack-row">
+          <div class="layer-tag" data-i18n="t4-layer-trans">Transport</div>
+          <div class="frame"><div class="seg tcp">TCP</div><div class="seg http" style="flex:1">HTTP</div></div>
+        </div>
+        <div class="stack-row">
+          <div class="layer-tag" data-i18n="t4-layer-net">Réseau (IP)</div>
+          <div class="frame"><div class="seg ip">IP src / dst</div><div class="seg tcp">TCP</div><div class="seg http" style="flex:1">HTTP</div></div>
+        </div>
+        <div class="stack-row">
+          <div class="layer-tag" data-i18n="t4-layer-link">Liaison de données</div>
+          <div class="frame"><div class="seg eth">Eth</div><div class="seg ip">IP src / dst</div><div class="seg tcp">TCP</div><div class="seg http" style="flex:1">HTTP</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t4-map-h">Correspondance des couches</h3>
+        <p data-i18n="t4-map-p"><b>HTTP</b> → couche Application (les données utiles). <b>TCP</b> → couche Transport. <b>IP</b> → couche Réseau, porte les adresses <span class="hl">source et destination de bout en bout</span>. <b>Ethernet</b> → couche Liaison de données, porte les adresses MAC, valables seulement sur le lien local.</p>
+      </div>
+
+      <div class="note" data-i18n-html="t4-note">
+        <b>Ce qui change / ne change pas à chaque saut —</b> les adresses <b>IP</b> source et destination restent identiques de bout en bout (sauf si un routeur fait du <b>NAT</b>, qui les réécrit volontairement). En revanche, les adresses <b>MAC</b> source et destination sont refaites à chaque saut : la nouvelle adresse MAC source appartient toujours à l'interface du routeur qui vient d'émettre le paquet sur ce lien.
+      </div>
+    </section>
+
+    <!-- 05 FORWARDING -->
+    <section id="forwarding">
+      <div class="sec-head"><span class="idx">05</span><h2 data-i18n="t5-h">Algorithme de transfert d'un routeur</h2></div>
+      <p class="lead" data-i18n="t5-lead">Ce que fait un routeur, dans l'ordre, à chaque paquet qu'il reçoit. Cliquez sur une étape ou utilisez les boutons.</p>
+
+      <div class="stepper" id="stepper">
+        <div class="step active" data-step="1">
+          <div class="num">1</div>
+          <div>
+            <h4 data-i18n="t5-s1-h">Lire et vérifier l'@MAC destination</h4>
+            <p data-i18n="t5-s1-p">La trame reçue est-elle bien adressée à l'une de mes interfaces ?</p>
+            <div class="detail" data-i18n="t5-s1-d">Si l'adresse MAC de destination de la trame ne correspond à aucune de mes interfaces, la trame n'est pas pour moi et elle est ignorée (sauf cas particulier de diffusion/broadcast).</div>
+          </div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="num">2</div>
+          <div>
+            <h4 data-i18n="t5-s2-h">Lire l'@IP destination</h4>
+            <p data-i18n="t5-s2-p">Le routeur extrait l'adresse IP de destination du paquet, à l'intérieur de la trame.</p>
+            <div class="detail" data-i18n="t5-s2-d">C'est cette adresse IP — pas l'adresse MAC — qui va servir de clé de recherche dans la table de routage.</div>
+          </div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="num">3</div>
+          <div>
+            <h4 data-i18n="t5-s3-h">Consulter la table de routage</h4>
+            <p data-i18n="t5-s3-p">Le routeur cherche la ligne de la table de routage dont le réseau correspond à l'adresse IP de destination, pour déterminer où transférer le paquet.</p>
+            <div class="detail" data-i18n="t5-s3-d">Cette ligne indique le <b>next hop</b> et l'<b>interface</b> de sortie à utiliser — exactement les colonnes vues à l'étape 03.</div>
+          </div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="num">4</div>
+          <div>
+            <h4 data-i18n="t5-s4-h">Reconstituer le paquet avec un nouvel en-tête Ethernet</h4>
+            <p data-i18n="t5-s4-p">Le routeur ajoute une nouvelle trame Ethernet et l'envoie par l'interface de sortie choisie.</p>
+            <div class="detail" data-i18n="t5-s4-d">Nouvelle @MAC source = mon interface de sortie. Nouvelle @MAC destination = l'interface du prochain routeur (next hop). Les adresses IP, elles, ne changent pas.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-controls">
+        <button id="prevStep" onclick="stepMove(-1)" data-i18n="t5-prev">← Précédent</button>
+        <button id="nextStep" onclick="stepMove(1)" data-i18n="t5-next">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- 06 SUBNETTING -->
+    <section id="subnet">
+      <div class="sec-head"><span class="idx">06</span><h2 data-i18n="t6-h">Adressage IP &amp; notation /24</h2></div>
+      <p class="lead" data-i18n="t6-lead">Une adresse IPv4 tient sur 32 bits, écrits en quatre groupes de 8 bits (octets) séparés par des points.</p>
+
+      <div class="octet-labels" style="margin-left:6px;">
+        <div style="width:184px">20</div><div style="width:184px">0</div><div style="width:184px">0</div><div style="width:184px">1</div>
+      </div>
+      <div class="bitbar">
+        <div class="bitgroup net" id="oct1"></div>
+        <div class="bitgroup net" id="oct2"></div>
+        <div class="bitgroup net" id="oct3"></div>
+        <div class="bitgroup host" id="oct4"></div>
+      </div>
+      <div class="legend" style="margin-top:2px;">
+        <span><i style="background:var(--amber)"></i><span data-i18n="t6-leg-net">Network portion — first 24 bits (/24)</span></span>
+        <span><i style="background:var(--teal)"></i><span data-i18n="t6-leg-host">Host portion — last 8 bits</span></span>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t6-c1-h">Lecture du /24</h3>
+        <p data-i18n="t6-c1-p">4 octets × 8 bits = <b>32 bits</b> au total pour une adresse IPv4. Le suffixe <b>/24</b> indique que les <b>24 premiers bits</b> (les 3 premiers octets) désignent le réseau ; les <b>8 bits restants</b> désignent l'hôte à l'intérieur de ce réseau. C'est pour cela que <span class="hl">20.0.0.0/24</span> regroupe toutes les adresses de <span class="hl-teal">20.0.0.0</span> à <span class="hl-teal">20.0.0.255</span>.</p>
+      </div>
+    </section>
+
+    <!-- 07 QUIZ -->
+    <section id="quiz">
+      <div class="sec-head"><span class="idx">07</span><h2 data-i18n="t7-h">Auto-évaluation</h2></div>
+      <p class="lead" data-i18n="t7-lead">Cinq questions pour vérifier ce qui est acquis.</p>
+      <div id="quizRoot"></div>
+      <div class="quiz-score" id="quizScore"></div>
+    </section>
+
+    <div class="foot" data-i18n="foot">OpenBoard · fiche de révision générée à partir de notes manuscrites — R302.</div>
+  </main>
+</div>
+
+<script>
+const i18n = {
+  fr: {
+    "course-code":"R302 — Réseaux · fiche de révision",
+    "nav-1":"Topologie & adressage","nav-2":"Tables MAC & ARP","nav-3":"Table de routage",
+    "nav-4":"Encapsulation","nav-5":"Algorithme du routeur","nav-6":"Adressage IP & /24","nav-7":"Auto-évaluation",
+    "sidebar-foot":"D'après des notes de tableau blanc manuscrites.",
+    "kicker":"FICHE DE RÉVISION — COMMUTATION ET ROUTAGE IP",
+    "hero-title":"Comment un paquet trouve son chemin",
+    "hero-sub":"De vos notes manuscrites à une version consultable : tables ARP et MAC, table de routage, encapsulation et algorithme de transfert d'un routeur, avec un exemple chiffré à chaque étape.",
+    "t1-h":"Topologie & adressage",
+    "t1-lead":"Le schéma d'origine montre un réseau local (téléphone, maison, immeuble) relié par deux routeurs à un cœur de réseau qui donne accès à d'autres réseaux.",
+    "t1-localnet":"réseau local","t1-phone":"tél.","t1-home":"maison","t1-building":"immeuble",
+    "t1-leg1":"Réseau externe (nuage)","t1-leg2":"Routeur / switch (S1, R1–R4)","t1-leg3":"Appareil final",
+    "t1-c1-h":"@IP vs @MAC",
+    "t1-c1-p":"Une <span class=\\"hl\\">adresse IP</span> identifie un appareil de bout en bout, sur l'ensemble du chemin, quel que soit le nombre de routeurs traversés. Une <span class=\\"hl-teal\\">adresse MAC</span> n'identifie une interface que sur le lien local : elle change à chaque saut, quand le paquet passe d'un réseau à un autre.",
+    "t2-h":"Tables MAC & ARP",
+    "t2-lead":"Deux tables différentes, deux rôles différents — c'est le piège classique de ce chapitre.",
+    "t2-mac-h":"Table d'adresses MAC (sur un commutateur / switch)",
+    "t2-mac-p":"Un switch apprend quelle machine se trouve derrière quel port en observant les adresses MAC source des trames reçues. Il s'en sert pour envoyer une trame uniquement vers le bon port, au lieu de la diffuser partout.",
+    "t2-mac-cap":"Table MAC — exemple","t2-col-intf":"Interface",
+    "t2-arp-h":"Table ARP (sur un hôte ou un routeur)",
+    "t2-arp-p":"Avant d'envoyer une trame sur le réseau local, un appareil doit connaître l'adresse MAC correspondant à l'adresse IP de destination. La table ARP (Address Resolution Protocol) mémorise cette correspondance IP → MAC pour éviter de la redemander à chaque paquet.",
+    "t2-arp-cap":"Table ARP — exemple",
+    "t2-note":"<b>À retenir —</b> table MAC = « qui est branché sur quel port ? » (niveau 2, sur un switch). Table ARP = « quelle adresse MAC correspond à cette IP ? » (niveau 2↔3, sur un hôte ou un routeur).",
+    "t3-h":"Table de routage",
+    "t3-lead":"Chaque routeur tient sa propre table de routage pour décider, réseau par réseau, où envoyer un paquet ensuite.",
+    "t3-cap":"Table de routage de R3 — une ligne",
+    "t3-col-net":"Network","t3-col-nh":"Next hop","t3-col-intf":"Interface","t3-col-hops":"Nb hops",
+    "t3-read-h":"Comment lire cette ligne",
+    "t3-read-p":"<span class=\\"hl\\">Network</span> : le réseau de destination visé. <span class=\\"hl\\">Next hop</span> : le prochain routeur à qui confier le paquet. <span class=\\"hl\\">Interface</span> : l'interface locale par laquelle on sort pour l'atteindre. <span class=\\"hl\\">Nb hops</span> : le nombre de routeurs restants à traverser jusqu'à la destination.",
+    "t3-note":"Autrement dit : « pour joindre <b>20.0.0.0/24</b>, j'envoie le paquet vers <b>R1</b>, en sortant par mon interface <b>e0</b> ; il reste encore <b>2</b> routeurs à traverser. »",
+    "t4-h":"Encapsulation",
+    "t4-lead":"Chaque couche ajoute son propre en-tête autour des données de la couche du dessus, comme des enveloppes imbriquées.",
+    "t4-layer-app":"Application","t4-layer-trans":"Transport","t4-layer-net":"Réseau (IP)","t4-layer-link":"Liaison de données",
+    "t4-data":"données",
+    "t4-map-h":"Correspondance des couches",
+    "t4-map-p":"<b>HTTP</b> → couche Application (les données utiles). <b>TCP</b> → couche Transport. <b>IP</b> → couche Réseau, porte les adresses <span class=\\"hl\\">source et destination de bout en bout</span>. <b>Ethernet</b> → couche Liaison de données, porte les adresses MAC, valables seulement sur le lien local.",
+    "t4-note":"<b>Ce qui change / ne change pas à chaque saut —</b> les adresses <b>IP</b> source et destination restent identiques de bout en bout (sauf si un routeur fait du <b>NAT</b>, qui les réécrit volontairement). En revanche, les adresses <b>MAC</b> source et destination sont refaites à chaque saut : la nouvelle adresse MAC source appartient toujours à l'interface du routeur qui vient d'émettre le paquet sur ce lien.",
+    "t5-h":"Algorithme de transfert d'un routeur",
+    "t5-lead":"Ce que fait un routeur, dans l'ordre, à chaque paquet qu'il reçoit. Cliquez sur une étape ou utilisez les boutons.",
+    "t5-s1-h":"Lire et vérifier l'@MAC destination","t5-s1-p":"La trame reçue est-elle bien adressée à l'une de mes interfaces ?",
+    "t5-s1-d":"Si l'adresse MAC de destination de la trame ne correspond à aucune de mes interfaces, la trame n'est pas pour moi et elle est ignorée (sauf cas particulier de diffusion/broadcast).",
+    "t5-s2-h":"Lire l'@IP destination","t5-s2-p":"Le routeur extrait l'adresse IP de destination du paquet, à l'intérieur de la trame.",
+    "t5-s2-d":"C'est cette adresse IP — pas l'adresse MAC — qui va servir de clé de recherche dans la table de routage.",
+    "t5-s3-h":"Consulter la table de routage","t5-s3-p":"Le routeur cherche la ligne de la table de routage dont le réseau correspond à l'adresse IP de destination, pour déterminer où transférer le paquet.",
+    "t5-s3-d":"Cette ligne indique le <b>next hop</b> et l'<b>interface</b> de sortie à utiliser — exactement les colonnes vues à l'étape 03.",
+    "t5-s4-h":"Reconstituer le paquet avec un nouvel en-tête Ethernet","t5-s4-p":"Le routeur ajoute une nouvelle trame Ethernet et l'envoie par l'interface de sortie choisie.",
+    "t5-s4-d":"Nouvelle @MAC source = mon interface de sortie. Nouvelle @MAC destination = l'interface du prochain routeur (next hop). Les adresses IP, elles, ne changent pas.",
+    "t5-prev":"← Précédent","t5-next":"Suivant →",
+    "t6-h":"Adressage IP & notation /24",
+    "t6-lead":"Une adresse IPv4 tient sur 32 bits, écrits en quatre groupes de 8 bits (octets) séparés par des points.",
+    "t6-leg-net":"Partie réseau — 24 premiers bits (/24)","t6-leg-host":"Partie hôte — 8 derniers bits",
+    "t6-c1-h":"Lecture du /24",
+    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> au total pour une adresse IPv4. Le suffixe <b>/24</b> indique que les <b>24 premiers bits</b> (les 3 premiers octets) désignent le réseau ; les <b>8 bits restants</b> désignent l'hôte à l'intérieur de ce réseau. C'est pour cela que <span class=\\"hl\\">20.0.0.0/24</span> regroupe toutes les adresses de <span class=\\"hl-teal\\">20.0.0.0</span> à <span class=\\"hl-teal\\">20.0.0.255</span>.",
+    "t7-h":"Auto-évaluation","t7-lead":"Cinq questions pour vérifier ce qui est acquis.",
+    "foot":"OpenBoard · fiche de révision générée à partir de notes manuscrites — R302."
+  },
+  en: {
+    "course-code":"R302 — Networking · study notes",
+    "nav-1":"Topology & addressing","nav-2":"MAC & ARP tables","nav-3":"Routing table",
+    "nav-4":"Encapsulation","nav-5":"Router forwarding algorithm","nav-6":"IP addressing & /24","nav-7":"Self-check",
+    "sidebar-foot":"Rebuilt from handwritten whiteboard notes.",
+    "kicker":"STUDY NOTES — SWITCHING AND IP ROUTING",
+    "hero-title":"How a packet finds its way",
+    "hero-sub":"From handwritten whiteboard notes to something you can actually study: ARP and MAC tables, the routing table, encapsulation, and a router's forwarding algorithm, with a worked example at every step.",
+    "t1-h":"Topology & addressing",
+    "t1-lead":"The original diagram shows a local network (phone, house, building) reaching, via two routers, a core that gives access to other networks.",
+    "t1-localnet":"local network","t1-phone":"phone","t1-home":"home","t1-building":"building",
+    "t1-leg1":"External network (cloud)","t1-leg2":"Router / switch (S1, R1–R4)","t1-leg3":"End device",
+    "t1-c1-h":"IP address vs. MAC address",
+    "t1-c1-p":"An <span class=\\"hl\\">IP address</span> identifies a device end-to-end, across the whole path, no matter how many routers it crosses. A <span class=\\"hl-teal\\">MAC address</span> only identifies an interface on the local link: it changes at every hop, whenever the packet moves from one network to the next.",
+    "t2-h":"MAC & ARP tables",
+    "t2-lead":"Two different tables with two different jobs — this is the classic mix-up in this topic.",
+    "t2-mac-h":"MAC address table (on a switch)",
+    "t2-mac-p":"A switch learns which device sits behind which port by watching the source MAC addresses of the frames it receives. It uses that to forward a frame to just the right port instead of flooding every port.",
+    "t2-mac-cap":"MAC table — example","t2-col-intf":"Interface",
+    "t2-arp-h":"ARP table (on a host or a router)",
+    "t2-arp-p":"Before sending a frame on the local network, a device needs to know the MAC address that matches the destination IP address. The ARP table (Address Resolution Protocol) stores that IP → MAC mapping so it doesn't have to ask again for every packet.",
+    "t2-arp-cap":"ARP table — example",
+    "t2-note":"<b>Remember —</b> MAC table = \\"who is plugged into which port?\\" (Layer 2, on a switch). ARP table = \\"which MAC address matches this IP?\\" (Layer 2↔3, on a host or a router).",
+    "t3-h":"Routing table",
+    "t3-lead":"Every router keeps its own routing table to decide, network by network, where to send a packet next.",
+    "t3-cap":"R3's routing table — one entry",
+    "t3-col-net":"Network","t3-col-nh":"Next hop","t3-col-intf":"Interface","t3-col-hops":"Nb hops",
+    "t3-read-h":"Reading this entry",
+    "t3-read-p":"<span class=\\"hl\\">Network</span>: the destination network being described. <span class=\\"hl\\">Next hop</span>: the next router to hand the packet to. <span class=\\"hl\\">Interface</span>: the local interface the packet goes out through to reach it. <span class=\\"hl\\">Nb hops</span>: how many routers remain to be crossed to reach the destination.",
+    "t3-note":"In other words: \\"to reach <b>20.0.0.0/24</b>, send the packet to <b>R1</b>, going out through my <b>e0</b> interface; there are still <b>2</b> routers left to cross.\\"",
+    "t4-h":"Encapsulation",
+    "t4-lead":"Each layer wraps its own header around the data from the layer above it, like nested envelopes.",
+    "t4-layer-app":"Application","t4-layer-trans":"Transport","t4-layer-net":"Network (IP)","t4-layer-link":"Data link",
+    "t4-data":"data",
+    "t4-map-h":"Layer mapping",
+    "t4-map-p":"<b>HTTP</b> → Application layer (the actual payload). <b>TCP</b> → Transport layer. <b>IP</b> → Network layer, carries the <span class=\\"hl\\">source and destination addresses end-to-end</span>. <b>Ethernet</b> → Data Link layer, carries MAC addresses, valid only on the local link.",
+    "t4-note":"<b>What changes / stays the same at every hop —</b> the source and destination <b>IP</b> addresses stay identical end-to-end (unless a router does <b>NAT</b>, which rewrites them on purpose). The source and destination <b>MAC</b> addresses, on the other hand, are rebuilt at every hop: the new source MAC always belongs to the interface of the router that just put the packet on that link.",
+    "t5-h":"Router forwarding algorithm",
+    "t5-lead":"What a router does, in order, for every packet it receives. Click a step or use the buttons.",
+    "t5-s1-h":"Read and verify the destination MAC","t5-s1-p":"Is the incoming frame actually addressed to one of my interfaces?",
+    "t5-s1-d":"If the frame's destination MAC address doesn't match any of my interfaces, the frame isn't for me and gets dropped (aside from the special case of a broadcast).",
+    "t5-s2-h":"Read the destination IP","t5-s2-p":"The router extracts the destination IP address from the packet, inside the frame.",
+    "t5-s2-d":"This IP address — not the MAC address — is the lookup key used in the routing table.",
+    "t5-s3-h":"Look up the routing table","t5-s3-p":"The router searches the routing table for the entry whose network matches the destination IP address, to decide where to forward the packet.",
+    "t5-s3-d":"That entry gives the <b>next hop</b> and the outgoing <b>interface</b> to use — exactly the columns from step 03.",
+    "t5-s4-h":"Rebuild the packet with a new Ethernet header","t5-s4-p":"The router attaches a fresh Ethernet frame and sends it out the chosen interface.",
+    "t5-s4-d":"New source MAC = my outgoing interface. New destination MAC = the next hop router's interface. The IP addresses, meanwhile, stay unchanged.",
+    "t5-prev":"← Previous","t5-next":"Next →",
+    "t6-h":"IP addressing & the /24 notation",
+    "t6-lead":"An IPv4 address is 32 bits, written as four groups of 8 bits (octets) separated by dots.",
+    "t6-leg-net":"Network portion — first 24 bits (/24)","t6-leg-host":"Host portion — last 8 bits",
+    "t6-c1-h":"Reading a /24",
+    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> total for an IPv4 address. The <b>/24</b> suffix means the <b>first 24 bits</b> (the first 3 octets) identify the network; the <b>remaining 8 bits</b> identify the host within that network. That's why <span class=\\"hl\\">20.0.0.0/24</span> covers every address from <span class=\\"hl-teal\\">20.0.0.0</span> to <span class=\\"hl-teal\\">20.0.0.255</span>.",
+    "t7-h":"Self-check","t7-lead":"Five questions to check what stuck.",
+    "foot":"OpenBoard · study notes rebuilt from handwritten whiteboard photos — R302."
+  }
+};
+
+let currentLang = 'fr';
+function setLang(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(i18n[lang][key] !== undefined) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-html');
+    if(i18n[lang][key] !== undefined) el.innerHTML = i18n[lang][key];
+  });
+  buildQuiz(lang);
+}
+
+/* ---------- bit visualization ---------- */
+function buildOctet(id, value, cls){
+  const el = document.getElementById(id);
+  const bits = value.toString(2).padStart(8,'0').split('');
+  el.innerHTML = bits.map(b=>`<div class="bit">${b}</div>`).join('');
+}
+buildOctet('oct1', 20);
+buildOctet('oct2', 0);
+buildOctet('oct3', 0);
+buildOctet('oct4', 1);
+
+/* ---------- stepper ---------- */
+let stepIndex = 1;
+const totalSteps = 4;
+function renderStep(){
+  document.querySelectorAll('.step').forEach(s=>{
+    s.classList.toggle('active', parseInt(s.dataset.step) === stepIndex);
+  });
+  document.getElementById('prevStep').disabled = stepIndex === 1;
+  document.getElementById('nextStep').disabled = stepIndex === totalSteps;
+}
+function stepMove(dir){
+  stepIndex = Math.min(totalSteps, Math.max(1, stepIndex + dir));
+  renderStep();
+}
+document.querySelectorAll('.step').forEach(s=>{
+  s.addEventListener('click', ()=>{ stepIndex = parseInt(s.dataset.step); renderStep(); });
+});
+renderStep();
+
+/* ---------- scrollspy ---------- */
+const navLinks = document.querySelectorAll('nav.toc a');
+const sections = [...navLinks].map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){
+  let current = sections[0];
+  const y = window.scrollY + 120;
+  sections.forEach(s=>{ if(s && s.offsetTop <= y) current = s; });
+  navLinks.forEach(a=>{
+    a.classList.toggle('active', a.getAttribute('href') === '#'+current.id);
+  });
+}
+window.addEventListener('scroll', onScroll);
+onScroll();
+
+/* ---------- quiz ---------- */
+const quizData = {
+  fr: [
+    {q:"À quoi sert la table ARP ?", opts:["À retrouver l'adresse MAC correspondant à une adresse IP","À choisir le prochain routeur","À compter le nombre de sauts"], a:0,
+     fb:"La table ARP fait la correspondance IP → MAC sur le réseau local."},
+    {q:"Sur quel équipement trouve-t-on une table d'adresses MAC ?", opts:["Un switch","Un simple câble","Un nuage réseau"], a:0,
+     fb:"C'est le switch qui apprend quelle machine est reliée à quel port grâce aux adresses MAC."},
+    {q:"Dans une table de routage, que donne la colonne « Interface » ?", opts:["Le nombre de sauts restants","L'interface locale par laquelle le paquet sort","L'adresse IP de destination finale"], a:1,
+     fb:"« Interface » est la porte de sortie locale utilisée pour atteindre le prochain routeur."},
+    {q:"Que se passe-t-il aux adresses IP source/destination quand un paquet traverse plusieurs routeurs (sans NAT) ?", opts:["Elles changent à chaque saut","Elles restent identiques de bout en bout","Elles sont supprimées"], a:1,
+     fb:"Sans NAT, les adresses IP restent inchangées ; ce sont les adresses MAC qui changent à chaque saut."},
+    {q:"Un réseau noté /24 réserve combien de bits à la partie hôte ?", opts:["24 bits","16 bits","8 bits"], a:2,
+     fb:"32 bits au total − 24 bits de réseau = 8 bits pour la partie hôte."}
+  ],
+  en: [
+    {q:"What is the ARP table used for?", opts:["Finding the MAC address that matches an IP address","Choosing the next router","Counting the number of hops"], a:0,
+     fb:"The ARP table maps IP → MAC addresses on the local network."},
+    {q:"Which device keeps a MAC address table?", opts:["A switch","A plain cable","A network cloud"], a:0,
+     fb:"A switch learns which device sits behind which port using MAC addresses."},
+    {q:"In a routing table, what does the \\"Interface\\" column give you?", opts:["The remaining hop count","The local interface the packet exits through","The final destination IP address"], a:1,
+     fb:"\\"Interface\\" is the local exit port used to reach the next router."},
+    {q:"What happens to the source/destination IP addresses as a packet crosses several routers (no NAT)?", opts:["They change at every hop","They stay identical end-to-end","They get erased"], a:1,
+     fb:"Without NAT the IP addresses stay unchanged; it's the MAC addresses that change at every hop."},
+    {q:"A network written as /24 leaves how many bits for the host portion?", opts:["24 bits","16 bits","8 bits"], a:2,
+     fb:"32 bits total − 24 network bits = 8 bits left for the host."}
+  ]
+};
+
+let quizScore = {correct:0, answered:0};
+function buildQuiz(lang){
+  quizScore = {correct:0, answered:0};
+  const root = document.getElementById('quizRoot');
+  root.innerHTML = '';
+  quizData[lang].forEach((item, qi)=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'quiz-q';
+    const p = document.createElement('p');
+    p.className = 'qtext';
+    p.textContent = `${qi+1}. ${item.q}`;
+    wrap.appendChild(p);
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'quiz-opts';
+    const fb = document.createElement('div');
+    fb.className = 'quiz-fb';
+    fb.textContent = item.fb;
+    item.opts.forEach((opt, oi)=>{
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', ()=>{
+        if(wrap.dataset.answered) return;
+        wrap.dataset.answered = "1";
+        quizScore.answered++;
+        [...optsWrap.children].forEach((b,bi)=>{
+          if(bi === item.a) b.classList.add('correct');
+          else if (bi === oi) b.classList.add('wrong');
+        });
+        if(oi === item.a) quizScore.correct++;
+        fb.classList.add('show');
+        updateScore(lang);
+      });
+      optsWrap.appendChild(btn);
+    });
+    wrap.appendChild(optsWrap);
+    wrap.appendChild(fb);
+    root.appendChild(wrap);
+  });
+  updateScore(lang);
+}
+function updateScore(lang){
+  const el = document.getElementById('quizScore');
+  const total = quizData[lang].length;
+  if(quizScore.answered === 0){ el.textContent = ''; return; }
+  const label = lang === 'fr' ? `Score : ${quizScore.correct} / ${quizScore.answered} répondues (sur ${total})`
+                               : `Score: ${quizScore.correct} / ${quizScore.answered} answered (of ${total})`;
+  el.textContent = label;
+}
+
+buildQuiz('fr');
+</script>
+</body>
+</html>
