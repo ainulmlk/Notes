@@ -302,7 +302,10 @@ table.datatable tr:nth-child(even) td{ background:rgba(255,255,255,0.015); }
       <a href="#encaps"><span class="n">04</span><span data-i18n="nav-4">Encapsulation</span></a>
       <a href="#forwarding"><span class="n">05</span><span data-i18n="nav-5">Algorithme du routeur</span></a>
       <a href="#subnet"><span class="n">06</span><span data-i18n="nav-6">Adressage IP &amp; /24</span></a>
-      <a href="#quiz"><span class="n">07</span><span data-i18n="nav-7">Auto-évaluation</span></a>
+      <a href="#isp"><span class="n">07</span><span data-i18n="nav-7">Qu'est-ce qu'un ISP ?</span></a>
+      <a href="#peering"><span class="n">08</span><span data-i18n="nav-8">Transit, peering &amp; tiers</span></a>
+      <a href="#bgp"><span class="n">09</span><span data-i18n="nav-9">Routage inter-AS : BGP</span></a>
+      <a href="#quiz"><span class="n">10</span><span data-i18n="nav-10">Auto-évaluation</span></a>
     </nav>
 
     <div class="sidebar-foot" data-i18n="sidebar-foot">D'après des notes de tableau blanc manuscrites.</div>
@@ -548,9 +551,145 @@ table.datatable tr:nth-child(even) td{ background:rgba(255,255,255,0.015); }
       </div>
     </section>
 
-    <!-- 07 QUIZ -->
+    <!-- 07 ISP -->
+    <section id="isp">
+      <div class="sec-head"><span class="idx">07</span><h2 data-i18n="t8-h">Qu'est-ce qu'un ISP ?</h2></div>
+      <p class="lead" data-i18n="t8-lead">Un opérateur (ISP, Internet Service Provider) est une entreprise qui vend l'accès à Internet à des personnes et/ou des entreprises clientes — y compris à d'autres ISPs.</p>
+
+      <div class="card">
+        <h3 data-i18n="t8-as-h">Autonomous System (AS)</h3>
+        <p data-i18n="t8-as-p">Le réseau d'un ISP est un ensemble de réseaux IP publics, connectés entre eux et gérés par une seule instance de protocole de routage : c'est un <b>Autonomous System</b>. Chaque AS reçoit un numéro attribué par l'IANA, tout comme les adresses IP publiques.</p>
+      </div>
+
+      <table class="datatable">
+        <caption data-i18n="t8-tools-cap">Vérifier un AS ou une IP publique</caption>
+        <thead><tr><th data-i18n="t8-col-tool">Outil</th><th data-i18n="t8-col-use">Utilité</th></tr></thead>
+        <tbody>
+          <tr><td>whois.domaintools.com</td><td data-i18n="t8-tool1">Propriétaire d'une adresse IP publique</td></tr>
+          <tr><td>bgp.he.net</td><td data-i18n="t8-tool2">AS et route de sa propre connexion</td></tr>
+          <tr><td>peeringdb.com</td><td data-i18n="t8-tool3">Points de peering et IXP d'un réseau</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note" data-i18n-html="t8-note">
+        <b>Trois notions à ne pas confondre —</b> le <b>réseau d'accès</b> relie les abonné·es à un point de présence (PoP) de l'ISP (fibre, DSLAM, antennes). Le <b>réseau d'opérateur</b> (l'AS lui-même) relie les PoPs entre eux et fait transiter le trafic en IP/MPLS. Un <b>réseau étendu d'entreprise</b> (WAN) est autre chose : il interconnecte les sites locaux d'une même entreprise, en louant au passage des liens à un ou plusieurs opérateurs.
+      </div>
+    </section>
+
+    <!-- 08 TRANSIT & PEERING -->
+    <section id="peering">
+      <div class="sec-head"><span class="idx">08</span><h2 data-i18n="t9-h">Transit, peering et hiérarchie</h2></div>
+      <p class="lead" data-i18n="t9-lead">Un ISP ne construit pas tout Internet lui-même : il achète des services à d'autres ISPs, et parfois échange gratuitement avec eux.</p>
+
+      <div class="card">
+        <h3 data-i18n="t9-transit-h">Le transit : payer pour être relayé</h3>
+        <p data-i18n="t9-transit-p">ISP_A achète un abonnement de <b>transit</b> à ISP_B : ISP_A obtient une route par défaut vers ISP_B et peut lui faire relayer n'importe quel paquet, quelle que soit sa destination. ISP_A paie ISP_B selon le volume de trafic transporté.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t9-multi-h">Multi-homing : résister aux pannes</h3>
+        <p data-i18n="t9-multi-p">Pour ne pas dépendre d'un seul fournisseur, un ISP (ou une entreprise) prend en général des abonnements de transit auprès de <b>plusieurs</b> ISPs différents.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t9-peer-h">Le peering : échanger gratuitement</h3>
+        <p data-i18n="t9-peer-p">Le transit coûte cher (de l'ordre de 1 $/Mbps). Si deux ISPs s'échangent beaucoup de trafic, ils ont intérêt à établir un <b>peering</b> : un échange réciproque et gratuit de l'accès à leurs propres clients respectifs. Cela réduit les coûts et raccourcit les chemins (délai plus faible).</p>
+      </div>
+
+      <div class="note" data-i18n-html="t9-peer-note">
+        <b>Le peering n'est pas transitif —</b> si A et B sont pairs, et B et C sont pairs, A n'a pas accès à C via B. Un ISP n'annonce à son pair que ses propres réseaux (et ceux de ses clients), jamais ceux appris d'un autre pair : sinon il se ferait « transiter gratuitement ».
+      </div>
+
+      <table class="datatable">
+        <caption data-i18n="t9-tiers-cap">Hiérarchie des ISPs</caption>
+        <thead><tr><th data-i18n="t9-col-tier">Niveau</th><th data-i18n="t9-col-def">Définition</th><th data-i18n="t9-col-ex">Exemples</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Tier 1</td><td data-i18n="t9-tier1">N'achète aucun transit ; possède la dorsale (backbone) de l'Internet</td><td>AT&amp;T, NTT, Level 3, Verizon</td></tr>
+          <tr><td class="hl">Tier 2</td><td data-i18n="t9-tier2">Achète et vend du transit</td><td>Orange (open transit), BT, Vodafone</td></tr>
+          <tr><td class="hl">Tier 3</td><td data-i18n="t9-tier3">Ne fournit pas de transit — sert les client·es finaux</td><td>Orange, SFR, Free, Bouygues</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <h3 data-i18n="t9-ixp-h">Où se fait le peering : les IXP</h3>
+        <p data-i18n="t9-ixp-p">Un <b>Internet eXchange Point (IXP)</b> est l'infrastructure — souvent un simple switch Ethernet mutualisé — où plusieurs ISPs viennent établir leurs sessions de peering au même endroit.</p>
+      </div>
+
+      <div class="note" data-i18n-html="t9-cdn-note">
+        <b>Et les fournisseurs de contenu ? —</b> les <b>Content Providers</b> (Netflix, FranceTV…) publient leur contenu via des <b>CDNs</b> (Akamai, Cloudflare, OVHcloud…), qui possèdent leurs propres serveurs et se connectent directement aux ISPs — souvent au plus près des utilisateurs, y compris via des accords de peering aux IXP.
+      </div>
+    </section>
+
+    <!-- 09 BGP -->
+    <section id="bgp">
+      <div class="sec-head"><span class="idx">09</span><h2 data-i18n="t10-h">Router entre ISPs : BGP</h2></div>
+      <p class="lead" data-i18n="t10-lead">Border Gateway Protocol (BGP) route entre AS, en complément des IGP (OSPF, EIGRP…) utilisés à l'intérieur d'un AS. Il doit répondre à quatre contraintes commerciales propres aux ISPs.</p>
+
+      <div class="stepper" id="bgpStepper">
+        <div class="step active" data-bstep="1">
+          <div class="num">E1</div>
+          <div>
+            <h4 data-i18n="t10-e1-h">Gérer ~200 000 préfixes sans crouler</h4>
+            <p data-i18n="t10-e1-p">Impossible d'envoyer une mise à jour à chaque changement de lien.</p>
+            <div class="detail" data-i18n="t10-e1-d">BGP est volontairement lent : mises à jour toutes les 30 s entre voisins <b>eBGP</b> (AS différents), toutes les 5 s entre voisins <b>iBGP</b> (même AS). Les voisins sont déclarés explicitement (pas de découverte automatique), sans chiffrement, sur une base de confiance.</div>
+          </div>
+        </div>
+        <div class="step" data-bstep="2">
+          <div class="num">E2</div>
+          <div>
+            <h4 data-i18n="t10-e2-h">Ne pas dévoiler sa topologie interne</h4>
+            <p data-i18n="t10-e2-p">Un ISP ne veut pas révéler son nombre de routeurs internes aux autres AS.</p>
+            <div class="detail" data-i18n="t10-e2-d">BGP mesure la distance en <b>AS-path</b> (nombre d'AS traversés), jamais en nombre de sauts entre routeurs.</div>
+          </div>
+        </div>
+        <div class="step" data-bstep="3">
+          <div class="num">E3</div>
+          <div>
+            <h4 data-i18n="t10-e3-h">Choisir par où ses paquets sortent</h4>
+            <p data-i18n="t10-e3-p">Un ISP veut de la flexibilité pour gérer ses propres abonnements de transit.</p>
+            <div class="detail" data-i18n="t10-e3-d">BGP ne suit pas forcément le plus court chemin : les attributs <b>Weight</b> (local au routeur) et <b>Local Preference</b> (distribué dans tout l'AS) permettent de forcer une sortie préférée, prioritaires devant l'AS-path.</div>
+          </div>
+        </div>
+        <div class="step" data-bstep="4">
+          <div class="num">E4</div>
+          <div>
+            <h4 data-i18n="t10-e4-h">Influencer par où le trafic entre</h4>
+            <p data-i18n="t10-e4-p">Un ISP veut du levier sur le point d'entrée du trafic qu'un CDN lui envoie, pour ne pas se faire « transiter gratuitement ».</p>
+            <div class="detail" data-i18n="t10-e4-d">Un AS ne peut jamais imposer sa route à un autre AS — il peut seulement <b>suggérer</b> un point d'entrée via l'attribut <b>MED</b> (Multi-Exit Discriminator).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-controls">
+        <button id="bgpPrev" onclick="bgpStepMove(-1)" data-i18n="t5-prev">← Précédent</button>
+        <button id="bgpNext" onclick="bgpStepMove(1)" data-i18n="t5-next">Suivant →</button>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="t10-table-h">Deux tables de routage</h3>
+        <p data-i18n="t10-table-p">BGP tient sa propre <b>table BGP</b>, distincte de la table de routage générale du routeur. Seule la table générale sert à router le trafic des client·es ; les meilleures routes BGP y sont injectées après sélection.</p>
+      </div>
+
+      <table class="datatable">
+        <caption data-i18n="t10-order-cap">Ordre de sélection de la meilleure route BGP (extrait)</caption>
+        <thead><tr><th>#</th><th data-i18n="t10-col-crit">Critère</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td data-i18n="t10-c1">Plus grand Weight (local au routeur)</td></tr>
+          <tr><td>2</td><td data-i18n="t10-c2">Plus grande Local Preference (dans l'AS)</td></tr>
+          <tr><td>3</td><td data-i18n="t10-c3">AS-path le plus court</td></tr>
+          <tr><td>4</td><td data-i18n="t10-c4">Plus petit MED</td></tr>
+          <tr><td>5</td><td data-i18n="t10-c5">Voisin eBGP préféré à un voisin iBGP</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note" data-i18n-html="t10-note">
+        <b>À retenir —</b> plus on descend dans la liste, plus le critère est « fin » : <b>Weight</b> et <b>Local Preference</b> servent à imposer une politique de sortie interne à l'AS ; <b>AS-path</b> et <b>MED</b> influencent la route sans jamais forcer la main d'un AS voisin.
+      </div>
+    </section>
+
+    <!-- 10 QUIZ -->
     <section id="quiz">
-      <div class="sec-head"><span class="idx">07</span><h2 data-i18n="t7-h">Auto-évaluation</h2></div>
+      <div class="sec-head"><span class="idx">10</span><h2 data-i18n="t7-h">Auto-évaluation</h2></div>
       <p class="lead" data-i18n="t7-lead">Cinq questions pour vérifier ce qui est acquis.</p>
       <div id="quizRoot"></div>
       <div class="quiz-score" id="quizScore"></div>
@@ -575,7 +714,7 @@ const i18n = {
     "t1-localnet":"réseau local","t1-phone":"tél.","t1-home":"maison","t1-building":"immeuble",
     "t1-leg1":"Réseau externe (nuage)","t1-leg2":"Routeur / switch (S1, R1–R4)","t1-leg3":"Appareil final",
     "t1-c1-h":"@IP vs @MAC",
-    "t1-c1-p":"Une <span class=\\"hl\\">adresse IP</span> identifie un appareil de bout en bout, sur l'ensemble du chemin, quel que soit le nombre de routeurs traversés. Une <span class=\\"hl-teal\\">adresse MAC</span> n'identifie une interface que sur le lien local : elle change à chaque saut, quand le paquet passe d'un réseau à un autre.",
+    "t1-c1-p":"Une <span class=\"hl\">adresse IP</span> identifie un appareil de bout en bout, sur l'ensemble du chemin, quel que soit le nombre de routeurs traversés. Une <span class=\"hl-teal\">adresse MAC</span> n'identifie une interface que sur le lien local : elle change à chaque saut, quand le paquet passe d'un réseau à un autre.",
     "t2-h":"Tables MAC & ARP",
     "t2-lead":"Deux tables différentes, deux rôles différents — c'est le piège classique de ce chapitre.",
     "t2-mac-h":"Table d'adresses MAC (sur un commutateur / switch)",
@@ -590,14 +729,14 @@ const i18n = {
     "t3-cap":"Table de routage de R3 — une ligne",
     "t3-col-net":"Network","t3-col-nh":"Next hop","t3-col-intf":"Interface","t3-col-hops":"Nb hops",
     "t3-read-h":"Comment lire cette ligne",
-    "t3-read-p":"<span class=\\"hl\\">Network</span> : le réseau de destination visé. <span class=\\"hl\\">Next hop</span> : le prochain routeur à qui confier le paquet. <span class=\\"hl\\">Interface</span> : l'interface locale par laquelle on sort pour l'atteindre. <span class=\\"hl\\">Nb hops</span> : le nombre de routeurs restants à traverser jusqu'à la destination.",
+    "t3-read-p":"<span class=\"hl\">Network</span> : le réseau de destination visé. <span class=\"hl\">Next hop</span> : le prochain routeur à qui confier le paquet. <span class=\"hl\">Interface</span> : l'interface locale par laquelle on sort pour l'atteindre. <span class=\"hl\">Nb hops</span> : le nombre de routeurs restants à traverser jusqu'à la destination.",
     "t3-note":"Autrement dit : « pour joindre <b>20.0.0.0/24</b>, j'envoie le paquet vers <b>R1</b>, en sortant par mon interface <b>e0</b> ; il reste encore <b>2</b> routeurs à traverser. »",
     "t4-h":"Encapsulation",
     "t4-lead":"Chaque couche ajoute son propre en-tête autour des données de la couche du dessus, comme des enveloppes imbriquées.",
     "t4-layer-app":"Application","t4-layer-trans":"Transport","t4-layer-net":"Réseau (IP)","t4-layer-link":"Liaison de données",
     "t4-data":"données",
     "t4-map-h":"Correspondance des couches",
-    "t4-map-p":"<b>HTTP</b> → couche Application (les données utiles). <b>TCP</b> → couche Transport. <b>IP</b> → couche Réseau, porte les adresses <span class=\\"hl\\">source et destination de bout en bout</span>. <b>Ethernet</b> → couche Liaison de données, porte les adresses MAC, valables seulement sur le lien local.",
+    "t4-map-p":"<b>HTTP</b> → couche Application (les données utiles). <b>TCP</b> → couche Transport. <b>IP</b> → couche Réseau, porte les adresses <span class=\"hl\">source et destination de bout en bout</span>. <b>Ethernet</b> → couche Liaison de données, porte les adresses MAC, valables seulement sur le lien local.",
     "t4-note":"<b>Ce qui change / ne change pas à chaque saut —</b> les adresses <b>IP</b> source et destination restent identiques de bout en bout (sauf si un routeur fait du <b>NAT</b>, qui les réécrit volontairement). En revanche, les adresses <b>MAC</b> source et destination sont refaites à chaque saut : la nouvelle adresse MAC source appartient toujours à l'interface du routeur qui vient d'émettre le paquet sur ce lien.",
     "t5-h":"Algorithme de transfert d'un routeur",
     "t5-lead":"Ce que fait un routeur, dans l'ordre, à chaque paquet qu'il reçoit. Cliquez sur une étape ou utilisez les boutons.",
@@ -614,8 +753,45 @@ const i18n = {
     "t6-lead":"Une adresse IPv4 tient sur 32 bits, écrits en quatre groupes de 8 bits (octets) séparés par des points.",
     "t6-leg-net":"Partie réseau — 24 premiers bits (/24)","t6-leg-host":"Partie hôte — 8 derniers bits",
     "t6-c1-h":"Lecture du /24",
-    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> au total pour une adresse IPv4. Le suffixe <b>/24</b> indique que les <b>24 premiers bits</b> (les 3 premiers octets) désignent le réseau ; les <b>8 bits restants</b> désignent l'hôte à l'intérieur de ce réseau. C'est pour cela que <span class=\\"hl\\">20.0.0.0/24</span> regroupe toutes les adresses de <span class=\\"hl-teal\\">20.0.0.0</span> à <span class=\\"hl-teal\\">20.0.0.255</span>.",
-    "t7-h":"Auto-évaluation","t7-lead":"Cinq questions pour vérifier ce qui est acquis.",
+    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> au total pour une adresse IPv4. Le suffixe <b>/24</b> indique que les <b>24 premiers bits</b> (les 3 premiers octets) désignent le réseau ; les <b>8 bits restants</b> désignent l'hôte à l'intérieur de ce réseau. C'est pour cela que <span class=\"hl\">20.0.0.0/24</span> regroupe toutes les adresses de <span class=\"hl-teal\">20.0.0.0</span> à <span class=\"hl-teal\">20.0.0.255</span>.",
+    "nav-7":"Qu'est-ce qu'un ISP ?","nav-8":"Transit, peering & tiers","nav-9":"Routage inter-AS : BGP","nav-10":"Auto-évaluation",
+    "t8-h":"Qu'est-ce qu'un ISP ?",
+    "t8-lead":"Un opérateur (ISP, Internet Service Provider) est une entreprise qui vend l'accès à Internet à des personnes et/ou des entreprises clientes — y compris à d'autres ISPs.",
+    "t8-as-h":"Autonomous System (AS)",
+    "t8-as-p":"Le réseau d'un ISP est un ensemble de réseaux IP publics, connectés entre eux et gérés par une seule instance de protocole de routage : c'est un <b>Autonomous System</b>. Chaque AS reçoit un numéro attribué par l'IANA, tout comme les adresses IP publiques.",
+    "t8-tools-cap":"Vérifier un AS ou une IP publique","t8-col-tool":"Outil","t8-col-use":"Utilité",
+    "t8-tool1":"Propriétaire d'une adresse IP publique","t8-tool2":"AS et route de sa propre connexion","t8-tool3":"Points de peering et IXP d'un réseau",
+    "t8-note":"<b>Trois notions à ne pas confondre —</b> le <b>réseau d'accès</b> relie les abonné·es à un point de présence (PoP) de l'ISP (fibre, DSLAM, antennes). Le <b>réseau d'opérateur</b> (l'AS lui-même) relie les PoPs entre eux et fait transiter le trafic en IP/MPLS. Un <b>réseau étendu d'entreprise</b> (WAN) est autre chose : il interconnecte les sites locaux d'une même entreprise, en louant au passage des liens à un ou plusieurs opérateurs.",
+    "t9-h":"Transit, peering et hiérarchie",
+    "t9-lead":"Un ISP ne construit pas tout Internet lui-même : il achète des services à d'autres ISPs, et parfois échange gratuitement avec eux.",
+    "t9-transit-h":"Le transit : payer pour être relayé",
+    "t9-transit-p":"ISP_A achète un abonnement de <b>transit</b> à ISP_B : ISP_A obtient une route par défaut vers ISP_B et peut lui faire relayer n'importe quel paquet, quelle que soit sa destination. ISP_A paie ISP_B selon le volume de trafic transporté.",
+    "t9-multi-h":"Multi-homing : résister aux pannes",
+    "t9-multi-p":"Pour ne pas dépendre d'un seul fournisseur, un ISP (ou une entreprise) prend en général des abonnements de transit auprès de <b>plusieurs</b> ISPs différents.",
+    "t9-peer-h":"Le peering : échanger gratuitement",
+    "t9-peer-p":"Le transit coûte cher (de l'ordre de 1 $/Mbps). Si deux ISPs s'échangent beaucoup de trafic, ils ont intérêt à établir un <b>peering</b> : un échange réciproque et gratuit de l'accès à leurs propres clients respectifs. Cela réduit les coûts et raccourcit les chemins (délai plus faible).",
+    "t9-peer-note":"<b>Le peering n'est pas transitif —</b> si A et B sont pairs, et B et C sont pairs, A n'a pas accès à C via B. Un ISP n'annonce à son pair que ses propres réseaux (et ceux de ses clients), jamais ceux appris d'un autre pair : sinon il se ferait « transiter gratuitement ».",
+    "t9-tiers-cap":"Hiérarchie des ISPs","t9-col-tier":"Niveau","t9-col-def":"Définition","t9-col-ex":"Exemples",
+    "t9-tier1":"N'achète aucun transit ; possède la dorsale (backbone) de l'Internet","t9-tier2":"Achète et vend du transit","t9-tier3":"Ne fournit pas de transit — sert les client·es finaux",
+    "t9-ixp-h":"Où se fait le peering : les IXP",
+    "t9-ixp-p":"Un <b>Internet eXchange Point (IXP)</b> est l'infrastructure — souvent un simple switch Ethernet mutualisé — où plusieurs ISPs viennent établir leurs sessions de peering au même endroit.",
+    "t9-cdn-note":"<b>Et les fournisseurs de contenu ? —</b> les <b>Content Providers</b> (Netflix, FranceTV…) publient leur contenu via des <b>CDNs</b> (Akamai, Cloudflare, OVHcloud…), qui possèdent leurs propres serveurs et se connectent directement aux ISPs — souvent au plus près des utilisateurs, y compris via des accords de peering aux IXP.",
+    "t10-h":"Router entre ISPs : BGP",
+    "t10-lead":"Border Gateway Protocol (BGP) route entre AS, en complément des IGP (OSPF, EIGRP…) utilisés à l'intérieur d'un AS. Il doit répondre à quatre contraintes commerciales propres aux ISPs.",
+    "t10-e1-h":"Gérer ~200 000 préfixes sans crouler","t10-e1-p":"Impossible d'envoyer une mise à jour à chaque changement de lien.",
+    "t10-e1-d":"BGP est volontairement lent : mises à jour toutes les 30 s entre voisins <b>eBGP</b> (AS différents), toutes les 5 s entre voisins <b>iBGP</b> (même AS). Les voisins sont déclarés explicitement (pas de découverte automatique), sans chiffrement, sur une base de confiance.",
+    "t10-e2-h":"Ne pas dévoiler sa topologie interne","t10-e2-p":"Un ISP ne veut pas révéler son nombre de routeurs internes aux autres AS.",
+    "t10-e2-d":"BGP mesure la distance en <b>AS-path</b> (nombre d'AS traversés), jamais en nombre de sauts entre routeurs.",
+    "t10-e3-h":"Choisir par où ses paquets sortent","t10-e3-p":"Un ISP veut de la flexibilité pour gérer ses propres abonnements de transit.",
+    "t10-e3-d":"BGP ne suit pas forcément le plus court chemin : les attributs <b>Weight</b> (local au routeur) et <b>Local Preference</b> (distribué dans tout l'AS) permettent de forcer une sortie préférée, prioritaires devant l'AS-path.",
+    "t10-e4-h":"Influencer par où le trafic entre","t10-e4-p":"Un ISP veut du levier sur le point d'entrée du trafic qu'un CDN lui envoie, pour ne pas se faire « transiter gratuitement ».",
+    "t10-e4-d":"Un AS ne peut jamais imposer sa route à un autre AS — il peut seulement <b>suggérer</b> un point d'entrée via l'attribut <b>MED</b> (Multi-Exit Discriminator).",
+    "t10-table-h":"Deux tables de routage",
+    "t10-table-p":"BGP tient sa propre <b>table BGP</b>, distincte de la table de routage générale du routeur. Seule la table générale sert à router le trafic des client·es ; les meilleures routes BGP y sont injectées après sélection.",
+    "t10-order-cap":"Ordre de sélection de la meilleure route BGP (extrait)","t10-col-crit":"Critère",
+    "t10-c1":"Plus grand Weight (local au routeur)","t10-c2":"Plus grande Local Preference (dans l'AS)","t10-c3":"AS-path le plus court","t10-c4":"Plus petit MED","t10-c5":"Voisin eBGP préféré à un voisin iBGP",
+    "t10-note":"<b>À retenir —</b> plus on descend dans la liste, plus le critère est « fin » : <b>Weight</b> et <b>Local Preference</b> servent à imposer une politique de sortie interne à l'AS ; <b>AS-path</b> et <b>MED</b> influencent la route sans jamais forcer la main d'un AS voisin.",
+    "t7-h":"Auto-évaluation","t7-lead":"Neuf questions pour vérifier ce qui est acquis.",
     "foot":"OpenBoard · fiche de révision générée à partir de notes manuscrites — R302."
   },
   en: {
@@ -631,7 +807,7 @@ const i18n = {
     "t1-localnet":"local network","t1-phone":"phone","t1-home":"home","t1-building":"building",
     "t1-leg1":"External network (cloud)","t1-leg2":"Router / switch (S1, R1–R4)","t1-leg3":"End device",
     "t1-c1-h":"IP address vs. MAC address",
-    "t1-c1-p":"An <span class=\\"hl\\">IP address</span> identifies a device end-to-end, across the whole path, no matter how many routers it crosses. A <span class=\\"hl-teal\\">MAC address</span> only identifies an interface on the local link: it changes at every hop, whenever the packet moves from one network to the next.",
+    "t1-c1-p":"An <span class=\"hl\">IP address</span> identifies a device end-to-end, across the whole path, no matter how many routers it crosses. A <span class=\"hl-teal\">MAC address</span> only identifies an interface on the local link: it changes at every hop, whenever the packet moves from one network to the next.",
     "t2-h":"MAC & ARP tables",
     "t2-lead":"Two different tables with two different jobs — this is the classic mix-up in this topic.",
     "t2-mac-h":"MAC address table (on a switch)",
@@ -640,20 +816,20 @@ const i18n = {
     "t2-arp-h":"ARP table (on a host or a router)",
     "t2-arp-p":"Before sending a frame on the local network, a device needs to know the MAC address that matches the destination IP address. The ARP table (Address Resolution Protocol) stores that IP → MAC mapping so it doesn't have to ask again for every packet.",
     "t2-arp-cap":"ARP table — example",
-    "t2-note":"<b>Remember —</b> MAC table = \\"who is plugged into which port?\\" (Layer 2, on a switch). ARP table = \\"which MAC address matches this IP?\\" (Layer 2↔3, on a host or a router).",
+    "t2-note":"<b>Remember —</b> MAC table = \"who is plugged into which port?\" (Layer 2, on a switch). ARP table = \"which MAC address matches this IP?\" (Layer 2↔3, on a host or a router).",
     "t3-h":"Routing table",
     "t3-lead":"Every router keeps its own routing table to decide, network by network, where to send a packet next.",
     "t3-cap":"R3's routing table — one entry",
     "t3-col-net":"Network","t3-col-nh":"Next hop","t3-col-intf":"Interface","t3-col-hops":"Nb hops",
     "t3-read-h":"Reading this entry",
-    "t3-read-p":"<span class=\\"hl\\">Network</span>: the destination network being described. <span class=\\"hl\\">Next hop</span>: the next router to hand the packet to. <span class=\\"hl\\">Interface</span>: the local interface the packet goes out through to reach it. <span class=\\"hl\\">Nb hops</span>: how many routers remain to be crossed to reach the destination.",
-    "t3-note":"In other words: \\"to reach <b>20.0.0.0/24</b>, send the packet to <b>R1</b>, going out through my <b>e0</b> interface; there are still <b>2</b> routers left to cross.\\"",
+    "t3-read-p":"<span class=\"hl\">Network</span>: the destination network being described. <span class=\"hl\">Next hop</span>: the next router to hand the packet to. <span class=\"hl\">Interface</span>: the local interface the packet goes out through to reach it. <span class=\"hl\">Nb hops</span>: how many routers remain to be crossed to reach the destination.",
+    "t3-note":"In other words: \"to reach <b>20.0.0.0/24</b>, send the packet to <b>R1</b>, going out through my <b>e0</b> interface; there are still <b>2</b> routers left to cross.\"",
     "t4-h":"Encapsulation",
     "t4-lead":"Each layer wraps its own header around the data from the layer above it, like nested envelopes.",
     "t4-layer-app":"Application","t4-layer-trans":"Transport","t4-layer-net":"Network (IP)","t4-layer-link":"Data link",
     "t4-data":"data",
     "t4-map-h":"Layer mapping",
-    "t4-map-p":"<b>HTTP</b> → Application layer (the actual payload). <b>TCP</b> → Transport layer. <b>IP</b> → Network layer, carries the <span class=\\"hl\\">source and destination addresses end-to-end</span>. <b>Ethernet</b> → Data Link layer, carries MAC addresses, valid only on the local link.",
+    "t4-map-p":"<b>HTTP</b> → Application layer (the actual payload). <b>TCP</b> → Transport layer. <b>IP</b> → Network layer, carries the <span class=\"hl\">source and destination addresses end-to-end</span>. <b>Ethernet</b> → Data Link layer, carries MAC addresses, valid only on the local link.",
     "t4-note":"<b>What changes / stays the same at every hop —</b> the source and destination <b>IP</b> addresses stay identical end-to-end (unless a router does <b>NAT</b>, which rewrites them on purpose). The source and destination <b>MAC</b> addresses, on the other hand, are rebuilt at every hop: the new source MAC always belongs to the interface of the router that just put the packet on that link.",
     "t5-h":"Router forwarding algorithm",
     "t5-lead":"What a router does, in order, for every packet it receives. Click a step or use the buttons.",
@@ -670,8 +846,45 @@ const i18n = {
     "t6-lead":"An IPv4 address is 32 bits, written as four groups of 8 bits (octets) separated by dots.",
     "t6-leg-net":"Network portion — first 24 bits (/24)","t6-leg-host":"Host portion — last 8 bits",
     "t6-c1-h":"Reading a /24",
-    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> total for an IPv4 address. The <b>/24</b> suffix means the <b>first 24 bits</b> (the first 3 octets) identify the network; the <b>remaining 8 bits</b> identify the host within that network. That's why <span class=\\"hl\\">20.0.0.0/24</span> covers every address from <span class=\\"hl-teal\\">20.0.0.0</span> to <span class=\\"hl-teal\\">20.0.0.255</span>.",
-    "t7-h":"Self-check","t7-lead":"Five questions to check what stuck.",
+    "t6-c1-p":"4 octets × 8 bits = <b>32 bits</b> total for an IPv4 address. The <b>/24</b> suffix means the <b>first 24 bits</b> (the first 3 octets) identify the network; the <b>remaining 8 bits</b> identify the host within that network. That's why <span class=\"hl\">20.0.0.0/24</span> covers every address from <span class=\"hl-teal\">20.0.0.0</span> to <span class=\"hl-teal\">20.0.0.255</span>.",
+    "nav-7":"What is an ISP?","nav-8":"Transit, peering & tiers","nav-9":"Inter-AS routing: BGP","nav-10":"Self-check",
+    "t8-h":"What is an ISP?",
+    "t8-lead":"An operator (ISP, Internet Service Provider) is a company that sells Internet access to people and/or business customers — including other ISPs.",
+    "t8-as-h":"Autonomous System (AS)",
+    "t8-as-p":"An ISP's network is a set of public IP networks, connected to each other and managed by a single routing protocol instance: that's an <b>Autonomous System</b>. Every AS gets a number assigned by IANA, just like public IP addresses.",
+    "t8-tools-cap":"Checking an AS or a public IP","t8-col-tool":"Tool","t8-col-use":"Use",
+    "t8-tool1":"Owner of a public IP address","t8-tool2":"AS and route of your own connection","t8-tool3":"Peering points and IXPs of a network",
+    "t8-note":"<b>Three terms not to mix up —</b> the <b>access network</b> connects subscribers to an ISP's point of presence (PoP) — fibre, DSLAM, cell towers. The <b>operator network</b> (the AS itself) connects PoPs together and carries traffic over IP/MPLS. An <b>enterprise WAN</b> is something else entirely: it interconnects a company's own local sites, typically by leasing links from one or more operators.",
+    "t9-h":"Transit, peering and hierarchy",
+    "t9-lead":"An ISP doesn't build the whole Internet itself: it buys services from other ISPs, and sometimes exchanges traffic with them for free.",
+    "t9-transit-h":"Transit: paying to be relayed",
+    "t9-transit-p":"ISP_A buys a <b>transit</b> subscription from ISP_B: ISP_A gets a default route to ISP_B and can have it relay any packet, whatever its destination. ISP_A pays ISP_B based on the volume of traffic carried.",
+    "t9-multi-h":"Multi-homing: surviving outages",
+    "t9-multi-p":"To avoid depending on a single provider, an ISP (or a company) usually takes out transit subscriptions with <b>several</b> different ISPs.",
+    "t9-peer-h":"Peering: exchanging for free",
+    "t9-peer-p":"Transit is expensive (roughly $1/Mbps). If two ISPs exchange a lot of traffic with each other, it's worth setting up <b>peering</b>: a reciprocal, free exchange of access to each other's own customers. That cuts costs and shortens paths (lower delay).",
+    "t9-peer-note":"<b>Peering isn't transitive —</b> if A and B peer, and B and C peer, A does not get access to C through B. An ISP only announces to its peer its own networks (and its customers'), never routes learned from another peer — otherwise it would be giving away free transit.",
+    "t9-tiers-cap":"ISP hierarchy","t9-col-tier":"Level","t9-col-def":"Definition","t9-col-ex":"Examples",
+    "t9-tier1":"Buys no transit at all; owns the Internet's backbone","t9-tier2":"Buys and sells transit","t9-tier3":"Doesn't provide transit — serves end customers",
+    "t9-ixp-h":"Where peering happens: IXPs",
+    "t9-ixp-p":"An <b>Internet eXchange Point (IXP)</b> is the infrastructure — often just a shared Ethernet switch — where several ISPs set up their peering sessions in one place.",
+    "t9-cdn-note":"<b>What about content providers? —</b> <b>Content Providers</b> (Netflix, FranceTV…) publish their content through <b>CDNs</b> (Akamai, Cloudflare, OVHcloud…), which own their own servers and connect directly to ISPs — often as close as possible to users, including via peering deals at IXPs.",
+    "t10-h":"Routing between ISPs: BGP",
+    "t10-lead":"Border Gateway Protocol (BGP) routes between ASes, alongside the IGPs (OSPF, EIGRP…) used inside an AS. It has to satisfy four business constraints specific to ISPs.",
+    "t10-e1-h":"Handle ~200,000 prefixes without collapsing","t10-e1-p":"You can't afford to send an update every time a link goes down.",
+    "t10-e1-d":"BGP is deliberately slow: updates every 30s between <b>eBGP</b> neighbours (different ASes), every 5s between <b>iBGP</b> neighbours (same AS). Neighbours are configured explicitly (no auto-discovery), unencrypted, on a basis of trust.",
+    "t10-e2-h":"Not reveal its internal topology","t10-e2-p":"An ISP doesn't want to expose its internal router count to other ASes.",
+    "t10-e2-d":"BGP measures distance in <b>AS-path</b> (number of ASes crossed), never in router-to-router hops.",
+    "t10-e3-h":"Choose where its own packets exit","t10-e3-p":"An ISP wants flexibility to manage its own transit subscriptions.",
+    "t10-e3-d":"BGP doesn't necessarily follow the shortest path: the <b>Weight</b> (local to the router) and <b>Local Preference</b> (distributed across the AS) attributes let it force a preferred exit, taking priority over AS-path.",
+    "t10-e4-h":"Influence where traffic comes in","t10-e4-p":"An ISP wants leverage over where a CDN's traffic enters its network, so it doesn't end up giving away free transit.",
+    "t10-e4-d":"An AS can never force its route onto a neighbouring AS — it can only <b>suggest</b> an entry point via the <b>MED</b> (Multi-Exit Discriminator) attribute.",
+    "t10-table-h":"Two routing tables",
+    "t10-table-p":"BGP keeps its own <b>BGP table</b>, separate from the router's main routing table. Only the main table is used to route customer traffic; the best BGP routes get injected into it after selection.",
+    "t10-order-cap":"BGP best-route selection order (excerpt)","t10-col-crit":"Criterion",
+    "t10-c1":"Highest Weight (local to the router)","t10-c2":"Highest Local Preference (within the AS)","t10-c3":"Shortest AS-path","t10-c4":"Lowest MED","t10-c5":"eBGP neighbour preferred over iBGP",
+    "t10-note":"<b>Remember —</b> the further down the list, the finer the criterion: <b>Weight</b> and <b>Local Preference</b> enforce an exit policy internal to the AS; <b>AS-path</b> and <b>MED</b> influence the route without ever forcing a neighbouring AS's hand.",
+    "t7-h":"Self-check","t7-lead":"Nine questions to check what stuck.",
     "foot":"OpenBoard · study notes rebuilt from handwritten whiteboard photos — R302."
   }
 };
@@ -723,6 +936,25 @@ document.querySelectorAll('.step').forEach(s=>{
 });
 renderStep();
 
+/* ---------- BGP requirements stepper ---------- */
+let bgpStepIndex = 1;
+const bgpTotalSteps = 4;
+function renderBgpStep(){
+  document.querySelectorAll('#bgpStepper .step').forEach(s=>{
+    s.classList.toggle('active', parseInt(s.dataset.bstep) === bgpStepIndex);
+  });
+  document.getElementById('bgpPrev').disabled = bgpStepIndex === 1;
+  document.getElementById('bgpNext').disabled = bgpStepIndex === bgpTotalSteps;
+}
+function bgpStepMove(dir){
+  bgpStepIndex = Math.min(bgpTotalSteps, Math.max(1, bgpStepIndex + dir));
+  renderBgpStep();
+}
+document.querySelectorAll('#bgpStepper .step').forEach(s=>{
+  s.addEventListener('click', ()=>{ bgpStepIndex = parseInt(s.dataset.bstep); renderBgpStep(); });
+});
+renderBgpStep();
+
 /* ---------- scrollspy ---------- */
 const navLinks = document.querySelectorAll('nav.toc a');
 const sections = [...navLinks].map(a=>document.querySelector(a.getAttribute('href')));
@@ -749,19 +981,35 @@ const quizData = {
     {q:"Que se passe-t-il aux adresses IP source/destination quand un paquet traverse plusieurs routeurs (sans NAT) ?", opts:["Elles changent à chaque saut","Elles restent identiques de bout en bout","Elles sont supprimées"], a:1,
      fb:"Sans NAT, les adresses IP restent inchangées ; ce sont les adresses MAC qui changent à chaque saut."},
     {q:"Un réseau noté /24 réserve combien de bits à la partie hôte ?", opts:["24 bits","16 bits","8 bits"], a:2,
-     fb:"32 bits au total − 24 bits de réseau = 8 bits pour la partie hôte."}
+     fb:"32 bits au total − 24 bits de réseau = 8 bits pour la partie hôte."},
+    {q:"Qu'est-ce qui distingue un ISP de tier 1 des autres ?", opts:["Il n'achète aucun transit","Il ne fait que du peering gratuit","Il vend uniquement l'accès aux particuliers"], a:0,
+     fb:"Un tier 1 possède la dorsale de l'Internet et n'a besoin d'acheter de transit à personne."},
+    {q:"Pourquoi une relation de peering n'est-elle pas transitive ?", opts:["Un ISP n'annonce à son pair que ses propres réseaux, pas ceux appris d'un autre pair","Le peering est toujours payant","Les IXP l'interdisent techniquement"], a:0,
+     fb:"Sinon l'ISP se ferait transiter gratuitement du trafic destiné à un tiers."},
+    {q:"Sur quoi BGP mesure-t-il la distance d'une route ?", opts:["Le nombre de routeurs traversés","Le nombre d'AS traversés (AS-path)","Le délai réseau mesuré"], a:1,
+     fb:"BGP compte les sauts entre AS, pas entre routeurs, pour ne pas révéler la topologie interne."},
+    {q:"Quel attribut BGP un ISP utilise-t-il pour suggérer, sans l'imposer, un point d'entrée de trafic ?", opts:["Local Preference","Weight","MED"], a:2,
+     fb:"Le MED (Multi-Exit Discriminator) est une simple suggestion ; l'AS voisin reste libre de l'ignorer."}
   ],
   en: [
     {q:"What is the ARP table used for?", opts:["Finding the MAC address that matches an IP address","Choosing the next router","Counting the number of hops"], a:0,
      fb:"The ARP table maps IP → MAC addresses on the local network."},
     {q:"Which device keeps a MAC address table?", opts:["A switch","A plain cable","A network cloud"], a:0,
      fb:"A switch learns which device sits behind which port using MAC addresses."},
-    {q:"In a routing table, what does the \\"Interface\\" column give you?", opts:["The remaining hop count","The local interface the packet exits through","The final destination IP address"], a:1,
-     fb:"\\"Interface\\" is the local exit port used to reach the next router."},
+    {q:"In a routing table, what does the \"Interface\" column give you?", opts:["The remaining hop count","The local interface the packet exits through","The final destination IP address"], a:1,
+     fb:"\"Interface\" is the local exit port used to reach the next router."},
     {q:"What happens to the source/destination IP addresses as a packet crosses several routers (no NAT)?", opts:["They change at every hop","They stay identical end-to-end","They get erased"], a:1,
      fb:"Without NAT the IP addresses stay unchanged; it's the MAC addresses that change at every hop."},
     {q:"A network written as /24 leaves how many bits for the host portion?", opts:["24 bits","16 bits","8 bits"], a:2,
-     fb:"32 bits total − 24 network bits = 8 bits left for the host."}
+     fb:"32 bits total − 24 network bits = 8 bits left for the host."},
+    {q:"What sets a tier 1 ISP apart from the others?", opts:["It buys no transit at all","It only does free peering","It only sells access to individual consumers"], a:0,
+     fb:"A tier 1 ISP owns part of the Internet's backbone and never needs to buy transit from anyone."},
+    {q:"Why isn't a peering relationship transitive?", opts:["An ISP only announces its own networks to a peer, not routes learned from another peer","Peering is always a paid service","IXPs technically forbid it"], a:0,
+     fb:"Otherwise the ISP would be giving away free transit for traffic bound for a third party."},
+    {q:"What does BGP measure a route's distance in?", opts:["The number of routers crossed","The number of ASes crossed (AS-path)","Measured network delay"], a:1,
+     fb:"BGP counts AS-to-AS hops, not router-to-router hops, so it doesn't reveal internal topology."},
+    {q:"Which BGP attribute does an ISP use to suggest, without enforcing, a traffic entry point?", opts:["Local Preference","Weight","MED"], a:2,
+     fb:"The MED (Multi-Exit Discriminator) is only a suggestion; the neighbouring AS is free to ignore it."}
   ]
 };
 
