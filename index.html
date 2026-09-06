@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes — Index</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg: #10203a;
+  --card: #f4ecd9;
+  --card-edge: #e3d6b5;
+  --brass: #b9863f;
+  --brass-dim: #7a5a2c;
+  --ink: #1c2733;
+  --ink-soft: #5a5142;
+  --paper-shadow: rgba(0,0,0,0.35);
+  --sky: #9fc6d9;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(159,198,217,0.08), transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(185,134,63,0.06), transparent 50%),
+    var(--bg);
+  color:var(--sky);
+  font-family:var(--sans);
+}
+
+header{
+  padding: 54px clamp(20px,6vw,80px) 30px;
+  display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap;
+}
+.title-block .eyebrow{
+  font-family:var(--mono); font-size:12px; color:var(--brass); letter-spacing:0.04em; margin-bottom:10px;
+}
+.title-block h1{ margin:0; font-size:clamp(30px,4.5vw,46px); color:#fdf7ea; font-weight:700; letter-spacing:-0.01em;}
+.title-block p{ color:#7f9cae; max-width:52ch; margin-top:12px; font-size:15px; line-height:1.5;}
+
+.repo-tag{
+  font-family:var(--mono); font-size:12.5px; color:var(--sky);
+  border:1px solid #23405a; padding:8px 14px; border-radius:8px;
+  background:rgba(159,198,217,0.05);
+  white-space:nowrap;
+}
+.repo-tag a{ color:inherit; text-decoration:none; }
+.repo-tag a:hover{ text-decoration:underline; }
+
+.controls{
+  padding: 0 clamp(20px,6vw,80px);
+  display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+  margin-bottom: 8px;
+}
+.search{
+  flex:1; min-width:220px; max-width:420px;
+  background:#0c1830; border:1px solid #23405a; border-radius:9px;
+  padding:11px 14px; color:#eaf3f8; font-family:var(--sans); font-size:14.5px;
+}
+.search::placeholder{ color:#5c7f95; }
+.search:focus{ outline:2px solid var(--brass); outline-offset:1px; }
+
+.refresh{
+  font-family:var(--mono); font-size:12.5px; color:var(--sky);
+  background:transparent; border:1px solid #23405a; border-radius:9px;
+  padding:10px 16px; cursor:pointer; transition: all .15s;
+}
+.refresh:hover{ border-color:var(--brass); color:var(--brass); }
+.refresh:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
+.refresh:disabled{ opacity:0.5; cursor:default; }
+
+.count{ font-family:var(--mono); font-size:12.5px; color:#4d7288; margin-left:auto; }
+
+main{ padding: 26px clamp(20px,6vw,80px) 90px; }
+
+.status{
+  font-family:var(--mono); font-size:13.5px; color:#7f9cae; padding: 30px 4px;
+}
+.status.error{ color:#e08a7d; }
+.status a{ color:var(--sky); }
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap:22px;
+}
+
+.card{
+  position:relative;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 22px 20px 20px;
+  text-decoration:none;
+  display:block;
+  box-shadow: 0 10px 24px -8px var(--paper-shadow), 0 0 0 1px var(--card-edge);
+  transform: rotate(var(--tilt,0deg));
+  transition: transform .18s ease, box-shadow .18s ease;
+  min-height:132px;
+}
+.card:hover{
+  transform: rotate(0deg) translateY(-3px);
+  box-shadow: 0 16px 30px -8px var(--paper-shadow), 0 0 0 1px var(--brass);
+}
+.card:focus-visible{ outline:2px solid var(--brass); outline-offset:3px; }
+.card .tab{
+  position:absolute; top:0; left:22px; width:34px; height:10px;
+  background:var(--brass); border-radius:0 0 4px 4px;
+}
+.card .callno{
+  font-family:var(--mono); font-size:10.5px; color:var(--brass-dim); letter-spacing:0.04em; margin-bottom:12px; margin-top:6px;
+}
+.card h3{
+  margin:0 0 8px; font-size:18px; line-height:1.25; color:var(--ink); font-weight:700;
+}
+.card .filename{
+  font-family:var(--mono); font-size:11px; color:var(--ink-soft); word-break:break-all;
+}
+.card .meta{
+  font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); margin-top:14px; display:flex; justify-content:space-between; opacity:0.75;
+}
+
+.foot{
+  margin-top:60px; padding-top:20px; border-top:1px solid #1c3350;
+  font-family:var(--mono); font-size:11.5px; color:#3f6178;
+}
+.foot code{ color:#7f9cae; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <div class="eyebrow">STUDY LIBRARY</div>
+    <h1>Notes index</h1>
+    <p>Every note page in this repository, listed automatically. Push a new <code>.html</code> file and it shows up here next time this page loads — nothing to edit by hand.</p>
+  </div>
+  <div class="repo-tag">📚 <a href="https://github.com/ainulmlk/Notes" target="_blank" rel="noopener">github.com/ainulmlk/Notes</a></div>
+</header>
+
+<div class="controls">
+  <input class="search" id="search" type="text" placeholder="Filter notes…" autocomplete="off">
+  <button class="refresh" id="refreshBtn">↻ Refresh list</button>
+  <span class="count" id="count"></span>
+</div>
+
+<main>
+  <div id="status" class="status">Loading notes from GitHub…</div>
+  <div id="grid" class="grid" hidden></div>
+</main>
+
+<div class="foot" style="padding: 0 clamp(20px,6vw,80px);">
+  Reads <code>GET https://api.github.com/repos/ainulmlk/Notes/contents/</code> on every visit · place this file as <code>index.html</code> at the repo root so GitHub Pages serves it at your site's root URL.
+</div>
+
+<script>
+const OWNER = "ainulmlk";
+const REPO = "Notes";
+// Filenames to always ignore even though they're .html at repo root
+const IGNORE = new Set(["index.html"]);
+
+const statusEl = document.getElementById('status');
+const gridEl = document.getElementById('grid');
+const countEl = document.getElementById('count');
+const searchEl = document.getElementById('search');
+const refreshBtn = document.getElementById('refreshBtn');
+
+let allNotes = [];
+
+function prettifyName(filename){
+  const base = filename.replace(/\.html?$/i, '');
+  return base
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function callNumber(filename){
+  // A little library-card flavor derived from the filename, purely cosmetic.
+  const clean = filename.replace(/\.html?$/i, '').toUpperCase().replace(/[^A-Z0-9]+/g, '·');
+  return clean.slice(0, 18);
+}
+
+function renderNotes(notes){
+  gridEl.innerHTML = '';
+  if(notes.length === 0){
+    statusEl.hidden = false;
+    statusEl.classList.remove('error');
+    statusEl.textContent = 'No matching notes.';
+    gridEl.hidden = true;
+    return;
+  }
+  statusEl.hidden = true;
+  gridEl.hidden = false;
+  notes.forEach((note, i) => {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = note.name;
+    a.style.setProperty('--tilt', ((i % 5) - 2) * 0.4 + 'deg');
+
+    const tab = document.createElement('div');
+    tab.className = 'tab';
+    a.appendChild(tab);
+
+    const callno = document.createElement('div');
+    callno.className = 'callno';
+    callno.textContent = callNumber(note.name);
+    a.appendChild(callno);
+
+    const h3 = document.createElement('h3');
+    h3.textContent = prettifyName(note.name);
+    a.appendChild(h3);
+
+    const fname = document.createElement('div');
+    fname.className = 'filename';
+    fname.textContent = note.name;
+    a.appendChild(fname);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `<span>HTML</span><span>${(note.size/1024).toFixed(1)} KB</span>`;
+    a.appendChild(meta);
+
+    gridEl.appendChild(a);
+  });
+  countEl.textContent = `${notes.length} note${notes.length === 1 ? '' : 's'}`;
+}
+
+function applyFilter(){
+  const q = searchEl.value.trim().toLowerCase();
+  const filtered = q
+    ? allNotes.filter(n => n.name.toLowerCase().includes(q) || prettifyName(n.name).toLowerCase().includes(q))
+    : allNotes;
+  renderNotes(filtered);
+}
+
+async function loadNotes(){
+  statusEl.hidden = false;
+  statusEl.classList.remove('error');
+  statusEl.textContent = 'Loading notes from GitHub…';
+  gridEl.hidden = true;
+  refreshBtn.disabled = true;
+
+  try{
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/`, {
+      headers: { 'Accept': 'application/vnd.github+json' }
+    });
+    if(!res.ok){
+      if(res.status === 403){
+        throw new Error('GitHub API rate limit reached — wait a bit and refresh.');
+      }
+      throw new Error(`GitHub API returned ${res.status}`);
+    }
+    const items = await res.json();
+    allNotes = items
+      .filter(item => item.type === 'file')
+      .filter(item => /\.html?$/i.test(item.name))
+      .filter(item => !IGNORE.has(item.name.toLowerCase()))
+      .sort((a,b) => a.name.localeCompare(b.name));
+
+    applyFilter();
+  }catch(err){
+    statusEl.hidden = false;
+    statusEl.classList.add('error');
+    statusEl.textContent = `Couldn't load the file list (${err.message}). `;
+    const link = document.createElement('a');
+    link.href = `https://github.com/${OWNER}/${REPO}`;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Open the repo on GitHub instead →';
+    statusEl.appendChild(link);
+    gridEl.hidden = true;
+  }finally{
+    refreshBtn.disabled = false;
+  }
+}
+
+searchEl.addEventListener('input', applyFilter);
+refreshBtn.addEventListener('click', loadNotes);
+
+loadNotes();
+</script>
+</body>
+</html>
