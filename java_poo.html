@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Java / POO — Formes de base</title>
+<style>
+  :root {
+    --bg: #0a0e0a;
+    --panel: #10160f;
+    --border: #1f2e1c;
+    --green: #4ade80;
+    --green-dim: #2f7d4f;
+    --text: #c9d6c4;
+    --dim: #6f8268;
+    --keyword: #7dd3fc;
+    --string: #fbbf24;
+    --accent: #f472b6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
+    margin: 0;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  h1 {
+    color: var(--green);
+    font-size: 1.4em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 4px;
+  }
+  .sub {
+    color: var(--dim);
+    margin-bottom: 20px;
+    font-size: 0.9em;
+  }
+  .toc {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    columns: 2;
+    column-gap: 24px;
+  }
+  .toc a {
+    color: var(--green-dim);
+    text-decoration: none;
+    display: block;
+    padding: 2px 0;
+    font-size: 0.9em;
+    break-inside: avoid;
+  }
+  .toc a:hover { color: var(--green); }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green-dim);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 18px;
+  }
+  section h2 {
+    color: var(--green);
+    font-size: 1.05em;
+    margin: 0 0 10px 0;
+  }
+  .quand {
+    color: var(--accent);
+    font-size: 0.85em;
+    margin-bottom: 10px;
+  }
+  .quand::before { content: "→ quand : "; color: var(--dim); }
+  pre {
+    background: #060906;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 0.88em;
+  }
+  code { color: var(--text); }
+  .kw { color: var(--keyword); }
+  .str { color: var(--string); }
+  .com { color: var(--dim); font-style: italic; }
+  .note {
+    font-size: 0.85em;
+    color: var(--dim);
+    margin-top: 6px;
+    padding-left: 10px;
+    border-left: 2px solid var(--border);
+  }
+  .note b { color: var(--text); }
+  footer {
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.8em;
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Java / POO — Formes de base réutilisables</h1>
+<div class="sub">R3.08 — les briques syntaxiques qu'on retrouve dans (presque) tous les exercices</div>
+
+<div class="toc">
+  <a href="#classe">1. Classe (public / package)</a>
+  <a href="#attributs">2. Attributs</a>
+  <a href="#visibilite">3. Visibilité (private/public/protected)</a>
+  <a href="#constructeur">4. Constructeur(s) + this</a>
+  <a href="#methode">5. Méthode</a>
+  <a href="#heritage">6. Héritage (extends / super)</a>
+  <a href="#redefinition">7. Redéfinition d'une méthode</a>
+  <a href="#abstraite">8. Classe abstraite</a>
+  <a href="#interface">9. Interface</a>
+  <a href="#tableaux">10. Tableaux</a>
+  <a href="#collections">11. ArrayList / boucle for-each</a>
+  <a href="#instructions">12. if / while / for</a>
+  <a href="#exceptions">13. Exceptions (throws / try-catch)</a>
+  <a href="#getclass">14. getClass() / comparaison de type</a>
+  <a href="#generique">15. Généricité</a>
+  <a href="#serialisation">16. Sérialisation (sauvegarde/chargement)</a>
+  <a href="#singleton">17. Design pattern : Singleton</a>
+  <a href="#fabrique">18. Design pattern : Fabrique</a>
+  <a href="#decorateur">19. Design pattern : Décorateur</a>
+</div>
+
+<section id="classe">
+<h2>1. Déclarer une classe</h2>
+<div class="quand">à chaque nouveau "type d'objet" que le sujet te demande de représenter</div>
+<pre><code><span class="kw">public class</span> NomClasse {
+    <span class="com">// attributs, constructeur(s), méthodes</span>
+}</code></pre>
+<div class="note">Nom de classe : <b>toujours une majuscule au début</b> (convention). <span class="kw">public</span> = visible partout ; sans rien = visible seulement dans le package.</div>
+</section>
+
+<section id="attributs">
+<h2>2. Déclarer des attributs</h2>
+<div class="quand">ce sont les "données" que chaque objet doit connaître de lui-même</div>
+<pre><code><span class="kw">private</span> String numeroSerie;
+<span class="kw">private</span> int ram;
+<span class="kw">private</span> ArrayList&lt;Materiel&gt; parc;</code></pre>
+<div class="note">Convention : minuscule au début, puis une majuscule par mot (<b>numeroSerie</b>). Presque toujours en <span class="kw">private</span> : on encapsule, et on donne accès via des méthodes.</div>
+</section>
+
+<section id="visibilite">
+<h2>3. Les 4 niveaux de visibilité</h2>
+<div class="quand">à chaque attribut ou méthode — c'est le premier mot de la déclaration</div>
+<pre><code><span class="kw">private</span>   <span class="com">// visible seulement dans SA classe</span>
+<span class="kw">public</span>    <span class="com">// visible de partout</span>
+<span class="kw">protected</span> <span class="com">// visible dans le package + dans les classes filles</span>
+             <span class="com">// (rien écrit) → visible seulement dans le package</span></code></pre>
+<div class="note">Règle pratique : attributs presque toujours <b>private</b>, méthodes "utilitaires publiques" en <b>public</b>, ce qu'on veut garder accessible aux sous-classes en <b>protected</b>.</div>
+</section>
+
+<section id="constructeur">
+<h2>4. Constructeur(s) et <code>this</code></h2>
+<div class="quand">à chaque fois qu'on doit pouvoir créer un objet — souvent 2 versions : un "vide" et un avec paramètres</div>
+<pre><code><span class="kw">public class</span> Parc {
+    <span class="kw">private</span> String nom;
+
+    <span class="com">// constructeur sans paramètre</span>
+    <span class="kw">public</span> Parc() {
+        <span class="kw">this</span>.nom = <span class="str">""</span>;
+    }
+
+    <span class="com">// constructeur avec paramètre</span>
+    <span class="kw">public</span> Parc(String nom) {
+        <span class="kw">this</span>.nom = nom;
+    }
+}</code></pre>
+<div class="note"><code>this</code> = "l'objet en train d'être créé/utilisé". <code>this.nom</code> désigne l'attribut, <code>nom</code> tout court désigne le paramètre reçu : c'est pour ça qu'on écrit <code>this.nom = nom;</code> et pas <code>nom = nom;</code>.</div>
+</section>
+
+<section id="methode">
+<h2>5. Déclarer une méthode</h2>
+<div class="quand">chaque action que l'objet doit savoir faire</div>
+<pre><code><span class="kw">public</span> String getNom() {
+    <span class="kw">return</span> nom;
+}
+
+<span class="kw">public void</span> ajouterMateriel(Materiel m) {
+    parc.add(m);
+}</code></pre>
+<div class="note">Forme générale : <code>visibilité TypeDeRetour nomMethode(paramètres) { ... }</code>. <span class="kw">void</span> = ne renvoie rien. Une méthode qui doit renvoyer un résultat se termine toujours par <span class="kw">return</span>.</div>
+</section>
+
+<section id="heritage">
+<h2>6. Héritage : <code>extends</code> et <code>super</code></h2>
+<div class="quand">quand plusieurs classes partagent des attributs/méthodes communs (ex: OrdiFixe et OrdiPortable partagent RAM/CPU)</div>
+<pre><code><span class="kw">public class</span> MaterielInfo <span class="kw">extends</span> Materiel {
+    <span class="kw">private</span> <span class="kw">int</span> ram;
+
+    <span class="kw">public</span> MaterielInfo(String numeroSerie, <span class="kw">int</span> ram) {
+        <span class="kw">super</span>(numeroSerie); <span class="com">// appelle le constructeur du parent, TOUJOURS en 1ère ligne</span>
+        <span class="kw">this</span>.ram = ram;
+    }
+}</code></pre>
+<div class="note">Une classe fille récupère tout ce que possède le parent (relation "<b>est-un</b>": un OrdiFixe <u>est un</u> Materiel). Java n'autorise qu'un seul parent (héritage simple).</div>
+</section>
+
+<section id="redefinition">
+<h2>7. Redéfinir une méthode (@Override)</h2>
+<div class="quand">quand une sous-classe doit se comporter différemment du parent pour une même méthode</div>
+<pre><code><span class="kw">public class</span> Switch <span class="kw">extends</span> MaterielReseau {
+    <span class="kw">private</span> <span class="kw">int</span> nombrePorts;
+
+    <span class="kw">@Override</span>
+    <span class="kw">public void</span> afficher() {
+        <span class="kw">super</span>.afficher(); <span class="com">// réutilise l'affichage du parent</span>
+        System.out.println(<span class="str">"Ports : "</span> + nombrePorts);
+    }
+}</code></pre>
+<div class="note">Même nom + même signature que dans le parent = redéfinition. <code>super.methode()</code> permet d'appeler quand même la version du parent avant/après. C'est la base du <b>polymorphisme</b> : si on a une variable de type <code>Materiel</code> qui contient en réalité un <code>Switch</code>, c'est <code>afficher()</code> de <code>Switch</code> qui s'exécute.</div>
+</section>
+
+<section id="abstraite">
+<h2>8. Classe abstraite</h2>
+<div class="quand">pour empêcher de créer un objet "générique" quand seules les sous-classes ont un sens concret</div>
+<pre><code><span class="kw">public abstract class</span> Materiel {
+    <span class="com">// peut avoir des attributs, constructeur, méthodes normales</span>
+}</code></pre>
+<div class="note"><code>new Materiel(...)</code> devient <b>interdit</b> (erreur de compilation) — seules les sous-classes concrètes (<code>OrdiFixe</code>, <code>Switch</code>...) peuvent être instanciées. Utile dès qu'un énoncé demande "on ne doit pas pouvoir créer un type général".</div>
+</section>
+
+<section id="interface">
+<h2>9. Interface</h2>
+<div class="quand">pour définir un "contrat" (des méthodes) sans dire comment il est rempli, souvent utilisé par plusieurs classes indépendantes</div>
+<pre><code><span class="kw">public interface</span> Notificateur {
+    <span class="kw">void</span> envoyer(String message);
+}
+
+<span class="kw">public class</span> NotificateurOutput <span class="kw">implements</span> Notificateur {
+    <span class="kw">@Override</span>
+    <span class="kw">public void</span> envoyer(String message) {
+        System.out.println(message);
+    }
+}</code></pre>
+<div class="note">Une interface ne contient que des entêtes (abstraites), jamais d'attributs, et est toujours <span class="kw">public</span>. Une classe peut implémenter <b>plusieurs</b> interfaces (contrairement à l'héritage) : <code>class C extends A implements X1, X2</code>.</div>
+</section>
+
+<section id="tableaux">
+<h2>10. Tableaux</h2>
+<div class="quand">nombre fixe d'éléments connu à l'avance</div>
+<pre><code><span class="kw">int</span>[] notes;
+notes = <span class="kw">new</span> <span class="kw">int</span>[10]; <span class="com">// 10 cases, indices 0 à 9</span>
+notes[0] = 15;</code></pre>
+<div class="note">En pratique dans ce TD on préfère <code>ArrayList</code> (taille flexible) — le tableau reste utile pour un nombre fixe connu d'avance.</div>
+</section>
+
+<section id="collections">
+<h2>11. ArrayList + boucle for-each</h2>
+<div class="quand">liste de taille variable : LE cas du "parc de machines"</div>
+<pre><code><span class="kw">private</span> ArrayList&lt;Materiel&gt; parc = <span class="kw">new</span> ArrayList&lt;Materiel&gt;();
+
+parc.add(unMateriel);
+parc.remove(unMateriel);
+
+<span class="kw">for</span> (Materiel m : parc) {
+    m.afficher();
+}</code></pre>
+<div class="note"><code>ArrayList&lt;Type&gt;</code> = généricité (section 15). Le for-each (<code>for (Type v : collection)</code>) parcourt chaque élément sans gérer d'indice.</div>
+</section>
+
+<section id="instructions">
+<h2>12. if / while / for classiques</h2>
+<div class="quand">tests et boucles standard</div>
+<pre><code><span class="kw">if</span> (condition) {
+    ...
+} <span class="kw">else</span> {
+    ...
+}
+
+<span class="kw">while</span> (condition) {
+    ...
+}
+
+<span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; 10; i++) {
+    ...
+}</code></pre>
+<div class="note"><code>break</code> sort de la boucle, <code>continue</code> passe directement au tour suivant.</div>
+</section>
+
+<section id="exceptions">
+<h2>13. Exceptions : throws vs try/catch</h2>
+<div class="quand">dès qu'une opération peut échouer (fichier absent, etc. — typiquement la sauvegarde/chargement)</div>
+<pre><code><span class="com">// remonter l'erreur à l'appelant :</span>
+<span class="kw">public void</span> sauvegarder(String fichier) <span class="kw">throws</span> IOException {
+    ...
+}
+
+<span class="com">// attraper et traiter l'erreur ici :</span>
+<span class="kw">try</span> {
+    parc.sauvegarder(<span class="str">"parc.save"</span>);
+} <span class="kw">catch</span> (IOException e) {
+    System.out.println(<span class="str">"Erreur : "</span> + e.getMessage());
+}</code></pre>
+<div class="note"><code>throws</code> = "je ne gère pas l'erreur ici, c'est à celui qui m'appelle de le faire". <code>try/catch</code> = "je gère l'erreur ici et maintenant".</div>
+</section>
+
+<section id="getclass">
+<h2>14. getClass() — connaître / comparer le type réel</h2>
+<div class="quand">rechercher tous les objets d'un type donné dans une liste hétérogène</div>
+<pre><code><span class="kw">for</span> (Materiel m : parc) {
+    <span class="kw">if</span> (m.getClass() == Switch.<span class="kw">class</span>) {
+        resultat.add(m);
+    }
+}</code></pre>
+<div class="note"><code>getClass()</code> vient de la classe <code>Object</code> (donc héritée par tout objet) et renvoie le <b>type réel</b> de l'objet, même s'il est manipulé via une variable de type parent.</div>
+</section>
+
+<section id="generique">
+<h2>15. Généricité</h2>
+<div class="quand">une classe qui doit pouvoir contenir "n'importe quel type", décidé au moment de l'utilisation</div>
+<pre><code><span class="kw">class</span> Sac&lt;T&gt; {
+    <span class="com">// T se comporte comme un type normal ici</span>
+}
+
+Sac&lt;Materiel&gt; monSac = <span class="kw">new</span> Sac&lt;Materiel&gt;();
+ArrayList&lt;String&gt; phrase = <span class="kw">new</span> ArrayList&lt;String&gt;();</code></pre>
+<div class="note">Le <code>&lt;T&gt;</code> est remplacé par le vrai type au moment de la création (<code>ArrayList&lt;Materiel&gt;</code>, <code>ArrayList&lt;String&gt;</code>...).</div>
+</section>
+
+<section id="serialisation">
+<h2>16. Sauvegarde/chargement par sérialisation</h2>
+<div class="quand">"sauvegarder sur disque" / "recharger au démarrage"</div>
+<pre><code><span class="kw">public class</span> Parc <span class="kw">implements</span> Serializable {
+    ...
+}
+
+<span class="com">// sauvegarder</span>
+ObjectOutputStream oos = <span class="kw">new</span> ObjectOutputStream(<span class="kw">new</span> FileOutputStream(<span class="str">"parc.save"</span>));
+oos.writeObject(monParc);
+oos.close();
+
+<span class="com">// charger</span>
+ObjectInputStream ois = <span class="kw">new</span> ObjectInputStream(<span class="kw">new</span> FileInputStream(<span class="str">"parc.save"</span>));
+Parc parc = (Parc) ois.readObject();
+ois.close();</code></pre>
+<div class="note">Il faut que <b>toutes</b> les classes stockées (Parc, Materiel et ses sous-classes) implémentent <code>Serializable</code>, sinon l'écriture échoue.</div>
+</section>
+
+<section id="singleton">
+<h2>17. Pattern Singleton</h2>
+<div class="quand">garantir qu'une classe n'a qu'une seule instance dans tout le programme</div>
+<pre><code><span class="kw">public final class</span> Singleton {
+    <span class="kw">private static</span> Singleton instance = <span class="kw">null</span>;
+
+    <span class="kw">private</span> Singleton() { } <span class="com">// constructeur privé : personne d'autre ne peut faire "new"</span>
+
+    <span class="kw">public static</span> Singleton getInstance() {
+        <span class="kw">if</span> (instance == <span class="kw">null</span>) {
+            instance = <span class="kw">new</span> Singleton();
+        }
+        <span class="kw">return</span> instance;
+    }
+}</code></pre>
+<div class="note">Constructeur <span class="kw">private</span> + méthode <span class="kw">static</span> qui crée l'objet une seule fois puis le renvoie à chaque appel.</div>
+</section>
+
+<section id="fabrique">
+<h2>18. Pattern Fabrique (Factory)</h2>
+<div class="quand">créer différents types d'objets selon la valeur d'un paramètre, sans que l'appelant écrive les "new" lui-même</div>
+<pre><code><span class="kw">public interface</span> MaterielFactory {
+    Materiel creerMateriel(String type);
+}
+
+<span class="kw">public class</span> MaterielFactoryImpl <span class="kw">implements</span> MaterielFactory {
+    <span class="kw">@Override</span>
+    <span class="kw">public</span> Materiel creerMateriel(String type) {
+        <span class="kw">switch</span> (type) {
+            <span class="kw">case</span> <span class="str">"switch"</span>: <span class="kw">return new</span> Switch(...);
+            <span class="kw">case</span> <span class="str">"ordifixe"</span>: <span class="kw">return new</span> OrdiFixe(...);
+            <span class="kw">default</span>: <span class="kw">throw new</span> RuntimeException(<span class="str">"type inconnu"</span>);
+        }
+    }
+}</code></pre>
+<div class="note">Centralise tous les <code>new</code> à un seul endroit : pratique si le menu utilisateur doit créer un matériel selon le choix tapé.</div>
+</section>
+
+<section id="decorateur">
+<h2>19. Pattern Décorateur</h2>
+<div class="quand">ajouter des comportements à un objet de façon souple, sans multiplier les sous-classes</div>
+<pre><code><span class="kw">public interface</span> Notificateur {
+    <span class="kw">void</span> envoyer(String message);
+}
+
+<span class="kw">public abstract class</span> NotificateurDecorateur <span class="kw">implements</span> Notificateur {
+    <span class="kw">protected</span> Notificateur objetDecore;
+
+    <span class="kw">public</span> NotificateurDecorateur(Notificateur objetDecore) {
+        <span class="kw">this</span>.objetDecore = objetDecore;
+    }
+
+    <span class="kw">@Override</span>
+    <span class="kw">public void</span> envoyer(String message) {
+        objetDecore.envoyer(message); <span class="com">// délègue à l'objet décoré</span>
+    }
+}
+
+<span class="kw">public class</span> LogNotificateur <span class="kw">extends</span> NotificateurDecorateur {
+    <span class="kw">public</span> LogNotificateur(Notificateur objetDecore) { <span class="kw">super</span>(objetDecore); }
+
+    <span class="kw">@Override</span>
+    <span class="kw">public void</span> envoyer(String message) {
+        <span class="kw">super</span>.envoyer(message);
+        System.out.println(<span class="str">"Log -> "</span> + message);
+    }
+}</code></pre>
+<div class="note">Le décorateur "enveloppe" un objet du même type (via une interface) et ajoute son propre comportement avant/après avoir délégué. On peut empiler plusieurs décorateurs : <code>new EmailNotificateur(new LogNotificateur(base))</code>.</div>
+</section>
+
+<footer>R3.08 — Consolidation de la programmation — note de référence, à réutiliser tel quel dans les exercices</footer>
+
+</body>
+</html>
