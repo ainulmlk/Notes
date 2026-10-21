@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mind map IoT et LoRaWAN</title>
+<style>
+:root{--bg:#f7f7f5;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--line:#d9d9d3;--c0:#2b7de9;--c1:#e8590c;--hl:#fff3a3}
+@media (prefers-color-scheme:dark){:root{--bg:#161616;--fg:#eee;--mut:#9a9a94;--card:#1f1f1f;--line:#3a3a36;--c0:#5aa2ff;--c1:#ff8a4c;--hl:#5c5200}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;padding:0 16px 48px}
+header{position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:5;border-bottom:1px solid var(--line)}
+h1{font-size:18px;margin:0 0 8px}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+button,input{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 10px}
+input{flex:1;min-width:140px}
+button{cursor:pointer}
+#tree{margin-top:12px}
+ul{list-style:none;margin:0;padding-left:16px;border-left:2px solid var(--bc,var(--line))}
+#tree>ul{padding-left:0;border:0}
+li{margin:4px 0}
+.n{display:flex;gap:6px;align-items:flex-start;padding:5px 8px;border-radius:8px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bc,var(--line))}
+.n.p{cursor:pointer}
+.n .a{width:14px;flex:none;color:var(--mut);transition:transform .15s}
+li.open>.n .a{transform:rotate(90deg)}
+li>ul{display:none}
+li.open>ul{display:block}
+.root>.n{font-weight:700;font-size:17px}
+.d1>.n{font-weight:600}
+mark{background:var(--hl);color:inherit;border-radius:3px}
+.leaf .a{visibility:hidden}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>🧠 IoT · LoRa · LoRaWAN</h1>
+<div class="bar">
+<button id="ex">Tout ouvrir</button>
+<button id="co">Tout fermer</button>
+<input id="q" type="search" placeholder="Rechercher (ex. OTAA, RX1, ADR)">
+</div>
+</header>
+<div id="tree"></div>
+<script>
+const D=[
+{t:"🌐 IoT (introduction)",c:[
+ {t:"Pourquoi ?",c:["Plus de données","Contrôler les objets","Automatiser","Aller plus vite"]},
+ {t:"M2M → IoT",c:[
+  "M2M = machines qui communiquent sans humain (ABS, régulateur de vitesse, temps d'attente transports…)",
+  "IoT = M2M + réseau Internet (TCP/IP)",
+  "Domaines proches : programmation, IA, big data, cloud"]},
+ {t:"Objet connecté = objet + intelligence + réseau",c:[
+  "Objet (frigo, montre, vêtement…) + microcontrôleur + connexion Internet",
+  {t:"Intelligent ≠ connecté",c:[
+   "Intelligent : fonctions en plus, sans réseau (bip porte ouverte, filtre à changer)",
+   "Connecté : prévient le smartphone, commande des filtres, compare sa conso, suggère des tâches"]}]},
+ {t:"Chaîne de composantes",c:[
+  "Capteurs → traitement local → stockage local → réseau → Internet → cloud",
+  {t:"Capteurs",c:["Composant électronique, mesurent, envoient des données brutes","Batterie faible","Ex : température, présence, pollution"]},
+  {t:"Traitement et stockage locaux",c:["Cartes électroniques : lisent les capteurs, traitent, envoient"]},
+  {t:"Passerelle IoT",c:["Recueille les données des capteurs",{t:"Protocoles passerelle",c:["6LoWPAN","LoRaWAN","BLE"]},{t:"Protocoles Internet",c:["HTTP","XMPP","CoAP","MQTT"]}]},
+  {t:"Cloud",c:["Données agrégées","Espace de stockage","Inférences"]}]},
+ {t:"Architecture réseau",c:[
+  "End points (capteurs, actionneurs, agrégateurs)",
+  "→ routeurs et passerelles IoT",
+  "→ routeurs LAN/Edge (infrastructure Internet)",
+  "→ cloud / data center (analytics, management, provisioning, storage)",
+  "→ appareils clients (applications utilisateur)"]},
+ {t:"Hardware",c:[
+  {t:"Microcontrôleur",c:["Petit appareil programmable","Processeur + ROM (non volatile) + RAM (volatile) + E/S","Très faible conso, petit, bon marché","Plus lent qu'un PC, environnement de dev complexe"]},
+  {t:"Arduino",c:["Open source, facile à connecter, logiciel simple","Version Ethernet : 4 connexions simultanées max"]},
+  {t:"Raspberry Pi",c:["Vrai ordinateur sous Linux","Programmation orientée logiciel","Système réseau complet"]},
+  {t:"Autres cartes",c:["Capteurs : Arduino (ATmega328), ChipKIT (PIC), LaunchPad (MSP430)","Capteurs + calcul : STM32 (ARM Cortex), Particle (WiFi), Espruino (JavaScript)","Calcul + réseau : Raspberry Pi, Intel Galileo, Intel Edison"]}]},
+ {t:"Software",c:["Prototypage : Arduino IDE, Wyliodrin Studio","Programmation pro : Eclipse, Vim","Stockage et analyse : Xively, Microsoft Azure","Solutions builders"]}
+]},
+{t:"📡 LoRa et LoRaWAN",c:[
+ {t:"LoRa (couche physique)",c:[
+  "Long Range : sans fil, longue distance, faible débit, faible conso",
+  "Architecture : nœuds + une ou plusieurs passerelles",
+  {t:"Bandes ISM (libres)",c:["✅ Pas de licence, gratuit pour tous","❌ Interférences, faible débit","LoRa : 433 / 868 (Europe) / 915 MHz (USA)","WiFi : 2,4 / 5 GHz"]},
+  {t:"Paramètres",c:["Fréquence : 863–870 / 902–928 MHz","Puissance TX : 2–14 dBm / 5–20 dBm","Bande passante : 125 / 250 / 500 kHz","Spreading factor : 7–12","Coding rate : 4/5, 4/6, 4/7, 4/8 (bits de correction d'erreur)"]}]},
+ {t:"Équipements",c:[
+  {t:"Nœuds",c:["Petits appareils, capteurs, périphériques, esclaves","Ex : LoPy, LoRa GPS Hat, Froggy Factory, Waspmote, mDot"]},
+  {t:"Passerelle",c:["Appareil puissant, routeur LoRa → réseau IP (Ethernet/WiFi)","Packet forwarder","8 canaux simultanés, décode plusieurs SF","Ex : IMST IC880A-SPI"]}]},
+ {t:"LoRaWAN (couche MAC)",c:[
+  {t:"Architecture",c:["End nodes → Gateway → Network Server → Application Server","Nœud ↔ GW : LoRa RF","GW ↔ serveurs : TCP/IP SSL (backhaul 3G/Ethernet)","AES de bout en bout sur le payload"]},
+  {t:"Piles",c:["LoRa Alliance : MAC + classes","Semtech : modulation LoRa + bandes ISM régionales (EU 868, EU 433, US 915, AS 430)"]},
+  {t:"3 classes",c:[
+   "A : capteurs sur batterie, le plus économe, obligatoire pour tous ; downlink seulement après un uplink",
+   "B : actionneurs sur batterie, fenêtres synchronisées par beacon → à résumer (2–3 pages, binôme)",
+   "C : actionneurs sur secteur, écoute en continu, aucune latence downlink"]}]},
+ {t:"Activation d'un nœud",c:[
+  {t:"Données stockées",c:["DevAddr = NwkID (bits 31..25) + NwkAddr (bits 24..0)","AppEUI : identifiant de l'application","NwkSKey : intégrité + chiffrement du MAC payload","AppSKey : chiffrement des données applicatives"]},
+  {t:"OTAA (Over The Air Activation)",c:[
+   "Nœud pré-personnalisé : DevEUI (64 bits, comme une MAC), AppEUI, AppKey (AES-128)",
+   {t:"Join-request (nœud → serveur)",c:["Non chiffré","AppEUI (8 o) + DevEUI (8 o) + DevNonce (2 o, aléatoire)"]},
+   {t:"Join-accept (serveur → nœud)",c:["Chiffré ; pas de réponse si nœud non autorisé","AppNonce (3), NetID (3), DevAddr (4), DLSettings (1), RxDelay (1), CFList (16, optionnel)","DLSettings : config du downlink (débit) · RxDelay : délai TX/RX · CFList : canaux (selon la région)"]},
+   "NwkSKey = aes128_encrypt(AppKey, 0x01 | AppNonce | NetID | DevNonce | pad16)",
+   "AppSKey = aes128_encrypt(AppKey, 0x02 | AppNonce | NetID | DevNonce | pad16)"]},
+  {t:"ABP (Activation By Personalization)",c:["DevAddr, NwkSKey, AppSKey écrits directement dans le nœud","Couple de clés unique par nœud (sécurité)"]}]},
+ {t:"Classe A en détail",c:[
+  {t:"Messages",c:["Uplink : Preamble, PHDR, PHDR_CRC, PHYPayload, CRC","Downlink : sans CRC final ; un seul capteur, une seule gateway","PHDR, PHDR_CRC, CRC insérés par le modem"]},
+  {t:"Fenêtres de réception",c:[
+   "RX1 : fréquence et débit liés à l'uplink (égal par défaut), varie selon la région",
+   "RX2 : fréquence et débit fixes (selon la région), modifiables par commandes MAC",
+   "Durée minimale = détection du préambule ; si détecté, le récepteur reste ouvert jusqu'à la fin de la trame",
+   "Trame reçue en RX1 → RX2 non ouverte",
+   "Le nœud n'émet pas avant la fin de RX1 (ou RX2 si rien reçu)"]}]},
+ {t:"Format des messages MAC",c:[
+  "PHYPayload = MHDR (1 o) + MACPayload (1..M) + MIC (4 o)",
+  "MHDR : MType (bits 7..5), RFU (4..2), Major (1..0)",
+  {t:"MType",c:["000 Join Request","001 Join Accept","010 Unconfirmed Data Up","011 Unconfirmed Data Down","100 Confirmed Data Up","101 Confirmed Data Down","110 RFU","111 Proprietary"]},
+  "MACPayload = FHDR + FPort + FRMPayload",
+  "FHDR = DevAddr (4) + FCtrl (1) + FCnt (2) + FOpts (0..15)",
+  {t:"FCtrl",c:["Uplink : ADR · ADRACKReq · ACK · RFU · FOptsLen","Downlink : ADR · RFU · ACK · FPending · FOptsLen","ADR (Adaptive Data Rate) = 1 : le réseau peut adapter le débit aux conditions du canal ; sinon l'application contrôle"]}]},
+ {t:"Acquittement et retransmission",c:[
+  "Confirmed data → ACK obligatoire (ACK=1, peut contenir des données)",
+  "Unconfirmed data → pas d'ACK",
+  {t:"Retransmission (nœud, sans ACK)",c:["Autre canal aléatoire + débit plus bas","Essais 1–2 : DR · 3–4 : max(DR−1,0) · 5–6 : max(DR−2,0) · 7–8 : max(DR−3,0)","Après 8 retransmissions sans ACK → erreur couche application"]},
+  "Côté serveur : max de retransmissions atteint → objet considéré injoignable",
+  "FPending=1 : la gateway a d'autres messages en attente → le nœud doit renvoyer un uplink pour les recevoir"]},
+ {t:"Commandes MAC",c:[
+  "Administration réseau, jamais visibles par l'application",
+  "LinkCheckReq / Ans (0x02) : le nœud valide sa connectivité ; la réponse donne la marge de lien",
+  "LinkADRReq (0x03) : change débit, puissance, répétition ou canal",
+  "DutyCycleAns (0x04)",
+  "RXParamSetupReq / Ans (0x05) : paramètres des fenêtres RX",
+  "DevStatusReq / Ans (0x06) : niveau de batterie + marge de démodulation",
+  "NewChannelReq / Ans (0x07) : crée ou modifie un canal radio",
+  "RXTimingSetupReq / Ans (0x08) : timing des fenêtres RX",
+  "TxParamSetupReq / Ans (0x09) : dwell time et EIRP max selon la réglementation locale"]}
+]}
+];
+const tree=document.getElementById('tree');
+function build(items,depth,color){
+  const ul=document.createElement('ul');
+  items.forEach((it,i)=>{
+    const o=typeof it==='string'?{t:it}:it;
+    const li=document.createElement('li');
+    const kids=o.c&&o.c.length;
+    li.className=(depth===0?'root ':depth===1?'d1 ':'')+(kids?'':'leaf');
+    const col=depth===0?(i===0?'var(--c0)':'var(--c1)'):color;
+    li.style.setProperty('--bc',col);
+    const n=document.createElement('div');
+    n.className='n'+(kids?' p':'');
+    n.innerHTML='<span class="a">▶</span><span class="tx"></span>';
+    n.querySelector('.tx').textContent=o.t;
+    li.appendChild(n);
+    if(kids){
+      li.appendChild(build(o.c,depth+1,col));
+      n.onclick=()=>li.classList.toggle('open');
+    }
+    ul.appendChild(li);
+  });
+  return ul;
+}
+tree.appendChild(build(D,0));
+tree.querySelectorAll('.root').forEach(r=>r.classList.add('open'));
+const all=()=>[...tree.querySelectorAll('li')];
+document.getElementById('ex').onclick=()=>all().forEach(l=>l.classList.add('open'));
+document.getElementById('co').onclick=()=>{all().forEach(l=>l.classList.remove('open'));tree.querySelectorAll('.root').forEach(r=>r.classList.add('open'));};
+document.getElementById('q').oninput=e=>{
+  const q=e.target.value.trim().toLowerCase();
+  all().forEach(l=>{l.classList.remove('hide');const tx=l.querySelector(':scope>.n .tx');tx.innerHTML='';tx.textContent=tx.dataset.o||tx.textContent;});
+  if(!q)return;
+  const lis=all();
+  lis.forEach(l=>l.classList.add('hide'));
+  lis.forEach(l=>{
+    const tx=l.querySelector(':scope>.n .tx');
+    const txt=tx.textContent;
+    const i=txt.toLowerCase().indexOf(q);
+    if(i>=0){
+      tx.innerHTML='';
+      tx.append(txt.slice(0,i));
+      const m=document.createElement('mark');m.textContent=txt.slice(i,i+q.length);tx.append(m,txt.slice(i+q.length));
+      let p=l;
+      while(p&&p.tagName==='LI'){p.classList.remove('hide');p.classList.add('open');p=p.parentElement.closest('li');}
+      l.querySelectorAll('li').forEach(c=>c.classList.remove('hide'));
+    }
+  });
+};
+</script>
+</body>
+</html>
